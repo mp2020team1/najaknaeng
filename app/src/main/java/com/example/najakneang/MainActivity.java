@@ -1,14 +1,15 @@
 package com.example.najakneang;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupFreshnessRecycler();
+        setupOnClickFreshnessLayout();
         setupFridgeViewPager();
         setupRecommendRecycler();
     }
@@ -25,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 신선도 위험품목 설정
      * TODO: 이후에 신선도가 적은 품목을 받아와서 수정하면 됨.
-     * TODO: 추가로 레이아웃 눌렀을때 신선도 액티비티가 나와줘야함.
      */
     private void setupFreshnessRecycler() {
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
@@ -44,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
                         this, LinearLayoutManager.HORIZONTAL, false
                 )
         );
+    }
+
+    private void setupOnClickFreshnessLayout() {
+        RelativeLayout freshness = findViewById(R.id.layout_freshness_main);
+        freshness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FreshnessActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

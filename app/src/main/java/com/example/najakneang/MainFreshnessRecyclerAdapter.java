@@ -28,8 +28,8 @@ public class MainFreshnessRecyclerAdapter
 
     private final MainFreshnessRecyclerItem[] items;
 
-    public MainFreshnessRecyclerAdapter(MainFreshnessRecyclerItem[] data) {
-        items = data;
+    public MainFreshnessRecyclerAdapter(MainFreshnessRecyclerItem[] items) {
+        this.items = items;
     }
 
     @NonNull
