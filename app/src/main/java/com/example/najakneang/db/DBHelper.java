@@ -1,4 +1,4 @@
-package com.example.najakneang;
+package com.example.najakneang.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,10 +6,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String DB_NAME = "test.db";
+    public static final String DB_NAME = "najakneang.db";
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
-        super(context,name,factory,version);
+        super(context, name, factory, version);
     }
 
     @Override
@@ -18,9 +18,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "NAME "         + "TEXT," +
                 "QUANTITY "     + "INTEGER NOT NULL," +
                 "EXPIREDATE "   + "TEXT," +
-                "CLASSID "        + "TEXT," +
+                "CLASSID "      + "TEXT," +
                 "FRIDGEID "     + "TEXT," +
-                "STORAGEID "    + "TEXT" + ");" );
+                "STORAGEID "    + "TEXT" + ");"
+        );
     }
 
     @Override

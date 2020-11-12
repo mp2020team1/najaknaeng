@@ -1,4 +1,4 @@
-package com.example.najakneang;
+package com.example.najakneang.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.najakneang.model.MainFreshnessRecyclerItem;
+import com.example.najakneang.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

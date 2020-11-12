@@ -1,4 +1,4 @@
-package com.example.najakneang;
+package com.example.najakneang.model;
 
 import android.graphics.Bitmap;
 
