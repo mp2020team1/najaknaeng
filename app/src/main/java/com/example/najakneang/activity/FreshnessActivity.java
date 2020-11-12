@@ -63,7 +63,7 @@ public class FreshnessActivity extends AppCompatActivity {
         TabLayout firstTab = findViewById(R.id.tablayout_first_freshness);
         TabLayout secondTab = findViewById(R.id.tablayout_second_freshness);
 
-        String[] firstTabNameList = {"전체", "냉장", "냉동", "실온", "기타"};
+        String[] firstTabNameList = {"전체", "냉장", "냉동", "실온"};
         String[] secondTabNameList = {"전체", "과일", "채소", "수산", "육류", "유제품", "반찬", "기타"};
 
         for (String name: firstTabNameList) {
@@ -138,7 +138,7 @@ public class FreshnessActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        if(DB != null){
+        if (DB != null){
             String sqlQuery = "SELECT * FROM Items";
             Cursor cursor = null;
 
@@ -152,8 +152,6 @@ public class FreshnessActivity extends AppCompatActivity {
                 String fridgeID = cursor.getString(4);
                 String storageID = cursor.getString(5);
             }
-
-
         }
     }
 
@@ -161,13 +159,13 @@ public class FreshnessActivity extends AppCompatActivity {
         SQLiteDatabase db = null;
 
         File file = new File(getFilesDir(), DBHelper.DB_NAME);
-        try{
+        try {
             db = SQLiteDatabase.openOrCreateDatabase(file, null);
         }catch (SQLException se){
             se.printStackTrace();
         }
 
-        if(db == null){
+        if (db == null){
             Log.e("e","error");
         }
 
@@ -175,7 +173,7 @@ public class FreshnessActivity extends AppCompatActivity {
     }
 
     private void initTable(){
-        if(DB == null){
+        if (DB == null){
             String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
                     "NAME "         + "TEXT," +
                     "QUANTITY "     + "INTEGER NOT NULL," +

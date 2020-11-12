@@ -1,5 +1,6 @@
 package com.example.najakneang.adapter;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import com.example.najakneang.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 class MainFreshnessRecyclerHolder extends RecyclerView.ViewHolder {
-    protected TextView name;
-    protected TextView remain;
-    protected CircleImageView image;
+    protected final TextView name;
+    protected final TextView remain;
+    protected final CircleImageView image;
 
     public MainFreshnessRecyclerHolder(@NonNull View view) {
         super(view);
@@ -29,10 +30,10 @@ class MainFreshnessRecyclerHolder extends RecyclerView.ViewHolder {
 public class MainFreshnessRecyclerAdapter
         extends RecyclerView.Adapter<MainFreshnessRecyclerHolder> {
 
-    private final MainFreshnessRecyclerItem[] items;
+    private final MainFreshnessRecyclerItem[] data;
 
-    public MainFreshnessRecyclerAdapter(MainFreshnessRecyclerItem[] items) {
-        this.items = items;
+    public MainFreshnessRecyclerAdapter(MainFreshnessRecyclerItem[] data) {
+        this.data = data;
     }
 
     @NonNull
@@ -46,10 +47,10 @@ public class MainFreshnessRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFreshnessRecyclerHolder holder, int position) {
-        MainFreshnessRecyclerItem item = items[position];
-        String name = item.getName();
-        int remain = item.getRemain();
-        int image = item.getImage();
+        MainFreshnessRecyclerItem datum = data[position];
+        String name = datum.getName();
+        int remain = datum.getRemain();
+        int image = datum.getImage();
 
         holder.name.setText(name);
         holder.remain.setText(remain + "일");
@@ -58,6 +59,6 @@ public class MainFreshnessRecyclerAdapter
 
     @Override
     public int getItemCount() {
-        return items.length;
+        return data.length;
     }
 }

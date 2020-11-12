@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.najakneang.R;
 
 class MainFridgeViewPagerHolder extends RecyclerView.ViewHolder {
-    protected TextView text;
+    protected final TextView text;
 
     public MainFridgeViewPagerHolder(@NonNull View view) {
         super(view);
@@ -22,10 +22,10 @@ class MainFridgeViewPagerHolder extends RecyclerView.ViewHolder {
 public class MainFridgeViewPagerAdapter
         extends RecyclerView.Adapter<MainFridgeViewPagerHolder> {
 
-    private String[] items;
+    private final String[] data;
 
-    public MainFridgeViewPagerAdapter(String[] items) {
-        this.items = items;
+    public MainFridgeViewPagerAdapter(String[] data) {
+        this.data = data;
     }
 
     @NonNull
@@ -39,11 +39,11 @@ public class MainFridgeViewPagerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFridgeViewPagerHolder holder, int position) {
-        holder.text.setText(items[position]);
+        holder.text.setText(data[position]);
     }
 
     @Override
     public int getItemCount() {
-        return items.length;
+        return data.length;
     }
 }
