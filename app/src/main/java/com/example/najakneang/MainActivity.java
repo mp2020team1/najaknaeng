@@ -43,39 +43,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-class DatabaseHelper extends SQLiteOpenHelper {
-
-    public DatabaseHelper(Context context){
-        super(context, "najakneang.db", null, 1);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        try{
-            String SQLCreate = "CREATE TABLE IF NOT EXISTS NAJAKNEANG (NAME TEXT, QUANTITY INTEGER NOT NULL, " +
-                    "REGISTDATE TEXT, EXPIREDATE TEXT, CLASSID TEXT, FRIDGEID TEXT, STORESTATE TEXT, STORAGEID TEXT);";
-            db.execSQL(SQLCreate);
-            Log.i("SQL", "DB_CREATED");
-        }catch(SQLiteException e){
-            e.printStackTrace() ;
-        }
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int older, int newer) {
-        Log.i("SQL", "DB_UPGRADED");
-        String SQLDrop = "DROP TABLE IF EXISTS NAJAKNEANG;";
-        db.execSQL(SQLDrop);
-        onCreate(db);
-    }
-
-    public void onOpen(SQLiteDatabase db){
-        Log.i("SQL", "DB_OPENED");
-    }
-
-};
 
 public class MainActivity extends AppCompatActivity {
 
@@ -123,22 +90,13 @@ public class MainActivity extends AppCompatActivity {
      *  DB 관리
      */
 
-    private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
-
-    private boolean openDataBase(){
-        dbHelper = new DatabaseHelper(this);
-        db = dbHelper.getWritableDatabase();
-
-        return true;
-    }
 
     //임의의 가데이터 입력 함수
     private void insertFakeData() {
         insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
         insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
         insertItemData("라면", 5, "2022-04-06", "기타", "팬트리","실온","저장소1");
-        insertFridgeData("냉장고1", "저장소1", "냉장");
+        insertSectionData("저장소1", "냉장고1", "냉장");
     }
 
     // 아이템 데이터 입력합수
@@ -161,11 +119,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 냉장고 데이터 입력함수
-    private void insertFridgeData(String fridge, String section, String state){
+    private void insertSectionData(String section, String fridge, String state){
         if(DB != null){
-            String sqlFridgeInsert = "INSERT OR REPLACE INTO Fridge (FRIDGE, SECTION, STORESTATE) VALUES ('" +
-                    fridge + "', '" +
+            String sqlFridgeInsert = "INSERT OR REPLACE INTO Section (FRIDGE, SECTION, STORESTATE) VALUES ('" +
                     section + "', '" +
+                    fridge + "', '" +
                     state   + "');";
             DB.execSQL(sqlFridgeInsert);
         }
@@ -183,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
                     "STORESTATE "    +"TEXT," +
                     "SECTION "    + "TEXT" + ");";
 
-        String sqlfridge = "CREATE TABLE IF NOT EXISTS Fridge (" +
-                "FRIDGE "     +"TEXT," +
-                "SECTION "    +"TEXT," +
+        String sqlfridge = "CREATE TABLE IF NOT EXISTS Sections (" +
+                "SECTION "     +"TEXT," +
+                "FRIDGE "    +"TEXT," +
                 "STORESTATE "   +"TEXT" + ");";
 
         Log.e("e","error init");
@@ -261,13 +219,6 @@ public class MainActivity extends AppCompatActivity {
             String[] info = freshenessData[i].split("/");
             items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int)remainDate(info[1]));
         }
-        // 가데이터
-//        MainFreshnessRecyclerItem[] items = {
-//                new MainFreshnessRecyclerItem(
-//                        loadData(), R.drawable.ic_launcher_background, 3),
-//                new MainFreshnessRecyclerItem(
-//                        "품목 2", R.drawable.ic_launcher_background, 30)
-//        };
 
         MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
         recyclerView.setAdapter(adapter);
@@ -412,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("데이터 클릭", position + "가 클릭되었음");
                 String videoId = dataList.get(position).getVideoId();
                 Log.i("통신", videoId + "가 나왔음");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "http://youtube.com/watch?v=/" + videoId ));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "http://youtube.com/watch?v=" + videoId ));
                 startActivity(intent);
             }
         });
