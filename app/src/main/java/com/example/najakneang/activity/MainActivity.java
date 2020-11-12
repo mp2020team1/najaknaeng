@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase();
 
-//        insertFakeData(); 한개의 데이터 삽입 되있음
+        insertFakeData(); //한개의 데이터 삽입 되있음
 
         setupFreshnessRecycler();
         //setupFridgeViewPager();
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null,
                 null,
-                null
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE
         );
 
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
@@ -96,17 +97,17 @@ public class MainActivity extends AppCompatActivity {
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
         ContentValues values = new ContentValues();
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
-        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 3");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 2);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
-        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-01-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 3");
         values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
-        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 2");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
     }
 //
