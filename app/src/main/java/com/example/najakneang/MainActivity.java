@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setupFreshnessRecycler();
         setupOnClickFreshnessLayout();
         setupFridgeViewPager();
+        //setupOnClickFridgeLayout();
         setupRecommendRecycler();
     }
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         freshness.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FreshnessActivity.class);
+                Intent intent = new Intent(getApplicationContext(), FridgeSectionActivity.class);
                 startActivity(intent);
             }
         });
@@ -78,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
+
+    /*private void setupOnClickFridgeLayout() {
+        RelativeLayout fridge = findViewById(R.id.viewpager_fridge_main);
+        fridge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FridgeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }*/
 
 
     /**

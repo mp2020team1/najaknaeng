@@ -11,6 +11,7 @@
         android:theme="@style/Theme.NaJakNeang">
         <activity android:name=".FridgeActivity"></activity>
         <activity android:name=".FreshnessActivity" />
+        <activity android:name=".FridgeSectionActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
