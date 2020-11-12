@@ -5,15 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
+
 public class FreshnessActivity extends AppCompatActivity {
 
+    SQLiteDatabase DB;
+    public static final String DB_NAME = "test.db";
     private static final int FIRST = 0;
     private static final int SECOND = 1;
     private final String[] tabSetting = {"전체", "전체"};
@@ -28,6 +36,11 @@ public class FreshnessActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DB = setupDateBase();//c
+        initTable();//c
+        loadData();//c
+
         setContentView(R.layout.activity_freshness);
 
         setupToolbar();
@@ -120,4 +133,58 @@ public class FreshnessActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void loadData() {
+
+        if(DB != null){
+            String sqlQuery = "SELECT * FROM Items";
+            Cursor cursor = null;
+
+            cursor = DB.rawQuery(sqlQuery, null);
+
+            if (cursor.moveToNext()){
+                String name = cursor.getString(0);
+                int quantity = cursor.getInt(1);
+                String date = cursor.getString(2);
+                String classID = cursor.getString(3);
+                String fridgeID = cursor.getString(4);
+                String storageID = cursor.getString(5);
+            }
+
+
+        }
+    }
+
+    private SQLiteDatabase setupDateBase() {
+        SQLiteDatabase db = null;
+
+        File file = new File(getFilesDir(), "test.db");
+        try{
+            db = SQLiteDatabase.openOrCreateDatabase(file, null);
+        }catch (SQLException se){
+            se.printStackTrace();
+        }
+
+        if(db == null){
+            Log.e("e","error");
+        }
+
+        return db;
+    }
+
+    private void initTable(){
+        if(DB == null){
+            String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
+                    "NAME "         + "TEXT," +
+                    "QUANTITY "     + "INTEGER NOT NULL," +
+                    "REGISTDATE"    +"TEXT," +
+                    "EXPIREDATE "   + "TEXT," +
+                    "TYPE "        + "TEXT," +
+                    "FRIDGE "     + "TEXT," +
+                    "STORESTATE"    +"TEXT," +
+                    "SECTION "    + "TEXT" + ")";
+            DB.execSQL(sqlcreate);
+        }
+    }
+
 }

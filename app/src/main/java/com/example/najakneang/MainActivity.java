@@ -8,6 +8,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -18,6 +21,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +79,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
 public class MainActivity extends AppCompatActivity {
 
+    SQLiteDatabase DB; //DB 객체 생성
+    public static final String DB_NAME = "test.db";// DB이름
+
     //네트워크 파싱 스레드
     protected class ParsingThread extends Thread{
         public void run(){
@@ -88,7 +99,15 @@ public class MainActivity extends AppCompatActivity {
         ParsingThread parsingThread = new ParsingThread(); //데이터 파싱 시작
         parsingThread.start();
 
-        setupFreshnessRecycler();
+        DB = setupDateBase();//DB 준비
+        initTable();// 테이블 실행
+        insertFakeData();
+
+        try {
+            setupFreshnessRecycler();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         setupOnClickFreshnessLayout();
         setupFridgeViewPager();
 
@@ -114,28 +133,141 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //임의의 가데이터 입력 함수
+    private void insertFakeData() {
+        insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
+        insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
+        insertItemData("라면", 5, "2022-04-06", "기타", "팬트리","실온","저장소1");
+        insertFridgeData("냉장고1", "저장소1", "냉장");
+    }
+
+    // 아이템 데이터 입력합수
+    private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
+        if(DB != null){
+            final String DATE_PATTERN = "yyyy-MM-dd";
+            SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+            String current = sdf.format(new Date());
+            String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
+                    name        +"', '" +
+                    quantity    + "', '" +
+                    current     + "', '" +
+                    expireDate  + "', '" +
+                    type     +"', '" +
+                    fridge    +"', '" +
+                    storageState+"', '" +
+                    section   +"');";
+            DB.execSQL(sqlItemInsert);
+        }
+    }
+
+    // 냉장고 데이터 입력함수
+    private void insertFridgeData(String fridge, String section, String state){
+        if(DB != null){
+            String sqlFridgeInsert = "INSERT OR REPLACE INTO Fridge (FRIDGE, SECTION, STORESTATE) VALUES ('" +
+                    fridge + "', '" +
+                    section + "', '" +
+                    state   + "');";
+            DB.execSQL(sqlFridgeInsert);
+        }
+    }
+
+    //
+    private void initTable(){
+        String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
+                    "NAME "         + "TEXT," +
+                    "QUANTITY "     + "INTEGER NOT NULL," +
+                    "REGISTDATE "    +"TEXT," +
+                    "EXPIREDATE "   + "TEXT," +
+                    "TYPE "        + "TEXT," +
+                    "FRIDGE "     + "TEXT," +
+                    "STORESTATE "    +"TEXT," +
+                    "SECTION "    + "TEXT" + ");";
+
+        String sqlfridge = "CREATE TABLE IF NOT EXISTS Fridge (" +
+                "FRIDGE "     +"TEXT," +
+                "SECTION "    +"TEXT," +
+                "STORESTATE "   +"TEXT" + ");";
+
+        Log.e("e","error init");
+        DB.execSQL(sqlcreate);
+        DB.execSQL(sqlfridge);
+    }
+
+    private String[] loadFreshenessData() {
+        String[] returnData = new String[0];
+        if(DB != null){
+            try {
+                String sqlQuery = "SELECT * FROM Items";
+
+                Cursor cursor = null;
+
+                cursor = DB.rawQuery(sqlQuery, null);
+                // 전체 목록 이름/ 등록일 목록 만들고 넘기기
+                returnData = new String[cursor.getCount()];
+                int c = 0;
+
+                while(cursor.moveToNext()) {
+                    String name = cursor.getString(0);
+                    String date = cursor.getString(3);
+                     returnData[c++]= name+"/"+date;
+                }
+            }catch (SQLException se){
+                Log.e("e", se.toString());
+            }
+        }
+        return returnData;
+    }
+
+    private SQLiteDatabase setupDateBase() {
+        SQLiteDatabase db = null;
+
+        File file = new File(getFilesDir(), DB_NAME);
+        try{
+            db = SQLiteDatabase.openOrCreateDatabase(file, null);
+        }catch (SQLException se){
+            se.printStackTrace();
+        }
+
+        if(db == null){
+            Log.e("e","error setup");
+        }
+
+        return db;
+    }
+
+    private long remainDate(String expireDate) throws ParseException {
+        final String DATE_PATTERN = "yyyy-MM-dd";
+        final int MILLI_SECONDS_PER_DATE = 24 * 60 * 60 * 1000;
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+        String current = sdf.format(new Date());
+        Date start = sdf.parse(current);
+        Date end = sdf.parse(expireDate);
+        long diff = (end.getTime() - start.getTime()) / MILLI_SECONDS_PER_DATE;
+
+        return diff;
+    }
+
+
     /**
      * 신선도 위험품목 설정
      * TODO: 이후에 신선도가 적은 품목을 받아와서 수정하면 됨.
      */
-
-    private void setupFreshnessItem(){
-        Date currentTime = Calendar.getInstance().getTime();
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(currentTime);
-        String now[] = date.split("-");
-
-        //유통기한 받아오기 제작중
-    }
-
-    private void setupFreshnessRecycler() {
+    private void setupFreshnessRecycler() throws ParseException {
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
+        String[] freshenessData = loadFreshenessData();
+        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshenessData.length];
+
+        for(int i = 0; i<freshenessData.length;i++){
+            String[] info = freshenessData[i].split("/");
+            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int)remainDate(info[1]));
+        }
         // 가데이터
-        MainFreshnessRecyclerItem[] items = {
-                new MainFreshnessRecyclerItem(
-                        "품목 1", R.drawable.ic_launcher_background, 3),
-                new MainFreshnessRecyclerItem(
-                        "품목 2", R.drawable.ic_launcher_background, 30)
-        };
+//        MainFreshnessRecyclerItem[] items = {
+//                new MainFreshnessRecyclerItem(
+//                        loadData(), R.drawable.ic_launcher_background, 3),
+//                new MainFreshnessRecyclerItem(
+//                        "품목 2", R.drawable.ic_launcher_background, 30)
+//        };
 
         MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
         recyclerView.setAdapter(adapter);
@@ -181,6 +313,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 오늘의 추천메뉴 설정
+     * TODO: 오늘의 메뉴 선정
+     * TODO: 유튜브에서 검색 결과 상위 몇개를 가져올 수 있어야됨
+     * TODO: 클릭 시 유튜브로 넘어갈 수 있게.
      */
 
     final String server_key = "AIzaSyBvbUl4A4Y7lAbfAoUunccnorGm0YoqNfE";
