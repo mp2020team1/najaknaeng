@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
         //String[] goodsList = new String[cursor.]
         while(cursor.moveToNext()){
-            cursor.
+//            cursor.
             long id = cursor.getLong(cursor.getColumnIndexOrThrow(DBContract.GoodsEntry._ID));
             String name = cursor.getString(0);
             String expireDate = cursor.getString(3);
