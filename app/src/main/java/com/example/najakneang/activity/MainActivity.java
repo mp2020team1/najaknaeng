@@ -12,76 +12,49 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.model.MainFreshnessRecyclerItem;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
 import com.example.najakneang.adapter.MainRecommendRecyclerAdapter;
-import com.example.najakneang.model.MainRecommendRecyclerItem;
+import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
     SQLiteDatabase DB; //DB 객체 생성
-
-    //네트워크 파싱 스레드
-    protected class ParsingThread extends Thread{
-        public void run(){
-            getYoutube();
-        }
-    }
-
-    ArrayList<MainRecommendRecyclerItem> dataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ParsingThread parsingThread = new ParsingThread(); // 데이터 파싱 시작
-        parsingThread.start();
-
         DB = setupDateBase(); // DB 준비
         initTable(); // 테이블 실행
         insertFakeData();
 
-        try {
-            setupFreshnessRecycler();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        setupOnClickFreshnessLayout();
+        setupFreshnessRecycler();
         setupFridgeViewPager();
-
-        try {
-            parsingThread.join(); // ParsingThread가 종료될때까지 대기
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        setupRecommendRecycler(dataList); // Parsing이 완료되면 데이터 표시
+        setupRecommendRecycler();
+        setonClickMaskLayout();
     }
 
     // 임의의 가데이터 입력 함수
@@ -95,9 +68,7 @@ public class MainActivity extends AppCompatActivity {
     // 아이템 데이터 입력합수
     private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
         if(DB != null){
-            final String DATE_PATTERN = "yyyy-MM-dd";
-            SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-            String current = sdf.format(new Date());
+            String current = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
                     name        + "', '" +
                     quantity    + "', '" +
@@ -122,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //
     private void initTable(){
         String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
                     "NAME "         + "TEXT," +
@@ -139,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 "SECTION "      + "TEXT," +
                 "STORESTATE "   + "TEXT" + ");";
 
-        Log.e("e","error init");
         DB.execSQL(sqlcreate);
         DB.execSQL(sqlfridge);
     }
@@ -162,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     String date = cursor.getString(3);
                      returnData[c++]= name+"/"+date;
                 }
-            }catch (SQLException se){
+            } catch (SQLException se){
                 Log.e("e", se.toString());
             }
         }
@@ -186,31 +155,24 @@ public class MainActivity extends AppCompatActivity {
         return db;
     }
 
-    private long remainDate(String expireDate) throws ParseException {
-        final String DATE_PATTERN = "yyyy-MM-dd";
-        final int MILLI_SECONDS_PER_DATE = 24 * 60 * 60 * 1000;
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-        String current = sdf.format(new Date());
-        Date start = sdf.parse(current);
-        Date end = sdf.parse(expireDate);
-        long diff = (end.getTime() - start.getTime()) / MILLI_SECONDS_PER_DATE;
-
-        return diff;
+    private long remainDate(String expireDateStr) {
+        LocalDate today = LocalDate.now();
+        LocalDate expireDate = LocalDate.parse(expireDateStr);
+        return ChronoUnit.DAYS.between(today, expireDate);
     }
-
 
     /**
      * 신선도 위험품목 설정
-     * TODO: 이후에 신선도가 적은 품목을 받아와서 수정하면 됨.
+     * TODO: 3개 정도만 사용하기
      */
-    private void setupFreshnessRecycler() throws ParseException {
+    private void setupFreshnessRecycler() {
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
         String[] freshnessData = loadFreshnessData();
         MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshnessData.length];
 
         for(int i = 0; i<freshnessData.length;i++){
             String[] info = freshnessData[i].split("/");
-            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int)remainDate(info[1]));
+            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int) remainDate(info[1]));
         }
 
         MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
@@ -220,17 +182,6 @@ public class MainActivity extends AppCompatActivity {
                         this, LinearLayoutManager.HORIZONTAL, false
                 )
         );
-    }
-
-    private void setupOnClickFreshnessLayout() {
-        RelativeLayout freshness = findViewById(R.id.layout_freshness_main);
-        freshness.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FreshnessActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     /**
@@ -246,7 +197,8 @@ public class MainActivity extends AppCompatActivity {
         String[] items = {
                 "냉장고 1",
                 "냉장고 2",
-                "김치 냉장고 1"
+                "김치 냉장고 1",
+                "팬트리 1"
         };
 
         MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(items);
@@ -255,110 +207,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * 오늘의 추천메뉴 설정
-     * TODO: 오늘의 메뉴 선정
-     * TODO: 클릭 시 유튜브로 넘어갈 수 있게.
-     * TODO:감자 부분을 DB에서 받아온 재료로 바꿀것
-     */
+    private void setupRecommendRecycler() {
+        ArrayList<YoutubeContent> data = new ArrayList<>();
 
-    final String server_key = "AIzaSyBvbUl4A4Y7lAbfAoUunccnorGm0YoqNfE";
-    final String ingredient = "감자" + "레시피";
-
-    private void getYoutube(){
-        try{
-
-            // Youtube Data Api를 이용하여 영상 검색 결과 정보가 담긴 json을 가져옴
-            String youtube = "https://www.googleapis.com/youtube/v3/search?q=" + ingredient + "&key="
-                    + server_key + "&maxResults=3&part=snippet";
-            URL url = new URL(youtube);
-            HttpURLConnection connect = (HttpURLConnection) url.openConnection();
-
-            // 접속 성공 확인
-            if(connect.getResponseCode() == HttpURLConnection.HTTP_OK){
-                InputStreamReader tmp = new InputStreamReader(connect.getInputStream(), "UTF-8");
-                BufferedReader reader = new BufferedReader(tmp);
-
-                // 웹의 json을 줄단위로 읽어 page에 하나하나 저장함
-                String line = null;
-                StringBuffer buffer = new StringBuffer();
-
-                while ((line = reader.readLine()) != null) {
-                    Log.i("통신 결과", line);
-                    buffer.append(line);
-                }
-
-                String receiveMsg = buffer.toString();
-                Log.i("통신 결과", "변환성공");
-                reader.close();
-
-                // JSON 파싱
-                try {
-                    JSONObject jsonObject = new JSONObject(receiveMsg);
-
-                    JSONArray youtubeArray = jsonObject.getJSONArray("items");
-
-                    for (int i = 0; i < youtubeArray.length(); i++) {
-                        JSONObject youtubeObject = youtubeArray.getJSONObject(i);
-
-                        MainRecommendRecyclerItem youtubeData = new MainRecommendRecyclerItem();
-
-                        // Youtube 제목, 채널명 받아오기
-                        JSONObject tmpObject = youtubeObject.getJSONObject("snippet");
-                        youtubeData.setTitle(tmpObject.getString("title"));
-                        // eplisze 또는 marquee 속성을 통해서 긴 제목 자르기
-                        Log.i("통신 결과", tmpObject.getString("title") + "를 받아옴");
-                        youtubeData.setCreator(tmpObject.getString("channelTitle"));
-                        Log.i("통신 결과", tmpObject.getString("channelTitle") + "를 받아옴");
-
-                        //VideoId 받아오기기
-                        tmpObject = youtubeObject.getJSONObject("id");
-                        youtubeData.setVideoId(tmpObject.getString("videoId"));
-                        Log.i("통신 결과", tmpObject.getString("videoId") + "를 받아옴");
-
-                        // 썸네일 받아오기
-//                        String thumbnail = "http://img.youtube.com/vi/" + youtubeData.getVideoId() + "/default.jpg";
-                        String thumbnail = "https://i.ytimg.com/vi/" + youtubeData.getVideoId() + "/mqdefault.jpg";
-                        URL thumbnail_url = new URL(thumbnail);
-                        Bitmap bitmap = BitmapFactory.decodeStream(thumbnail_url.openStream());
-                        youtubeData.setBitmap(bitmap);
-
-                        // RecyclerView에 dataset추가
-                        dataList.add(youtubeData);
-                    }
-                }catch(JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            else{
-                Log.i("통신 결과", connect.getResponseCode() + "에러");
-            }
-            connect.disconnect();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        try {
+            Thread passingThread = new Thread(() -> {
+                // TODO: 재료 선택에 성공했다면 ingredient에 감자 대신 다른 것을 넣을 것!!
+                getYoutubeContents(data, "감자");
+            });
+            passingThread.start();
+            passingThread.join();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    private void setupRecommendRecycler(ArrayList<MainRecommendRecyclerItem> dataList) {
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_main);
-
-        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(dataList);
-
-        // 클릭시 유튜브로 이동
-        adapter.setItemClickListener(new MainRecommendRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                Log.i("데이터 클릭", position + "가 클릭되었음");
-                String videoId = dataList.get(position).getVideoId();
-                Log.i("통신", videoId + "가 나왔음");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "http://youtube.com/watch?v=" + videoId ));
-                startActivity(intent);
-            }
-        });
+        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(data);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
@@ -366,5 +230,84 @@ public class MainActivity extends AppCompatActivity {
         );
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+    }
+
+    public void setonClickMaskLayout() {
+        FrameLayout mask = findViewById(R.id.layout_mask_main);
+        mask.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), FreshnessActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    /**
+     * 오늘의 추천메뉴 설정
+     * TODO: 오늘의 메뉴 선정
+     * 재사용성을 위해 수정!!
+     */
+    private void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
+        String api_key = YoutubeContent.YOUTUBE_API_KEY;
+        ingredient += " 레시피";
+
+        try {
+            // Youtube Data Api를 이용하여 영상 검색 결과 정보가 담긴 json을 가져옴
+            String youtube = "https://www.googleapis.com/youtube/v3/search?q=" + ingredient +
+                    "&key=" + api_key   +
+                    "&part=snippet"     +
+                    "&regionCode=KR"    +
+                    "&type=video"       +
+                    "&maxResults=3";
+            URL url = new URL(youtube);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            // 접속 성공 확인
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                // 웹의 response을 줄단위로 읽어 String에 하나하나 저장함
+                InputStream is = conn.getInputStream();
+                Scanner sc = new Scanner(is);
+                StringBuilder builder = new StringBuilder();
+
+                while (sc.hasNext()) {
+                    builder.append(sc.nextLine());
+                }
+                String receiveMsg = builder.toString();
+
+                // JSON 파싱
+                try {
+                    JSONObject jsonObject = new JSONObject(receiveMsg);
+                    JSONArray youtubeArray = jsonObject.getJSONArray("items");
+
+                    for (int i = 0; i < youtubeArray.length(); i++) {
+                        JSONObject youtubeObject = youtubeArray.getJSONObject(i);
+
+                        // Youtube 제목, 채널명 받아오기
+                        JSONObject tmpObject;
+                        tmpObject = youtubeObject.getJSONObject("snippet");
+                        String title = tmpObject.getString("title");
+                        String creator = tmpObject.getString("channelTitle");
+
+                        // VideoId 받아오기
+                        tmpObject = youtubeObject.getJSONObject("id");
+                        String videoId = tmpObject.getString("videoId");
+
+                        // 썸네일 받아오기
+                        String thumbnail_url_str = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg";
+                        URL thumbnail_url = new URL(thumbnail_url_str);
+                        Bitmap thumbnail = BitmapFactory.decodeStream(thumbnail_url.openStream());
+
+                        // RecyclerView에 dataset 추가
+                        data.add(
+                                new YoutubeContent(title, creator, videoId, thumbnail)
+                        );
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            conn.disconnect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

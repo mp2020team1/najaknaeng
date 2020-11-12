@@ -152,8 +152,6 @@ public class FreshnessActivity extends AppCompatActivity {
                 String fridgeID = cursor.getString(4);
                 String storageID = cursor.getString(5);
             }
-
-
         }
     }
 
