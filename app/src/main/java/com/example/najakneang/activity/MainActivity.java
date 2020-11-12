@@ -17,11 +17,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
+import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.model.MainFreshnessRecyclerItem;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
@@ -44,139 +46,180 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-    SQLiteDatabase DB; //DB 객체 생성
-    public static final String DB_NAME = "test.db";// DB이름
+//    SQLiteDatabase DB; //DB 객체 생성
+    DBHelper dbHelper = new DBHelper(getApplicationContext());
+    SQLiteDatabase db = dbHelper.getWritableDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DB = setupDateBase(); // DB 준비
-        initTable(); // 테이블 실행
-        insertFakeData();
+
+//        DB = setupDateBase(); // DB 준비
+//        initTable(); // 테이블 실행
+//        insertFakeData();
 
         setupFreshnessRecycler();
-        setupFridgeViewPager();
-        setupRecommendRecycler();
-        setonClickMaskLayout();
+        //setupFridgeViewPager();
+        //setupRecommendRecycler();
+        //setonClickMaskLayout();
+    }
+
+    private void setupFreshnessRecycler() {
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.GoodsEntry.COLUMNS_NAME,
+                DBContract.GoodsEntry.COLUMNS_QUANTITY,
+                DBContract.GoodsEntry.COLUMNS_REGISTDATE,
+                DBContract.GoodsEntry.COLUMNS_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMNS_TYPE,
+                DBContract.GoodsEntry.COLUMNS_FRIDGE,
+                DBContract.GoodsEntry.COLUMNS_SECTION
+        };
+
+        Cursor cursor = db.query(
+                DBContract.GoodsEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
+        //String[] goodsList = new String[cursor.]
+        while(cursor.moveToNext()){
+            long id = cursor.getLong(cursor.getColumnIndexOrThrow(DBContract.GoodsEntry._ID));
+            String name = cursor.getString(0);
+            String expireDate = cursor.getString(3);
+            long remain = remainDate(expireDate);
+
+        }
     }
 
     // 임의의 가데이터 입력 함수
-    private void insertFakeData() {
-        insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
-        insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
-        insertItemData("라면", 5, "2022-04-06", "기타", "팬트리","실온","저장소1");
-        insertSectionData("저장소1", "냉장고1", "냉장");
-    }
-
-    // 아이템 데이터 입력합수
-    private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
-        if(DB != null){
-            String current = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
-                    name        + "', '" +
-                    quantity    + "', '" +
-                    current     + "', '" +
-                    expireDate  + "', '" +
-                    type        + "', '" +
-                    fridge      + "', '" +
-                    storageState+ "', '" +
-                    section     + "');";
-            DB.execSQL(sqlItemInsert);
-        }
-    }
-
-    // 저장구역 데이터 입력함수
-    private void insertSectionData(String section, String fridge, String state){
-        if(DB != null){
-            String sqlFridgeInsert = "INSERT OR REPLACE INTO Section (FRIDGE, SECTION, STORESTATE) VALUES ('" +
-                    section + "', '" +
-                    fridge + "', '" +
-                    state   + "');";
-            DB.execSQL(sqlFridgeInsert);
-        }
-    }
-
-    // 냉장고 데이터 입력함수
-    private void insertFridgeData(){
-
-    }
-
-    //
-    private void initTable(){
-        String sqlItems = "CREATE TABLE IF NOT EXISTS Items (" +
-                    "NAME "         + "TEXT," +
-                    "QUANTITY "     + "INTEGER NOT NULL," +
-                    "REGISTDATE "   + "TEXT," +
-                    "EXPIREDATE "   + "TEXT," +
-                    "TYPE "         + "TEXT," +
-                    "FRIDGE "       + "TEXT," +
-                    "STORESTATE "   + "TEXT," +
-                    "SECTION "      + "TEXT"  + ");";
-
-        String sqlSections = "CREATE TABLE IF NOT EXISTS Sections (" +
-                "SECTION "     +"TEXT," +
-                "FRIDGE "    +"TEXT," +
-                "STORESTATE "   +"TEXT" + ");";
-
-        String sqlFridges = "CREATE TABLE IF NOT EXISTS Fridges (" +
-                "FRIDGE " + "TEXT);";
-
-        Log.e("e","error init");
-        DB.execSQL(sqlItems);
-        DB.execSQL(sqlSections);
-        DB.execSQL(sqlFridges);
-    }
-
-    private String[] loadFreshnessData() {
-        String[] returnData = new String[0];
-        if(DB != null){
-            try {
-                String sqlQuery = "SELECT * FROM Items";
-
-                Cursor cursor = null;
-
-                cursor = DB.rawQuery(sqlQuery, null);
-                // 전체 목록 이름/ 등록일 목록 만들고 넘기기
-                returnData = new String[cursor.getCount()];
-                int c = 0;
-
-                while(cursor.moveToNext()) {
-                    String name = cursor.getString(0);
-                    String date = cursor.getString(3);
-                     returnData[c++]= name+"/"+date;
-                }
-            } catch (SQLException se){
-                Log.e("e", se.toString());
-            }
-        }
-        return returnData;
-    }
-
-    private SQLiteDatabase setupDateBase() {
-        SQLiteDatabase db = null;
-
-        File file = new File(getFilesDir(), DBHelper.DB_NAME);
-        try{
-            db = SQLiteDatabase.openOrCreateDatabase(file, null);
-        }catch (SQLException se){
-            se.printStackTrace();
-        }
-
-        if(db == null){
-            Log.e("e","error setup");
-        }
-
-        return db;
-    }
-
+//    private void insertFakeData() {
+//        insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
+//        insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
+//        insertItemData("라면", 5, "2022-04-06", "기타", "팬트리","실온","저장소1");
+//        insertSectionData("저장소1", "냉장고1", "냉장");
+//    }
+//
+//    // 아이템 데이터 입력합수
+//    private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
+//        if(DB != null){
+//            String current = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//            String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
+//                    name        + "', '" +
+//                    quantity    + "', '" +
+//                    current     + "', '" +
+//                    expireDate  + "', '" +
+//                    type        + "', '" +
+//                    fridge      + "', '" +
+//                    storageState+ "', '" +
+//                    section     + "');";
+//            DB.execSQL(sqlItemInsert);
+//        }
+//    }
+//
+//    // 저장구역 데이터 입력함수
+//    private void insertSectionData(String section, String fridge, String state){
+//        if(DB != null){
+//            String sqlSectionInsert = "INSERT OR REPLACE INTO Section (FRIDGE, SECTION, STORESTATE) VALUES ('" +
+//                    section + "', '" +
+//                    fridge + "', '" +
+//                    state   + "');";
+//            DB.execSQL(sqlSectionInsert);
+//        }
+//    }
+//
+//    // 냉장고 데이터 입력함수
+//    private void insertFridgeData(String fridge){
+//        if(DB != null){
+//            String sqlFridgeInsert = "INSERT OR REPLACE INTO Fridge (FRIDGE) VALUES ('" +
+//                    fridge+"');";
+//            DB.execSQL(sqlFridgeInsert);
+//        }
+//
+//    }
+//
+//    //
+//    private void initTable(){
+//        String sqlItems = "CREATE TABLE IF NOT EXISTS Items (" +
+//                    "NAME "         + "TEXT," +
+//                    "QUANTITY "     + "INTEGER NOT NULL," +
+//                    "REGISTDATE "   + "TEXT," +
+//                    "EXPIREDATE "   + "TEXT," +
+//                    "TYPE "         + "TEXT," +
+//                    "FRIDGE "       + "TEXT," +
+//                    "STORESTATE "   + "TEXT," +
+//                    "SECTION "      + "TEXT"  + ");";
+//
+//        String sqlSections = "CREATE TABLE IF NOT EXISTS Sections (" +
+//                "SECTION "     +"TEXT," +
+//                "FRIDGE "    +"TEXT," +
+//                "STORESTATE "   +"TEXT" + ");";
+//
+//        String sqlFridges = "CREATE TABLE IF NOT EXISTS Fridges (" +
+//                "FRIDGE " + "TEXT);";
+//
+//        Log.e("e","error init");
+//        DB.execSQL(sqlItems);
+//        DB.execSQL(sqlSections);
+//        DB.execSQL(sqlFridges);
+//    }
+//
+//    private String[] loadFreshnessData() {
+//        String[] returnData = new String[0];
+//        if(DB != null){
+//            try {
+//                String sqlQuery = "SELECT * FROM Items";
+//
+//                Cursor cursor = null;
+//
+//                cursor = DB.rawQuery(sqlQuery, null);
+//                // 전체 목록 이름/ 등록일 목록 만들고 넘기기
+//                returnData = new String[cursor.getCount()];
+//                int c = 0;
+//
+//                while(cursor.moveToNext()) {
+//                    String name = cursor.getString(0);
+//                    String date = cursor.getString(3);
+//                     returnData[c++]= name+"/"+date;
+//                }
+//            } catch (SQLException se){
+//                Log.e("e", se.toString());
+//            }
+//        }
+//        return returnData;
+//    }
+//
+//    private SQLiteDatabase setupDateBase() {
+//        SQLiteDatabase db = null;
+//
+//        File file = new File(getFilesDir(), DBHelper.DB_NAME);
+//        try{
+//            db = SQLiteDatabase.openOrCreateDatabase(file, null);
+//        }catch (SQLException se){
+//            se.printStackTrace();
+//        }
+//
+//        if(db == null){
+//            Log.e("e","error setup");
+//        }
+//
+//        return db;
+//    }
+//
     private long remainDate(String expireDateStr) {
         LocalDate today = LocalDate.now();
         LocalDate expireDate = LocalDate.parse(expireDateStr);
@@ -187,24 +230,24 @@ public class MainActivity extends AppCompatActivity {
      * 신선도 위험품목 설정
      * TODO: 3개 정도만 사용하기
      */
-    private void setupFreshnessRecycler() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
-        String[] freshnessData = loadFreshnessData();
-        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshnessData.length];
-
-        for(int i = 0; i<freshnessData.length;i++){
-            String[] info = freshnessData[i].split("/");
-            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int) remainDate(info[1]));
-        }
-
-        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(
-                        this, LinearLayoutManager.HORIZONTAL, false
-                )
-        );
-    }
+//    private void setupFreshnessRecycler() {
+//        RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
+//        String[] freshnessData = loadFreshnessData();
+//        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshnessData.length];
+//
+//        for(int i = 0; i<freshnessData.length;i++){
+//            String[] info = freshnessData[i].split("/");
+//            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int) remainDate(info[1]));
+//        }
+//
+//        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setLayoutManager(
+//                new LinearLayoutManager(
+//                        this, LinearLayoutManager.HORIZONTAL, false
+//                )
+//        );
+//    }
 
     /**
      * 냉장고 슬라이더 설정
