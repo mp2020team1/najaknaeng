@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.model.MainFreshnessRecyclerItem;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // 냉장고 데이터 입력함수
+    // 저장구역 데이터 입력함수
     private void insertSectionData(String section, String fridge, String state){
         if(DB != null){
             String sqlFridgeInsert = "INSERT OR REPLACE INTO Section (FRIDGE, SECTION, STORESTATE) VALUES ('" +
@@ -132,9 +133,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // 냉장고 데이터 입력함수
+    private void insertFridgeData(){
+
+    }
+
     //
     private void initTable(){
-        String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
+        String sqlItems = "CREATE TABLE IF NOT EXISTS Items (" +
                     "NAME "         + "TEXT," +
                     "QUANTITY "     + "INTEGER NOT NULL," +
                     "REGISTDATE "   + "TEXT," +
@@ -144,14 +150,18 @@ public class MainActivity extends AppCompatActivity {
                     "STORESTATE "   + "TEXT," +
                     "SECTION "      + "TEXT"  + ");";
 
-        String sqlfridge = "CREATE TABLE IF NOT EXISTS Sections (" +
+        String sqlSections = "CREATE TABLE IF NOT EXISTS Sections (" +
                 "SECTION "     +"TEXT," +
                 "FRIDGE "    +"TEXT," +
                 "STORESTATE "   +"TEXT" + ");";
 
+        String sqlFridges = "CREATE TABLE IF NOT EXISTS Fridges (" +
+                "FRIDGE " + "TEXT);";
+
         Log.e("e","error init");
-        DB.execSQL(sqlcreate);
-        DB.execSQL(sqlfridge);
+        DB.execSQL(sqlItems);
+        DB.execSQL(sqlSections);
+        DB.execSQL(sqlFridges);
     }
 
     private String[] loadFreshnessData() {
