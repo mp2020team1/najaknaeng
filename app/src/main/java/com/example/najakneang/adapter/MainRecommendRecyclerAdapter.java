@@ -1,6 +1,8 @@
 package com.example.najakneang.adapter;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,50 +12,33 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.najakneang.model.MainRecommendRecyclerItem;
+import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
 import java.util.ArrayList;
 
+class MainRecommendRecyclerHolder extends RecyclerView.ViewHolder {
+    protected final View view;
+    protected final ImageView thumbnail;
+    protected final TextView title;
+    protected final TextView creator;
+
+    public MainRecommendRecyclerHolder(@NonNull View view) {
+        super(view);
+        this.view = view;
+        this.title = view.findViewById(R.id.title_item_recommend_main);
+        this.creator = view.findViewById(R.id.creator_item_recommend_main);
+        this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend_main);
+    }
+}
+
 public class MainRecommendRecyclerAdapter
-        extends RecyclerView.Adapter<MainRecommendRecyclerAdapter.MainRecommendRecyclerHolder> {
+        extends RecyclerView.Adapter<MainRecommendRecyclerHolder> {
 
-    public interface OnItemClickListener {
-        void onItemClick(View v, int position);
-    }
+    private final ArrayList<YoutubeContent> data;
 
-    private final ArrayList<MainRecommendRecyclerItem> items;
-    private OnItemClickListener listener = null;
-
-    public MainRecommendRecyclerAdapter(ArrayList<MainRecommendRecyclerItem> items) {
-        this.items = items;
-    }
-
-    public void setItemClickListener(OnItemClickListener listener){
-        this.listener = listener;
-    }
-
-    class MainRecommendRecyclerHolder extends RecyclerView.ViewHolder {
-        protected ImageView thumbnail;
-        protected TextView title;
-        protected TextView creator;
-
-        public MainRecommendRecyclerHolder(@NonNull View view) {
-            super(view);
-            this.title = view.findViewById(R.id.title_item_recommend_main);
-            this.creator = view.findViewById(R.id.creator_item_recommend_main);
-            this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend_main);
-
-            itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if(position != RecyclerView.NO_POSITION){
-                    if(listener != null){
-                        listener.onItemClick(v, position);
-                    }
-                }
-            });
-        }
-
+    public MainRecommendRecyclerAdapter(ArrayList<YoutubeContent> data) {
+        this.data = data;
     }
 
     @NonNull
@@ -67,18 +52,23 @@ public class MainRecommendRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainRecommendRecyclerHolder holder, int position) {
-        MainRecommendRecyclerItem item = items.get(position);
-        String title = item.getTitle();
-        String creator = item.getCreator();
-        Bitmap thumbnail_bitmap = item.getBitmap();
+        YoutubeContent datum = data.get(position);
+        String title = datum.getTitle();
+        String creator = datum.getCreator();
+        Bitmap thumbnail_bitmap = datum.getBitmap();
 
         holder.title.setText(title);
         holder.creator.setText(creator);
         holder.thumbnail.setImageBitmap(thumbnail_bitmap);
+        holder.view.setOnClickListener(view -> {
+            String videoId = datum.getVideoId();
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "http://youtube.com/watch?v=" + videoId ));
+            view.getContext().startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return data.size();
     }
 }

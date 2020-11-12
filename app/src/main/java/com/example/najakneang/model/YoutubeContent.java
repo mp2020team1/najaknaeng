@@ -2,11 +2,21 @@ package com.example.najakneang.model;
 
 import android.graphics.Bitmap;
 
-public class MainRecommendRecyclerItem {
+public class YoutubeContent {
+
+    public static final String YOUTUBE_API_KEY = "AIzaSyBvbUl4A4Y7lAbfAoUunccnorGm0YoqNfE";
+
     private String title;
     private String creator;
     private String videoId;
     private Bitmap thumbnail_bitmap;
+
+    public YoutubeContent(String title, String creator, String videoId, Bitmap thumbnail_bitmap) {
+        this.title = title;
+        this.creator = creator;
+        this.videoId = videoId;
+        this.thumbnail_bitmap = thumbnail_bitmap;
+    }
 
     public String getTitle() {
         return title;
