@@ -46,7 +46,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         try{
             String SQLCreate = "CREATE TABLE IF NOT EXISTS NAJAKNEANG (NAME TEXT, QUANTITY INTEGER NOT NULL, " +
-                    "REGISTDATE TEXT, CLASSID TEXT, FRIDGEID TEXT, STORAGEID TEXT);";
+                    "REGISTDATE TEXT, EXPIREDATE TEXT, CLASSID TEXT, FRIDGEID TEXT, STORESTATE TEXT, STORAGEID TEXT);";
             db.execSQL(SQLCreate);
             Log.i("SQL", "DB_CREATED");
         }catch(SQLiteException e){
