@@ -10,13 +10,14 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES1 =
             "CREATE TABLE "+ DBContract.GoodsEntry.TABLE_NAME +" ("+
                     DBContract.GoodsEntry._ID + " INTEGER_PRIMARY_KEY," +
-                    DBContract.GoodsEntry.COLUMNS_NAME+ " TEXT," +
-                    DBContract.GoodsEntry.COLUMNS_QUANTITY+ " INTEGER NOT NULL," +
-                    DBContract.GoodsEntry.COLUMNS_REGISTDATE+ " TEXT," +
-                    DBContract.GoodsEntry.COLUMNS_EXPIREDATE+ " TEXT," +
-                    DBContract.GoodsEntry.COLUMNS_TYPE+ " TEXT," +
-                    DBContract.GoodsEntry.COLUMNS_FRIDGE+ " TEXT," +
-                    DBContract.GoodsEntry.COLUMNS_SECTION+ " TEXT)";
+                    DBContract.GoodsEntry.COLUMN_NAME + " TEXT," +
+                    DBContract.GoodsEntry.COLUMN_IMAGE + " INTEGER NOT NULL," +
+                    DBContract.GoodsEntry.COLUMN_QUANTITY + " INTEGER NOT NULL," +
+                    DBContract.GoodsEntry.COLUMN_REGISTDATE + " TEXT," +
+                    DBContract.GoodsEntry.COLUMN_EXPIREDATE + " TEXT," +
+                    DBContract.GoodsEntry.COLUMN_TYPE + " TEXT," +
+                    DBContract.GoodsEntry.COLUMN_FRIDGE + " TEXT," +
+                    DBContract.GoodsEntry.COLUMN_SECTION + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES1 =
             "DROP TABLE IF EXISTS " + DBContract.GoodsEntry.TABLE_NAME;
@@ -24,9 +25,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES2 =
             "CREATE TABLE " + DBContract.SectionEntry.TABLE_NAME + " (" +
                     DBContract.SectionEntry._ID + " INTEGER PRIMARY KEY," +
-                    DBContract.SectionEntry.COLUMNS_NAME + " TEXT," +
-                    DBContract.SectionEntry.COLUMNS_FRIDGE+ " TEXT, " +
-                    DBContract.SectionEntry.COLUMNS_STORE_STATE + " TEXT)";
+                    DBContract.SectionEntry.COLUMN_NAME + " TEXT," +
+                    DBContract.SectionEntry.COLUMN_FRIDGE + " TEXT, " +
+                    DBContract.SectionEntry.COLUMN_STORE_STATE + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES2 =
             "DROP TABLE IF EXISTS " + DBContract.SectionEntry.TABLE_NAME;
@@ -34,7 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES3 =
             "CREATE TABLE " + DBContract.FridgeEntry.TABLE_NAME + " (" +
                     DBContract.FridgeEntry._ID + " INTEGER PRIMARY KEY," +
-                    DBContract.FridgeEntry.COLUMNS_NAME + " TEXT)";
+                    DBContract.FridgeEntry.COLUMN_NAME + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES3 =
             "DROP TABLE IF EXISTS " + DBContract.FridgeEntry.TABLE_NAME;

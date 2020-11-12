@@ -1,6 +1,8 @@
 package com.example.najakneang.adapter;
 
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.najakneang.db.DBContract;
 import com.example.najakneang.model.MainFreshnessRecyclerItem;
 import com.example.najakneang.R;
 
@@ -30,10 +33,10 @@ class MainFreshnessRecyclerHolder extends RecyclerView.ViewHolder {
 public class MainFreshnessRecyclerAdapter
         extends RecyclerView.Adapter<MainFreshnessRecyclerHolder> {
 
-    private final MainFreshnessRecyclerItem[] data;
+    private final Cursor cursor;
 
-    public MainFreshnessRecyclerAdapter(MainFreshnessRecyclerItem[] data) {
-        this.data = data;
+    public MainFreshnessRecyclerAdapter(Cursor cursor) {
+        this.cursor = cursor;
     }
 
     @NonNull
@@ -47,18 +50,23 @@ public class MainFreshnessRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFreshnessRecyclerHolder holder, int position) {
-        MainFreshnessRecyclerItem datum = data[position];
-        String name = datum.getName();
-        int remain = datum.getRemain();
-        int image = datum.getImage();
+        if (!cursor.moveToPosition(position)) return;
+
+        String name = cursor.getString(
+                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+        String expireDate = cursor.getString(
+                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
+        long remain = DBContract.GoodsEntry.getRemain(expireDate);
+        int image = cursor.getInt(
+                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_IMAGE));
 
         holder.name.setText(name);
-        holder.remain.setText(Resources.getSystem().getString(R.string.format_date, remain));
+        holder.remain.setText(remain + "일");
         holder.image.setImageResource(image);
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return cursor.getCount();
     }
 }

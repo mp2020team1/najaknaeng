@@ -4,6 +4,4 @@
 
     <string name="str_alert_items">신선도 위험품목</string>
     <string name="str_today_recommended">오늘의 추천 메뉴</string>
-
-    <string name="format_date">%d일</string>
 </resources>
