@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase();
-        // insertFakeData(); 첫 시행이라면 데이터를 삽입해주세요! (한번만)
+        //insertFakeData(); //첫 시행이라면 데이터를 삽입해주세요! (한번만)
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
@@ -61,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
         ContentValues values = new ContentValues();
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "감자");
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-01-23");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
         values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null,
                 null,
-                null
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE
         );
 
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
@@ -111,16 +112,24 @@ public class MainActivity extends AppCompatActivity {
      * 필요에 따라 item 클래스 생성해서 이름, 사진, 냉장고 id 같은것들 담을수있게해야할듯?
      */
     private void setupFridgeViewPager() {
-        ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
-        // 가데이터
-        String[] fridges = {
-                "냉장고 1",
-                "냉장고 2",
-                "김치 냉장고 1",
-                "팬트리 1"
+
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.FridgeEntry.COLUMN_NAME
         };
 
-        MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(fridges);
+        Cursor cursor = db.query(
+                DBContract.FridgeEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
+        MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(cursor);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
@@ -128,11 +137,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupRecommendRecycler() {
         ArrayList<YoutubeContent> contents = new ArrayList<>();
-
         try {
+
+
             Thread passingThread = new Thread(() -> {
-                // TODO: 재료 선택에 성공했다면 ingredient에 감자 대신 다른 것을 넣을 것!!
-                getYoutubeContents(contents, "감자");
+                String[] projection = {
+                        BaseColumns._ID,
+                        DBContract.GoodsEntry.COLUMN_NAME
+                };
+
+                Cursor cursor = db.query(
+                        DBContract.GoodsEntry.TABLE_NAME + " ORDER BY RANDOM() LIMIT 1",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                Log.e("e","make cursor");
+                cursor.moveToNext();
+                String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+                getYoutubeContents(contents, ingredient);
             });
             passingThread.start();
             passingThread.join();
@@ -161,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 오늘의 추천메뉴 설정
-     * TODO: 오늘의 메뉴 선정
      * 재사용성을 위해 수정했음.
      */
     private void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
