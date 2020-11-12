@@ -1,30 +1,30 @@
 package com.example.najakneang.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.BaseColumns;
 import android.widget.FrameLayout;
 
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
+import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
-import com.example.najakneang.model.MainFreshnessRecyclerItem;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
 import com.example.najakneang.adapter.MainRecommendRecyclerAdapter;
 import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
-import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,19 +36,22 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-    SQLiteDatabase DB; //DB 객체 생성
-
+    DBHelper dbHelper;
+    SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DB = setupDateBase(); // DB 준비
-        initTable(); // 테이블 실행
+        dbHelper = new DBHelper(getApplicationContext());
+        db = dbHelper.getWritableDatabase();
+
+        //임시 데이터 삽입
         insertFakeData();
 
         setupFreshnessRecycler();
@@ -59,123 +62,52 @@ public class MainActivity extends AppCompatActivity {
 
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
-        insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
-        insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
-        insertItemData("라면", 5, "2022-04-06", "기타", "팬트리","실온","저장소1");
-        insertFridgeData("냉장고1", "저장소1", "냉장");
-    }
+        ContentValues values = new ContentValues();
+        db.delete(DBContract.GoodsEntry.TABLE_NAME, null, null);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
-    // 아이템 데이터 입력합수
-    private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
-        if (DB != null){
-            String current = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
-                    name        + "', '" +
-                    quantity    + "', '" +
-                    current     + "', '" +
-                    expireDate  + "', '" +
-                    type        + "', '" +
-                    fridge      + "', '" +
-                    storageState+ "', '" +
-                    section     + "');";
-            DB.execSQL(sqlItemInsert);
-        }
-    }
-
-    // 냉장고 데이터 입력함수
-    private void insertFridgeData(String fridge, String section, String state){
-        if (DB != null){
-            String sqlFridgeInsert = "INSERT OR REPLACE INTO Fridge (FRIDGE, SECTION, STORESTATE) VALUES ('" +
-                    fridge  + "', '" +
-                    section + "', '" +
-                    state   + "');";
-            DB.execSQL(sqlFridgeInsert);
-        }
-    }
-
-    private void initTable(){
-        String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
-                    "NAME "         + "TEXT," +
-                    "QUANTITY "     + "INTEGER NOT NULL," +
-                    "REGISTDATE "   + "TEXT," +
-                    "EXPIREDATE "   + "TEXT," +
-                    "TYPE "         + "TEXT," +
-                    "FRIDGE "       + "TEXT," +
-                    "STORESTATE "   + "TEXT," +
-                    "SECTION "      + "TEXT"  + ");";
-
-        String sqlfridge = "CREATE TABLE IF NOT EXISTS Fridge (" +
-                "FRIDGE "       + "TEXT," +
-                "SECTION "      + "TEXT," +
-                "STORESTATE "   + "TEXT" + ");";
-
-        DB.execSQL(sqlcreate);
-        DB.execSQL(sqlfridge);
-    }
-
-    private String[] loadFreshnessData() {
-        String[] returnData = new String[0];
-        if (DB != null){
-            try {
-                String sqlQuery = "SELECT * FROM Items";
-
-                Cursor cursor = null;
-
-                cursor = DB.rawQuery(sqlQuery, null);
-                // 전체 목록 이름/ 등록일 목록 만들고 넘기기
-                returnData = new String[cursor.getCount()];
-                int c = 0;
-
-                while(cursor.moveToNext()) {
-                    String name = cursor.getString(0);
-                    String date = cursor.getString(3);
-                     returnData[c++]= name+"/"+date;
-                }
-            } catch (SQLException se){
-                Log.e("e", se.toString());
-            }
-        }
-        return returnData;
-    }
-
-    private SQLiteDatabase setupDateBase() {
-        SQLiteDatabase db = null;
-
-        File file = new File(getFilesDir(), DBHelper.DB_NAME);
-        try {
-            db = SQLiteDatabase.openOrCreateDatabase(file, null);
-        } catch (SQLException se){
-            se.printStackTrace();
-        }
-
-        if (db == null){
-            Log.e("e","error setup");
-        }
-
-        return db;
-    }
-
-    private long remainDate(String expireDateStr) {
-        LocalDate today = LocalDate.now();
-        LocalDate expireDate = LocalDate.parse(expireDateStr);
-        return ChronoUnit.DAYS.between(today, expireDate);
+        db.delete(DBContract.FridgeEntry.TABLE_NAME, null, null);
+        values = new ContentValues();
+        values.put(DBContract.FridgeEntry.COLUMN_NAME, "LG 디오스 냉장고");
+        db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
     }
 
     /**
      * 신선도 위험품목 설정
      * TODO: 3개 정도만 사용하기
      */
+
     private void setupFreshnessRecycler() {
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.GoodsEntry.COLUMN_NAME,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMN_IMAGE
+        };
+
+        Cursor cursor = db.query(
+                DBContract.GoodsEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
-        String[] freshnessData = loadFreshnessData();
-        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshnessData.length];
-
-        for (int i = 0; i<freshnessData.length;i++){
-            String[] info = freshnessData[i].split("/");
-            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int)remainDate(info[1]));
-        }
-
-        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
+        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(cursor);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(
@@ -192,16 +124,24 @@ public class MainActivity extends AppCompatActivity {
      * 필요에 따라 item 클래스 생성해서 이름, 사진, 냉장고 id 같은것들 담을수있게해야할듯?
      */
     private void setupFridgeViewPager() {
-        ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
-        // 가데이터
-        String[] items = {
-                "냉장고 1",
-                "냉장고 2",
-                "김치 냉장고 1",
-                "팬트리 1"
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.FridgeEntry.COLUMN_NAME,
         };
 
-        MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(items);
+        Cursor cursor = db.query(
+                DBContract.FridgeEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
+
+        MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(cursor);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }

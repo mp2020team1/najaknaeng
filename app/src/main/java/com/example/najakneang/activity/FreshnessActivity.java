@@ -28,28 +28,21 @@ public class FreshnessActivity extends AppCompatActivity {
     private static final int FIRST = 0;
     private static final int SECOND = 1;
     private final String[] tabSetting = {"전체", "전체"};
-    private final MainFreshnessRecyclerItem[] items = {
-            new MainFreshnessRecyclerItem(
-                    "품목 1", R.drawable.ic_launcher_background, 3),
-            new MainFreshnessRecyclerItem(
-                    "품목 2", R.drawable.ic_launcher_background, 30)
-    };
-    private final MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DB = setupDateBase();
-        initTable();
-        loadData();
+//        DB = setupDateBase();
+//        initTable();
+//        loadData();
 
         setContentView(R.layout.activity_freshness);
 
         setupToolbar();
 
         setupTabLayout();
-        setupFreshnessRecycler();
+//        setupFreshnessRecycler();
     }
 
     private void setupToolbar() {
@@ -85,7 +78,7 @@ public class FreshnessActivity extends AppCompatActivity {
                 TabLayout.Tab secondEveryTab = secondTab.getTabAt(0);
                 secondEveryTab.select();
 
-                adjustItems();
+//                adjustItems();
             }
 
             @Override
@@ -103,7 +96,7 @@ public class FreshnessActivity extends AppCompatActivity {
 
                 tabSetting[SECOND] = tabName;
 
-                adjustItems();
+//                adjustItems();
             }
 
             @Override
@@ -114,19 +107,19 @@ public class FreshnessActivity extends AppCompatActivity {
         });
     }
 
-    private void setupFreshnessRecycler() {
-        RecyclerView recycler = findViewById(R.id.recycler_freshness_freshness);
-
-        recycler.setAdapter(adapter);
-        recycler.setLayoutManager(new GridLayoutManager(this, 4));
-    }
-
-    // TODO: Tab을 누를때마다 바뀌는 tabSetting에 따라 items를 조절해주고 recycler 새로고침
-    private void adjustItems() {
-        // Items 조절 알고리즘 필요!
-
-        adapter.notifyDataSetChanged();
-    }
+//    private void setupFreshnessRecycler() {
+//        RecyclerView recycler = findViewById(R.id.recycler_freshness_freshness);
+//
+//        recycler.setAdapter(adapter);
+//        recycler.setLayoutManager(new GridLayoutManager(this, 4));
+//    }
+//
+//    // TODO: Tab을 누를때마다 바뀌는 tabSetting에 따라 items를 조절해주고 recycler 새로고침
+//    private void adjustItems() {
+//        // Items 조절 알고리즘 필요!
+//
+//        adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
