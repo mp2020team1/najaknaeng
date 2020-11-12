@@ -6,32 +6,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.FrameLayout;
 
-import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
-import com.example.najakneang.model.MainFreshnessRecyclerItem;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
 import com.example.najakneang.adapter.MainRecommendRecyclerAdapter;
 import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
-import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -42,20 +34,15 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
 //    SQLiteDatabase DB; //DB 객체 생성
-    DBHelper dbHelper = new DBHelper(getApplicationContext());
-    SQLiteDatabase db = dbHelper.getWritableDatabase();
+    DBHelper dbHelper;
+    SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
 //        initTable(); // 테이블 실행
 //        insertFakeData();
 
+        dbHelper = new DBHelper(getApplicationContext());
+        db = dbHelper.getWritableDatabase();
+
+//        insertFakeData(); 한개의 데이터 삽입 되있음
+
         setupFreshnessRecycler();
         //setupFridgeViewPager();
         //setupRecommendRecycler();
@@ -76,13 +68,9 @@ public class MainActivity extends AppCompatActivity {
     private void setupFreshnessRecycler() {
         String[] projection = {
                 BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMNS_NAME,
-                DBContract.GoodsEntry.COLUMNS_QUANTITY,
-                DBContract.GoodsEntry.COLUMNS_REGISTDATE,
-                DBContract.GoodsEntry.COLUMNS_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMNS_TYPE,
-                DBContract.GoodsEntry.COLUMNS_FRIDGE,
-                DBContract.GoodsEntry.COLUMNS_SECTION
+                DBContract.GoodsEntry.COLUMN_NAME,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMN_IMAGE
         };
 
         Cursor cursor = db.query(
@@ -96,23 +84,31 @@ public class MainActivity extends AppCompatActivity {
         );
 
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
-        //String[] goodsList = new String[cursor.]
-        while(cursor.moveToNext()){
-            long id = cursor.getLong(cursor.getColumnIndexOrThrow(DBContract.GoodsEntry._ID));
-            String name = cursor.getString(0);
-            String expireDate = cursor.getString(3);
-            long remain = remainDate(expireDate);
-
-        }
+        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(cursor);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(
+                        this, LinearLayoutManager.HORIZONTAL, false
+                )
+        );
     }
 
     // 임의의 가데이터 입력 함수
-//    private void insertFakeData() {
-//        insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
-//        insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
-//        insertItemData("라면", 5, "2022-04-06", "기타", "팬트리","실온","저장소1");
-//        insertSectionData("저장소1", "냉장고1", "냉장");
-//    }
+    private void insertFakeData() {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+    }
 //
 //    // 아이템 데이터 입력합수
 //    private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
@@ -220,11 +216,6 @@ public class MainActivity extends AppCompatActivity {
 //        return db;
 //    }
 //
-    private long remainDate(String expireDateStr) {
-        LocalDate today = LocalDate.now();
-        LocalDate expireDate = LocalDate.parse(expireDateStr);
-        return ChronoUnit.DAYS.between(today, expireDate);
-    }
 
     /**
      * 신선도 위험품목 설정
