@@ -1,5 +1,6 @@
 package com.example.najakneang;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,26 +10,50 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-class MainRecommendRecyclerHolder extends RecyclerView.ViewHolder {
-    protected TextView title;
-    protected TextView creator;
-    protected ImageView thumbnail;
-
-    public MainRecommendRecyclerHolder(@NonNull View view) {
-        super(view);
-        this.title = view.findViewById(R.id.title_item_recommend_main);
-        this.creator = view.findViewById(R.id.creator_item_recommend_main);
-        this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend_main);
-    }
-}
+import java.util.ArrayList;
 
 public class MainRecommendRecyclerAdapter
-        extends RecyclerView.Adapter<MainRecommendRecyclerHolder> {
+        extends RecyclerView.Adapter<MainRecommendRecyclerAdapter.MainRecommendRecyclerHolder> {
 
-    private final MainRecommendRecyclerItem[] items;
+    public interface OnItemClickListener{
+        void onItemClick(View v, int position);
+    }
 
-    public MainRecommendRecyclerAdapter(MainRecommendRecyclerItem[] items) {
+    private final ArrayList<MainRecommendRecyclerItem> items;
+    private OnItemClickListener listener = null;
+
+    public MainRecommendRecyclerAdapter(ArrayList<MainRecommendRecyclerItem> items) {
         this.items = items;
+    }
+
+    public void setItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
+    class MainRecommendRecyclerHolder extends RecyclerView.ViewHolder {
+        protected ImageView thumbnail;
+        protected TextView title;
+        protected TextView creator;
+
+        public MainRecommendRecyclerHolder(@NonNull View view) {
+            super(view);
+            this.title = view.findViewById(R.id.title_item_recommend_main);
+            this.creator = view.findViewById(R.id.creator_item_recommend_main);
+            this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend_main);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        if(listener != null){
+                            listener.onItemClick(v, position);
+                        }
+                    }
+                }
+            });
+        }
+
     }
 
     @NonNull
@@ -42,18 +67,18 @@ public class MainRecommendRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainRecommendRecyclerHolder holder, int position) {
-        MainRecommendRecyclerItem item = items[position];
+        MainRecommendRecyclerItem item = items.get(position);
         String title = item.getTitle();
         String creator = item.getCreator();
-        int thumbnail = item.getThumbnail();
+        Bitmap thumbnail_bitmap = item.getBitmap();
 
         holder.title.setText(title);
         holder.creator.setText(creator);
-        holder.thumbnail.setImageResource(thumbnail);
+        holder.thumbnail.setImageBitmap(thumbnail_bitmap);
     }
 
     @Override
     public int getItemCount() {
-        return items.length;
+        return items.size();
     }
 }

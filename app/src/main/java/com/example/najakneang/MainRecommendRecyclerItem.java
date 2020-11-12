@@ -1,15 +1,12 @@
 package com.example.najakneang;
 
+import android.graphics.Bitmap;
+
 public class MainRecommendRecyclerItem {
     private String title;
     private String creator;
-    private int thumbnail;
-
-    public MainRecommendRecyclerItem(String title, String creator, int thumbnail) {
-        this.title = title;
-        this.creator = creator;
-        this.thumbnail = thumbnail;
-    }
+    private String videoId;
+    private Bitmap thumbnail_bitmap;
 
     public String getTitle() {
         return title;
@@ -27,11 +24,13 @@ public class MainRecommendRecyclerItem {
         this.creator = creator;
     }
 
-    public int getThumbnail() {
-        return thumbnail;
+    public Bitmap getBitmap() {return thumbnail_bitmap;}
+
+    public void setBitmap(Bitmap thumbnail_bitmap) {this.thumbnail_bitmap = thumbnail_bitmap;}
+
+    public String getVideoId() {
+        return videoId;
     }
 
-    public void setThumbnail(int thumbnail) {
-        this.thumbnail = thumbnail;
-    }
+    public void setVideoId(String videoId){ this.videoId = videoId; }
 }
