@@ -1,8 +1,10 @@
-package com.example.najakneang;
+package com.example.najakneang.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.najakneang.R;
 
 public class FridgeActivity extends AppCompatActivity {
 

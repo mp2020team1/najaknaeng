@@ -1,4 +1,4 @@
-package com.example.najakneang;
+package com.example.najakneang.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,10 @@ import android.view.MenuItem;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
+import com.example.najakneang.db.DBHelper;
+import com.example.najakneang.model.MainFreshnessRecyclerItem;
+import com.example.najakneang.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
@@ -21,7 +25,6 @@ import java.io.File;
 public class FreshnessActivity extends AppCompatActivity {
 
     SQLiteDatabase DB;
-    public static final String DB_NAME = "test.db";
     private static final int FIRST = 0;
     private static final int SECOND = 1;
     private final String[] tabSetting = {"전체", "전체"};
@@ -37,9 +40,9 @@ public class FreshnessActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DB = setupDateBase();//c
-        initTable();//c
-        loadData();//c
+        DB = setupDateBase();
+        initTable();
+        loadData();
 
         setContentView(R.layout.activity_freshness);
 
@@ -135,7 +138,6 @@ public class FreshnessActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-
         if(DB != null){
             String sqlQuery = "SELECT * FROM Items";
             Cursor cursor = null;
@@ -158,7 +160,7 @@ public class FreshnessActivity extends AppCompatActivity {
     private SQLiteDatabase setupDateBase() {
         SQLiteDatabase db = null;
 
-        File file = new File(getFilesDir(), "test.db");
+        File file = new File(getFilesDir(), DBHelper.DB_NAME);
         try{
             db = SQLiteDatabase.openOrCreateDatabase(file, null);
         }catch (SQLException se){
@@ -177,12 +179,12 @@ public class FreshnessActivity extends AppCompatActivity {
             String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
                     "NAME "         + "TEXT," +
                     "QUANTITY "     + "INTEGER NOT NULL," +
-                    "REGISTDATE"    +"TEXT," +
+                    "REGISTDATE"    + "TEXT," +
                     "EXPIREDATE "   + "TEXT," +
-                    "TYPE "        + "TEXT," +
-                    "FRIDGE "     + "TEXT," +
-                    "STORESTATE"    +"TEXT," +
-                    "SECTION "    + "TEXT" + ")";
+                    "TYPE "         + "TEXT," +
+                    "FRIDGE "       + "TEXT," +
+                    "STORESTATE"    + "TEXT," +
+                    "SECTION "      + "TEXT" + ")";
             DB.execSQL(sqlcreate);
         }
     }

@@ -1,4 +1,4 @@
-package com.example.najakneang;
+package com.example.najakneang.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -6,14 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -21,6 +17,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
+import com.example.najakneang.db.DBHelper;
+import com.example.najakneang.model.MainFreshnessRecyclerItem;
+import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
+import com.example.najakneang.adapter.MainRecommendRecyclerAdapter;
+import com.example.najakneang.model.MainRecommendRecyclerItem;
+import com.example.najakneang.R;
 
 import java.io.File;
 import java.text.ParseException;
@@ -37,50 +41,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-class DatabaseHelper extends SQLiteOpenHelper {
-
-    public DatabaseHelper(Context context){
-        super(context, "najakneang.db", null, 1);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        try{
-            String SQLCreate = "CREATE TABLE IF NOT EXISTS NAJAKNEANG (NAME TEXT, QUANTITY INTEGER NOT NULL, " +
-                    "REGISTDATE TEXT, EXPIREDATE TEXT, CLASSID TEXT, FRIDGEID TEXT, STORESTATE TEXT, STORAGEID TEXT);";
-            db.execSQL(SQLCreate);
-            Log.i("SQL", "DB_CREATED");
-        }catch(SQLiteException e){
-            e.printStackTrace() ;
-        }
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int older, int newer) {
-        Log.i("SQL", "DB_UPGRADED");
-        String SQLDrop = "DROP TABLE IF EXISTS NAJAKNEANG;";
-        db.execSQL(SQLDrop);
-        onCreate(db);
-    }
-
-    public void onOpen(SQLiteDatabase db){
-        Log.i("SQL", "DB_OPENED");
-    }
-
-};
 
 public class MainActivity extends AppCompatActivity {
 
     SQLiteDatabase DB; //DB 객체 생성
-    public static final String DB_NAME = "test.db";// DB이름
 
     //네트워크 파싱 스레드
     protected class ParsingThread extends Thread{
@@ -96,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ParsingThread parsingThread = new ParsingThread(); //데이터 파싱 시작
+        ParsingThread parsingThread = new ParsingThread(); // 데이터 파싱 시작
         parsingThread.start();
 
-        DB = setupDateBase();//DB 준비
-        initTable();// 테이블 실행
+        DB = setupDateBase(); // DB 준비
+        initTable(); // 테이블 실행
         insertFakeData();
 
         try {
@@ -116,24 +81,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setupRecommendRecycler(dataList); //Parsing이 완료되면 데이터 표시
+        setupRecommendRecycler(dataList); // Parsing이 완료되면 데이터 표시
     }
 
-    /**
-     *  DB 관리
-     */
-
-    private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
-
-    private boolean openDataBase(){
-        dbHelper = new DatabaseHelper(this);
-        db = dbHelper.getWritableDatabase();
-
-        return true;
-    }
-
-    //임의의 가데이터 입력 함수
+    // 임의의 가데이터 입력 함수
     private void insertFakeData() {
         insertItemData("감자", 3, "2020-12-06", "채소", "냉장고1","냉장","저장소1");
         insertItemData("생선", 2, "2020-12-27", "생선", "냉장고2","냉동","저장소1");
@@ -148,14 +99,14 @@ public class MainActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
             String current = sdf.format(new Date());
             String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
-                    name        +"', '" +
+                    name        + "', '" +
                     quantity    + "', '" +
                     current     + "', '" +
                     expireDate  + "', '" +
-                    type     +"', '" +
-                    fridge    +"', '" +
-                    storageState+"', '" +
-                    section   +"');";
+                    type        + "', '" +
+                    fridge      + "', '" +
+                    storageState+ "', '" +
+                    section     + "');";
             DB.execSQL(sqlItemInsert);
         }
     }
@@ -164,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void insertFridgeData(String fridge, String section, String state){
         if(DB != null){
             String sqlFridgeInsert = "INSERT OR REPLACE INTO Fridge (FRIDGE, SECTION, STORESTATE) VALUES ('" +
-                    fridge + "', '" +
+                    fridge  + "', '" +
                     section + "', '" +
                     state   + "');";
             DB.execSQL(sqlFridgeInsert);
@@ -176,24 +127,24 @@ public class MainActivity extends AppCompatActivity {
         String sqlcreate = "CREATE TABLE IF NOT EXISTS Items (" +
                     "NAME "         + "TEXT," +
                     "QUANTITY "     + "INTEGER NOT NULL," +
-                    "REGISTDATE "    +"TEXT," +
+                    "REGISTDATE "   + "TEXT," +
                     "EXPIREDATE "   + "TEXT," +
-                    "TYPE "        + "TEXT," +
-                    "FRIDGE "     + "TEXT," +
-                    "STORESTATE "    +"TEXT," +
-                    "SECTION "    + "TEXT" + ");";
+                    "TYPE "         + "TEXT," +
+                    "FRIDGE "       + "TEXT," +
+                    "STORESTATE "   + "TEXT," +
+                    "SECTION "      + "TEXT"  + ");";
 
         String sqlfridge = "CREATE TABLE IF NOT EXISTS Fridge (" +
-                "FRIDGE "     +"TEXT," +
-                "SECTION "    +"TEXT," +
-                "STORESTATE "   +"TEXT" + ");";
+                "FRIDGE "       + "TEXT," +
+                "SECTION "      + "TEXT," +
+                "STORESTATE "   + "TEXT" + ");";
 
         Log.e("e","error init");
         DB.execSQL(sqlcreate);
         DB.execSQL(sqlfridge);
     }
 
-    private String[] loadFreshenessData() {
+    private String[] loadFreshnessData() {
         String[] returnData = new String[0];
         if(DB != null){
             try {
@@ -221,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase setupDateBase() {
         SQLiteDatabase db = null;
 
-        File file = new File(getFilesDir(), DB_NAME);
+        File file = new File(getFilesDir(), DBHelper.DB_NAME);
         try{
             db = SQLiteDatabase.openOrCreateDatabase(file, null);
         }catch (SQLException se){
@@ -254,20 +205,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setupFreshnessRecycler() throws ParseException {
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
-        String[] freshenessData = loadFreshenessData();
-        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshenessData.length];
+        String[] freshnessData = loadFreshnessData();
+        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshnessData.length];
 
-        for(int i = 0; i<freshenessData.length;i++){
-            String[] info = freshenessData[i].split("/");
+        for(int i = 0; i<freshnessData.length;i++){
+            String[] info = freshnessData[i].split("/");
             items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int)remainDate(info[1]));
         }
-        // 가데이터
-//        MainFreshnessRecyclerItem[] items = {
-//                new MainFreshnessRecyclerItem(
-//                        loadData(), R.drawable.ic_launcher_background, 3),
-//                new MainFreshnessRecyclerItem(
-//                        "품목 2", R.drawable.ic_launcher_background, 30)
-//        };
 
         MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
         recyclerView.setAdapter(adapter);
@@ -314,29 +258,28 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 오늘의 추천메뉴 설정
      * TODO: 오늘의 메뉴 선정
-     * TODO: 유튜브에서 검색 결과 상위 몇개를 가져올 수 있어야됨
      * TODO: 클릭 시 유튜브로 넘어갈 수 있게.
+     * TODO:감자 부분을 DB에서 받아온 재료로 바꿀것
      */
 
     final String server_key = "AIzaSyBvbUl4A4Y7lAbfAoUunccnorGm0YoqNfE";
-    /**TODO:감자 부분을 DB에서 받아온 재료로 바꿀것*/
     final String ingredient = "감자" + "레시피";
 
     private void getYoutube(){
         try{
 
-            //Youtube Data Api를 이용하여 영상 검색 결과 정보가 담긴 json을 가져옴
+            // Youtube Data Api를 이용하여 영상 검색 결과 정보가 담긴 json을 가져옴
             String youtube = "https://www.googleapis.com/youtube/v3/search?q=" + ingredient + "&key="
                     + server_key + "&maxResults=3&part=snippet";
             URL url = new URL(youtube);
             HttpURLConnection connect = (HttpURLConnection) url.openConnection();
 
-            //접속 성공 확인
+            // 접속 성공 확인
             if(connect.getResponseCode() == HttpURLConnection.HTTP_OK){
                 InputStreamReader tmp = new InputStreamReader(connect.getInputStream(), "UTF-8");
                 BufferedReader reader = new BufferedReader(tmp);
 
-                //웹의 json을 줄단위로 읽어 page에 하나하나 저장함
+                // 웹의 json을 줄단위로 읽어 page에 하나하나 저장함
                 String line = null;
                 StringBuffer buffer = new StringBuffer();
 
@@ -349,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("통신 결과", "변환성공");
                 reader.close();
 
-                //JSON 파싱
+                // JSON 파싱
                 try {
                     JSONObject jsonObject = new JSONObject(receiveMsg);
 
@@ -360,10 +303,10 @@ public class MainActivity extends AppCompatActivity {
 
                         MainRecommendRecyclerItem youtubeData = new MainRecommendRecyclerItem();
 
-                        //Youtube 제목, 채널명 받아오기
+                        // Youtube 제목, 채널명 받아오기
                         JSONObject tmpObject = youtubeObject.getJSONObject("snippet");
                         youtubeData.setTitle(tmpObject.getString("title"));
-                        /**eplisze 또는 marquee속성을 통해서 긴 제목 자르기*/
+                        // eplisze 또는 marquee 속성을 통해서 긴 제목 자르기
                         Log.i("통신 결과", tmpObject.getString("title") + "를 받아옴");
                         youtubeData.setCreator(tmpObject.getString("channelTitle"));
                         Log.i("통신 결과", tmpObject.getString("channelTitle") + "를 받아옴");
@@ -373,14 +316,14 @@ public class MainActivity extends AppCompatActivity {
                         youtubeData.setVideoId(tmpObject.getString("videoId"));
                         Log.i("통신 결과", tmpObject.getString("videoId") + "를 받아옴");
 
-                        //썸네일 받아오기
+                        // 썸네일 받아오기
 //                        String thumbnail = "http://img.youtube.com/vi/" + youtubeData.getVideoId() + "/default.jpg";
                         String thumbnail = "https://i.ytimg.com/vi/" + youtubeData.getVideoId() + "/mqdefault.jpg";
                         URL thumbnail_url = new URL(thumbnail);
                         Bitmap bitmap = BitmapFactory.decodeStream(thumbnail_url.openStream());
                         youtubeData.setBitmap(bitmap);
 
-                        //RecyclerView에 dataset추가
+                        // RecyclerView에 dataset추가
                         dataList.add(youtubeData);
                     }
                 }catch(JSONException e) {
@@ -405,14 +348,14 @@ public class MainActivity extends AppCompatActivity {
 
         MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(dataList);
 
-        //클릭시 유튜브로 이동
+        // 클릭시 유튜브로 이동
         adapter.setItemClickListener(new MainRecommendRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 Log.i("데이터 클릭", position + "가 클릭되었음");
                 String videoId = dataList.get(position).getVideoId();
                 Log.i("통신", videoId + "가 나왔음");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "http://youtube.com/watch?v=/" + videoId ));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "http://youtube.com/watch?v=" + videoId ));
                 startActivity(intent);
             }
         });

@@ -1,4 +1,4 @@
-package com.example.najakneang;
+package com.example.najakneang.adapter;
 
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -10,12 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.najakneang.model.MainRecommendRecyclerItem;
+import com.example.najakneang.R;
+
 import java.util.ArrayList;
 
 public class MainRecommendRecyclerAdapter
         extends RecyclerView.Adapter<MainRecommendRecyclerAdapter.MainRecommendRecyclerHolder> {
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(View v, int position);
     }
 
@@ -41,14 +44,11 @@ public class MainRecommendRecyclerAdapter
             this.creator = view.findViewById(R.id.creator_item_recommend_main);
             this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend_main);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
-                        if(listener != null){
-                            listener.onItemClick(v, position);
-                        }
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if(position != RecyclerView.NO_POSITION){
+                    if(listener != null){
+                        listener.onItemClick(v, position);
                     }
                 }
             });
