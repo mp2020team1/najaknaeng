@@ -1,6 +1,5 @@
 package com.example.najakneang.activity;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
@@ -28,7 +28,6 @@ import com.example.najakneang.R;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper dbHelper;
     SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase();
-
-        //임시 데이터 삽입
-        insertFakeData();
+        //insertFakeData(); //첫 시행이라면 데이터를 삽입해주세요! (한번만)
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
@@ -63,30 +61,19 @@ public class MainActivity extends AppCompatActivity {
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
         ContentValues values = new ContentValues();
-        db.delete(DBContract.GoodsEntry.TABLE_NAME, null, null);
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "감자");
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-01-23");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
         values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
-
-        db.delete(DBContract.FridgeEntry.TABLE_NAME, null, null);
-        values = new ContentValues();
-        values.put(DBContract.FridgeEntry.COLUMN_NAME, "LG 디오스 냉장고");
-        db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
     }
-
-    /**
-     * 신선도 위험품목 설정
-     * TODO: 3개 정도만 사용하기
-     */
 
     private void setupFreshnessRecycler() {
         String[] projection = {
@@ -103,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null,
                 null,
-                null
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE
         );
 
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
@@ -124,9 +111,10 @@ public class MainActivity extends AppCompatActivity {
      * 필요에 따라 item 클래스 생성해서 이름, 사진, 냉장고 id 같은것들 담을수있게해야할듯?
      */
     private void setupFridgeViewPager() {
+
         String[] projection = {
                 BaseColumns._ID,
-                DBContract.FridgeEntry.COLUMN_NAME,
+                DBContract.FridgeEntry.COLUMN_NAME
         };
 
         Cursor cursor = db.query(
@@ -140,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         );
 
         ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
-
         MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(cursor);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
@@ -148,12 +135,31 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupRecommendRecycler() {
-        ArrayList<YoutubeContent> data = new ArrayList<>();
-
+        ArrayList<YoutubeContent> contents = new ArrayList<>();
         try {
+
+
             Thread passingThread = new Thread(() -> {
-                // TODO: 재료 선택에 성공했다면 ingredient에 감자 대신 다른 것을 넣을 것!!
-                getYoutubeContents(data, "감자");
+                String[] projection = {
+                        BaseColumns._ID,
+                        DBContract.GoodsEntry.COLUMN_NAME
+                };
+
+                Cursor cursor = db.query(
+                        DBContract.GoodsEntry.TABLE_NAME + " ORDER BY RANDOM() LIMIT 1",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                Log.e("e","make cursor");
+                if(cursor.moveToNext()){
+                    String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+                    getYoutubeContents(contents, ingredient);
+                }
+                cursor.close();
             });
             passingThread.start();
             passingThread.join();
@@ -162,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_main);
-        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(data);
+        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(contents);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
@@ -182,8 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 오늘의 추천메뉴 설정
-     * TODO: 오늘의 메뉴 선정
-     * 재사용성을 위해 수정!!
+     * 재사용성을 위해 수정했음.
      */
     private void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
         String api_key = YoutubeContent.YOUTUBE_API_KEY;

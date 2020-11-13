@@ -1,8 +1,6 @@
 package com.example.najakneang.adapter;
 
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.model.MainFreshnessRecyclerItem;
 import com.example.najakneang.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
