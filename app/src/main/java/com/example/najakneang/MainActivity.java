@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setupFreshnessRecycler();
         setupOnClickFreshnessLayout();
         setupFridgeViewPager();
-        //setupOnClickFridgeLayout();
+        setupOnClickFridgeLayout();
         setupRecommendRecycler();
     }
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         freshness.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FridgeSectionActivity.class);
+                Intent intent = new Intent(getApplicationContext(), FreshnessActivity.class);
                 startActivity(intent);
             }
         });
@@ -80,8 +80,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
 
-    /*private void setupOnClickFridgeLayout() {
-        RelativeLayout fridge = findViewById(R.id.viewpager_fridge_main);
+    /**
+     * viewPager click이벤트는 뭔가 다른듯
+     * 방법 찾고 고치기
+     */
+    private void setupOnClickFridgeLayout() {
+        ViewPager2 fridge = findViewById(R.id.viewpager_fridge_main);
         fridge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }*/
+    }
 
 
     /**

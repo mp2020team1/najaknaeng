@@ -35,6 +35,10 @@ public class FridgeSectionRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull FridgeSectionRecyclerHolder holder, int position){
+        /**
+         * recyclerview안에 recyclerview 오류
+         * 어케 고쳐야될지 모르겠다.
+         */
         //MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(ItemList.get(position));
         FridgeSectionRecyclerItem item = items[position];
         String section = item.getSection();
