@@ -28,7 +28,6 @@ import com.example.najakneang.R;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -160,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
                     getYoutubeContents(contents, ingredient);
                 }
+                cursor.close();
             });
             passingThread.start();
             passingThread.join();
