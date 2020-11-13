@@ -40,7 +40,6 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-//    SQLiteDatabase DB; //DB 객체 생성
     DBHelper dbHelper;
     SQLiteDatabase db;
 
@@ -49,20 +48,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-//        DB = setupDateBase(); // DB 준비
-//        initTable(); // 테이블 실행
-//        insertFakeData();
-
         dbHelper = new DBHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase();
-
-//        insertFakeData(); 한개의 데이터 삽입 되있음
+        // insertFakeData(); 첫 시행이라면 데이터를 삽입해주세요! (한번만)
 
         setupFreshnessRecycler();
-        //setupFridgeViewPager();
-        //setupRecommendRecycler();
-        //setonClickMaskLayout();
+        setupFridgeViewPager();
+        setupRecommendRecycler();
+        setonClickMaskLayout();
+    }
+
+    // 임의의 가데이터 입력 함수
+    private void insertFakeData() {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
     }
 
     private void setupFreshnessRecycler() {
@@ -93,153 +103,6 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    // 임의의 가데이터 입력 함수
-    private void insertFakeData() {
-        ContentValues values = new ContentValues();
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "품목 1");
-        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
-        values.put(
-                DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
-        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
-        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
-        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
-        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
-        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
-    }
-//
-//    // 아이템 데이터 입력합수
-//    private void insertItemData(String name, int quantity, String expireDate, String type, String fridge, String storageState, String section) {
-//        if(DB != null){
-//            String current = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//            String sqlItemInsert = "INSERT OR REPLACE INTO Items (NAME, QUANTITY, REGISTDATE, EXPIREDATE, TYPE, FRIDGE, STORESTATE, SECTION) VALUES ('"+
-//                    name        + "', '" +
-//                    quantity    + "', '" +
-//                    current     + "', '" +
-//                    expireDate  + "', '" +
-//                    type        + "', '" +
-//                    fridge      + "', '" +
-//                    storageState+ "', '" +
-//                    section     + "');";
-//            DB.execSQL(sqlItemInsert);
-//        }
-//    }
-//
-//    // 저장구역 데이터 입력함수
-//    private void insertSectionData(String section, String fridge, String state){
-//        if(DB != null){
-//            String sqlSectionInsert = "INSERT OR REPLACE INTO Section (FRIDGE, SECTION, STORESTATE) VALUES ('" +
-//                    section + "', '" +
-//                    fridge + "', '" +
-//                    state   + "');";
-//            DB.execSQL(sqlSectionInsert);
-//        }
-//    }
-//
-//    // 냉장고 데이터 입력함수
-//    private void insertFridgeData(String fridge){
-//        if(DB != null){
-//            String sqlFridgeInsert = "INSERT OR REPLACE INTO Fridge (FRIDGE) VALUES ('" +
-//                    fridge+"');";
-//            DB.execSQL(sqlFridgeInsert);
-//        }
-//
-//    }
-//
-//    //
-//    private void initTable(){
-//        String sqlItems = "CREATE TABLE IF NOT EXISTS Items (" +
-//                    "NAME "         + "TEXT," +
-//                    "QUANTITY "     + "INTEGER NOT NULL," +
-//                    "REGISTDATE "   + "TEXT," +
-//                    "EXPIREDATE "   + "TEXT," +
-//                    "TYPE "         + "TEXT," +
-//                    "FRIDGE "       + "TEXT," +
-//                    "STORESTATE "   + "TEXT," +
-//                    "SECTION "      + "TEXT"  + ");";
-//
-//        String sqlSections = "CREATE TABLE IF NOT EXISTS Sections (" +
-//                "SECTION "     +"TEXT," +
-//                "FRIDGE "    +"TEXT," +
-//                "STORESTATE "   +"TEXT" + ");";
-//
-//        String sqlFridges = "CREATE TABLE IF NOT EXISTS Fridges (" +
-//                "FRIDGE " + "TEXT);";
-//
-//        Log.e("e","error init");
-//        DB.execSQL(sqlItems);
-//        DB.execSQL(sqlSections);
-//        DB.execSQL(sqlFridges);
-//    }
-//
-//    private String[] loadFreshnessData() {
-//        String[] returnData = new String[0];
-//        if(DB != null){
-//            try {
-//                String sqlQuery = "SELECT * FROM Items";
-//
-//                Cursor cursor = null;
-//
-//                cursor = DB.rawQuery(sqlQuery, null);
-//                // 전체 목록 이름/ 등록일 목록 만들고 넘기기
-//                returnData = new String[cursor.getCount()];
-//                int c = 0;
-//
-//                while(cursor.moveToNext()) {
-//                    String name = cursor.getString(0);
-//                    String date = cursor.getString(3);
-//                     returnData[c++]= name+"/"+date;
-//                }
-//            } catch (SQLException se){
-//                Log.e("e", se.toString());
-//            }
-//        }
-//        return returnData;
-//    }
-//
-//    private SQLiteDatabase setupDateBase() {
-//        SQLiteDatabase db = null;
-//
-//        File file = new File(getFilesDir(), DBHelper.DB_NAME);
-//        try{
-//            db = SQLiteDatabase.openOrCreateDatabase(file, null);
-//        }catch (SQLException se){
-//            se.printStackTrace();
-//        }
-//
-//        if(db == null){
-//            Log.e("e","error setup");
-//        }
-//
-//        return db;
-//    }
-//
-
-    /**
-     * 신선도 위험품목 설정
-     * TODO: 3개 정도만 사용하기
-     */
-//    private void setupFreshnessRecycler() {
-//        RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
-//        String[] freshnessData = loadFreshnessData();
-//        MainFreshnessRecyclerItem[] items = new MainFreshnessRecyclerItem[freshnessData.length];
-//
-//        for(int i = 0; i<freshnessData.length;i++){
-//            String[] info = freshnessData[i].split("/");
-//            items[i] = new MainFreshnessRecyclerItem(info[0], R.drawable.ic_launcher_background, (int) remainDate(info[1]));
-//        }
-//
-//        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(items);
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(
-//                new LinearLayoutManager(
-//                        this, LinearLayoutManager.HORIZONTAL, false
-//                )
-//        );
-//    }
-
     /**
      * 냉장고 슬라이더 설정
      * TODO: 현재 자신의 냉장고 목록에 따라 조정되야됨
@@ -250,26 +113,26 @@ public class MainActivity extends AppCompatActivity {
     private void setupFridgeViewPager() {
         ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
         // 가데이터
-        String[] items = {
+        String[] fridges = {
                 "냉장고 1",
                 "냉장고 2",
                 "김치 냉장고 1",
                 "팬트리 1"
         };
 
-        MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(items);
+        MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(fridges);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
 
 
     private void setupRecommendRecycler() {
-        ArrayList<YoutubeContent> data = new ArrayList<>();
+        ArrayList<YoutubeContent> contents = new ArrayList<>();
 
         try {
             Thread passingThread = new Thread(() -> {
                 // TODO: 재료 선택에 성공했다면 ingredient에 감자 대신 다른 것을 넣을 것!!
-                getYoutubeContents(data, "감자");
+                getYoutubeContents(contents, "감자");
             });
             passingThread.start();
             passingThread.join();
@@ -278,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_main);
-        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(data);
+        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(contents);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
@@ -299,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 오늘의 추천메뉴 설정
      * TODO: 오늘의 메뉴 선정
-     * 재사용성을 위해 수정!!
+     * 재사용성을 위해 수정했음.
      */
     private void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
         String api_key = YoutubeContent.YOUTUBE_API_KEY;
