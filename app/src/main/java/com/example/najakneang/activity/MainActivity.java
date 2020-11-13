@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
+        setupOnClickFridgeLayout();
         setupRecommendRecycler();
         setonClickMaskLayout();
     }
@@ -133,6 +134,13 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
 
+    private void setupOnClickFridgeLayout() {
+        ViewPager2 fridge = findViewById(R.id.viewpager_fridge_main);
+        fridge.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), FridgeActivity.class);
+            startActivity(intent);
+        });
+    }
 
     private void setupRecommendRecycler() {
         ArrayList<YoutubeContent> contents = new ArrayList<>();

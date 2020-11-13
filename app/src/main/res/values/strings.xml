@@ -4,4 +4,6 @@
 
     <string name="str_alert_items">신선도 위험품목</string>
     <string name="str_today_recommended">오늘의 추천 메뉴</string>
+    <string name="구역1">구역1</string>
+    <string name="냉장고1">냉장고1</string>
 </resources>
