@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/section_name_fridge_section"
+        android:id="@+id/section_name_section_fridge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_section_items_fridge_section"
+        android:id="@+id/sub_recycler_section_fridge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp" />

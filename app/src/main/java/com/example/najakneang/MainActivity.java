@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         setupFreshnessRecycler();
         setupOnClickFreshnessLayout();
         setupFridgeViewPager();
-        setupOnClickFridgeLayout();
         setupRecommendRecycler();
     }
 
@@ -79,22 +78,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
-
-    /**
-     * viewPager click이벤트는 뭔가 다른듯
-     * 방법 찾고 고치기
-     */
-    private void setupOnClickFridgeLayout() {
-        ViewPager2 fridge = findViewById(R.id.viewpager_fridge_main);
-        fridge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FridgeActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
 
     /**
      * 오늘의 추천메뉴 설정

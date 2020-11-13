@@ -10,62 +10,57 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+class FridgeSectionRecyclerHolder extends RecyclerView.ViewHolder {
+    protected TextView sectionName;
+    protected RecyclerView sectionPreview;
+
+    public FridgeSectionRecyclerHolder(View view){
+        super(view);
+
+        this.sectionName = view.findViewById(R.id.section_name_section_fridge);
+        this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
+    }
+}
+
 public class FridgeSectionRecyclerAdapter
-        extends RecyclerView.Adapter<FridgeSectionRecyclerAdapter.FridgeSectionRecyclerHolder> {
+        extends RecyclerView.Adapter<FridgeSectionRecyclerHolder> {
 
     private final FridgeSectionRecyclerItem[] items;
-    private ArrayList<MainFreshnessRecyclerItem[]> ItemList;
-    private Context context;
+    private ArrayList<MainFreshnessRecyclerItem[]> itemList;
 
-    public FridgeSectionRecyclerAdapter(Context context, ArrayList<MainFreshnessRecyclerItem[]> ItemList, FridgeSectionRecyclerItem[] items) {
+    public FridgeSectionRecyclerAdapter(Context context, ArrayList<MainFreshnessRecyclerItem[]> itemList, FridgeSectionRecyclerItem[] items) {
         this.items = items;
-        this.ItemList = ItemList;
-        this.context = context;
+        this.itemList = itemList;
     }
 
     @NonNull
     @Override
-    public FridgeSectionRecyclerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fridge_part, parent, false);
+    public FridgeSectionRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType){
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_recycler_section_fridge, viewGroup, false);
+
         return new FridgeSectionRecyclerHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FridgeSectionRecyclerHolder holder, int position){
-        /**
-         * recyclerview안에 recyclerview 오류
-         * 어케 고쳐야될지 모르겠다.
-         */
-        //MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(ItemList.get(position));
         FridgeSectionRecyclerItem item = items[position];
-        String section = item.getSection();
-        //RecyclerView sectionPreview = item.getSectionPreview();
+        String name = item.getName();
 
-        holder.section.setText(section);
+        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(itemList.get(position));
+
+        holder.sectionName.setText(name);
         holder.sectionPreview.setHasFixedSize(true);
-        holder.sectionPreview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        //holder.sectionPreview.setAdapter(adapter);
+        holder.sectionPreview.setAdapter(adapter);
+        holder.sectionPreview.setLayoutManager(
+                new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     @Override
     public int getItemCount() {
         return items.length;
     }
-
-    class FridgeSectionRecyclerHolder extends RecyclerView.ViewHolder {
-        protected TextView section;
-        protected RecyclerView sectionPreview;
-
-        public FridgeSectionRecyclerHolder(View view){
-            super(view);
-
-            this.section = view.findViewById(R.id.section_name_fridge_section);
-            this.sectionPreview = (RecyclerView)view.findViewById(R.id.recycler_section_items_fridge_section);
-        }
-    }
-
 
 }

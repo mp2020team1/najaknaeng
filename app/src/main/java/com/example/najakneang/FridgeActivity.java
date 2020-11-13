@@ -10,33 +10,30 @@ import java.util.ArrayList;
 
 public class FridgeActivity extends AppCompatActivity {
 
-    private RecyclerView FridgeSection;
-    private FridgeSectionRecyclerAdapter SectionAdapter;
-    private ArrayList<MainFreshnessRecyclerItem[]> ItemList;
-    private FridgeSectionRecyclerItem[] Item;
+    private ArrayList<MainFreshnessRecyclerItem[]> itemList = new ArrayList<>();
+    private FridgeSectionRecyclerItem[] item = {
+            new FridgeSectionRecyclerItem("구역1"),
+            new FridgeSectionRecyclerItem("구역2")
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fridge);
 
-        FridgeSectionRecyclerItem[] prepareData2 = {
-                new FridgeSectionRecyclerItem("구역1"), new FridgeSectionRecyclerItem("구역2")
-        };
-        ItemList = prepareData1();
-        Item = prepareData2;
-        FridgeSection = findViewById(R.id.recycler_fridge_section);
-        SectionAdapter = new FridgeSectionRecyclerAdapter(FridgeActivity.this, ItemList, Item);
-        LinearLayoutManager manager = new LinearLayoutManager(FridgeActivity.this);
-        FridgeSection.setLayoutManager(manager);
-        FridgeSection.setAdapter(SectionAdapter);
-    }
+        itemList.add(
+                new MainFreshnessRecyclerItem[] {
+                        new MainFreshnessRecyclerItem("품목1", R.drawable.ic_launcher_background, 3)
+                });
+        itemList.add(
+                new MainFreshnessRecyclerItem[] {
+                        new MainFreshnessRecyclerItem("품목2", R.drawable.ic_launcher_background, 30)
+                });
 
-    private ArrayList<MainFreshnessRecyclerItem[]> prepareData1() {
-        ArrayList<MainFreshnessRecyclerItem[]> itemList = new ArrayList();
-
-        //itemList.add(new MainFreshnessRecyclerItem[]("품목1", R.drawable.ic_launcher_background, 3));
-        //itemList.add(new MainFreshnessRecyclerItem[]("품목 2", R.drawable.ic_launcher_background, 30));
-        return itemList;
+        RecyclerView sectionRecycler = findViewById(R.id.recycler_section_fridge);
+        FridgeSectionRecyclerAdapter sectionAdapter = new FridgeSectionRecyclerAdapter(this, itemList, item);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        sectionRecycler.setAdapter(sectionAdapter);
+        sectionRecycler.setLayoutManager(manager);
     }
 }
