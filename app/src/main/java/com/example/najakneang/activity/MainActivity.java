@@ -156,9 +156,10 @@ public class MainActivity extends AppCompatActivity {
                         null
                 );
                 Log.e("e","make cursor");
-                cursor.moveToNext();
-                String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
-                getYoutubeContents(contents, ingredient);
+                if(cursor.moveToNext()){
+                    String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+                    getYoutubeContents(contents, ingredient);
+                }
             });
             passingThread.start();
             passingThread.join();
