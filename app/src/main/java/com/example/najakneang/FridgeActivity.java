@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,8 +35,18 @@ public class FridgeActivity extends AppCompatActivity {
 
         RecyclerView sectionRecycler = findViewById(R.id.recycler_section_fridge);
         FridgeSectionRecyclerAdapter sectionAdapter = new FridgeSectionRecyclerAdapter(this, itemList, item);
+
+        sectionAdapter.setOnItemClickListener(new FridgeSectionRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                Intent intent = new Intent(getApplicationContext(), FridgeSectionActivity.class);
+                startActivity(intent);
+            }
+        });
+
         LinearLayoutManager manager = new LinearLayoutManager(this);
         sectionRecycler.setAdapter(sectionAdapter);
         sectionRecycler.setLayoutManager(manager);
     }
+
 }

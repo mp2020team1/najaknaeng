@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setupFreshnessRecycler();
         setupOnClickFreshnessLayout();
         setupFridgeViewPager();
+        setupOnClickFridgeLayout();
         setupRecommendRecycler();
     }
 
@@ -77,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
         MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(items);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+    }
+
+    private void setupOnClickFridgeLayout() {
+        ViewPager2 fridge = findViewById(R.id.viewpager_fridge_main);
+        fridge.setOnClickListener(view -> {
+                Intent intent = new Intent(getApplicationContext(), FridgeActivity.class);
+                startActivity(intent);
+        });
     }
 
     /**
