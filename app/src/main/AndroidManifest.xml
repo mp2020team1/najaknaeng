@@ -15,6 +15,7 @@
         tools:ignore="AllowBackup">
         <activity android:name=".activity.GoodsActivity"></activity>
         <activity android:name=".activity.FridgeActivity" />
+        <activity android:name=".activity.FridgeSectionActivity" />
         <activity android:name=".activity.FreshnessActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
