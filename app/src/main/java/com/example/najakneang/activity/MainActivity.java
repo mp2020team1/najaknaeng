@@ -13,15 +13,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
-import com.example.najakneang.adapter.MainRecommendRecyclerAdapter;
+import com.example.najakneang.adapter.RecommendRecyclerAdapter;
 import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
@@ -40,22 +40,35 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBHelper dbHelper;
-    SQLiteDatabase db;
+    public static SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DBHelper(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
-        //insertFakeData(); //첫 시행이라면 데이터를 삽입해주세요! (한번만)
+        try {
+            Thread dbThread = new Thread(() -> {
+                DBHelper dbHelper = new DBHelper(getApplicationContext());
+                db = dbHelper.getWritableDatabase();
+            });
+            dbThread.start();
+            dbThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+//        첫 시행이라면 데이터를 삽입해주세요!
+//      insertFakeData();
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
         setupRecommendRecycler();
         setonClickMaskLayout();
+
+        Intent intent = new Intent(getApplicationContext(), GoodsActivity.class);
+        intent.putExtra("goodsID", 1);
+        startActivity(intent);
     }
 
     // 임의의 가데이터 입력 함수
@@ -135,47 +148,44 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupRecommendRecycler() {
-        ArrayList<YoutubeContent> contents = new ArrayList<>();
-        try {
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.GoodsEntry.COLUMN_NAME
+        };
 
-
-            Thread passingThread = new Thread(() -> {
-                String[] projection = {
-                        BaseColumns._ID,
-                        DBContract.GoodsEntry.COLUMN_NAME
-                };
-
-                Cursor cursor = db.query(
-                        DBContract.GoodsEntry.TABLE_NAME + " ORDER BY RANDOM() LIMIT 1",
-                        projection,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                );
-                Log.e("e","make cursor");
-                if(cursor.moveToNext()){
-                    String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
-                    getYoutubeContents(contents, ingredient);
-                }
-                cursor.close();
-            });
-            passingThread.start();
-            passingThread.join();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_recommend_main);
-        MainRecommendRecyclerAdapter adapter = new MainRecommendRecyclerAdapter(contents);
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        Cursor cursor = db.query(
+                DBContract.GoodsEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                "RANDOM()",
+                "1"
         );
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
+        ArrayList<YoutubeContent> contents = new ArrayList<>();
+        Handler handler = new Handler();
+
+        new Thread(() -> {
+            if (cursor.moveToNext()){
+                String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+                getYoutubeContents(contents, ingredient);
+
+                handler.post(() -> {
+                    RecyclerView recyclerView = findViewById(R.id.recycler_recommend_main);
+                    RecommendRecyclerAdapter adapter = new RecommendRecyclerAdapter(contents);
+
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(
+                            new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    );
+                    recyclerView.setNestedScrollingEnabled(false);
+                    recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+                });
+            }
+            cursor.close();
+        }).start();
     }
 
     public void setonClickMaskLayout() {
@@ -190,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
      * 오늘의 추천메뉴 설정
      * 재사용성을 위해 수정했음.
      */
-    private void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
+    public static void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
         String api_key = YoutubeContent.YOUTUBE_API_KEY;
         ingredient += " 레시피";
 

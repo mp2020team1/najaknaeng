@@ -14,7 +14,6 @@ import com.google.android.material.tabs.TabLayout;
 
 public class FreshnessActivity extends AppCompatActivity {
 
-    SQLiteDatabase DB;
     private static final int FIRST = 0;
     private static final int SECOND = 1;
     private final String[] tabSetting = {"전체", "전체"};
@@ -27,7 +26,6 @@ public class FreshnessActivity extends AppCompatActivity {
         setContentView(R.layout.activity_freshness);
 
         setupToolbar();
-
         setupTabLayout();
     }
 
@@ -42,7 +40,7 @@ public class FreshnessActivity extends AppCompatActivity {
         TabLayout firstTab = findViewById(R.id.tablayout_first_freshness);
         TabLayout secondTab = findViewById(R.id.tablayout_second_freshness);
 
-        String[] firstTabNameList = {"전체", "냉장", "냉동", "실온", "기타"};
+        String[] firstTabNameList = {"전체", "냉장", "냉동", "실온"};
         String[] secondTabNameList = {"전체", "과일", "채소", "수산", "육류", "유제품", "반찬", "기타"};
 
         for (String name: firstTabNameList) {

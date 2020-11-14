@@ -17,41 +17,41 @@ import com.example.najakneang.R;
 
 import java.util.ArrayList;
 
-class MainRecommendRecyclerHolder extends RecyclerView.ViewHolder {
+class RecommendRecyclerHolder extends RecyclerView.ViewHolder {
     protected final View view;
     protected final ImageView thumbnail;
     protected final TextView title;
     protected final TextView creator;
 
-    public MainRecommendRecyclerHolder(@NonNull View view) {
+    public RecommendRecyclerHolder(@NonNull View view) {
         super(view);
         this.view = view;
-        this.title = view.findViewById(R.id.title_item_recommend_main);
-        this.creator = view.findViewById(R.id.creator_item_recommend_main);
-        this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend_main);
+        this.title = view.findViewById(R.id.title_item_recommend);
+        this.creator = view.findViewById(R.id.creator_item_recommend);
+        this.thumbnail = view.findViewById(R.id.thumbnail_item_recommend);
     }
 }
 
-public class MainRecommendRecyclerAdapter
-        extends RecyclerView.Adapter<MainRecommendRecyclerHolder> {
+public class RecommendRecyclerAdapter
+        extends RecyclerView.Adapter<RecommendRecyclerHolder> {
 
     private final ArrayList<YoutubeContent> data;
 
-    public MainRecommendRecyclerAdapter(ArrayList<YoutubeContent> data) {
+    public RecommendRecyclerAdapter(ArrayList<YoutubeContent> data) {
         this.data = data;
     }
 
     @NonNull
     @Override
-    public MainRecommendRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public RecommendRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_recycler_recommend_main, viewGroup, false);
+                .inflate(R.layout.item_recycler_recommend, viewGroup, false);
 
-        return new MainRecommendRecyclerHolder(view);
+        return new RecommendRecyclerHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainRecommendRecyclerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecommendRecyclerHolder holder, int position) {
         YoutubeContent datum = data.get(position);
         String title = datum.getTitle();
         String creator = datum.getCreator();
