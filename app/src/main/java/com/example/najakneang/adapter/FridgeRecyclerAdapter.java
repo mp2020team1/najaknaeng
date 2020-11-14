@@ -1,23 +1,16 @@
 package com.example.najakneang.adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
-import com.example.najakneang.activity.FridgeActivity;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.db.DBHelper;
 
 class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 

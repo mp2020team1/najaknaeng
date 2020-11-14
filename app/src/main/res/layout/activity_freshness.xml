@@ -28,9 +28,9 @@
         android:id="@+id/tablayout_second_freshness"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_freshness_freshness"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
-        android:id="@+id/recycler_freshness_freshness"/>
+        android:padding="10dp" />
 
 </LinearLayout>

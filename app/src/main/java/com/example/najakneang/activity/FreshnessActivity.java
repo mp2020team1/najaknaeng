@@ -3,20 +3,40 @@ package com.example.najakneang.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.najakneang.R;
+import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
+import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
+import com.example.najakneang.db.DBContract;
+import com.example.najakneang.db.DBHelper;
+import com.google.android.flexbox.AlignSelf;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.HashMap;
 
 public class FreshnessActivity extends AppCompatActivity {
 
     private static final int FIRST = 0;
     private static final int SECOND = 1;
     private final String[] tabSetting = {"전체", "전체"};
+    static SQLiteDatabase db;
+    static HashMap<String,String> mapSelection = new HashMap<String,String>(){};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +45,23 @@ public class FreshnessActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_freshness);
 
+        setDB();
+        setupFreshnessRecycler();
         setupToolbar();
         setupTabLayout();
+    }
+
+    private void setDB(){
+        try{
+            Thread dbOpenThread = new Thread(() -> {
+                DBHelper dbHelper = new DBHelper(getApplicationContext());
+                db = dbHelper.getWritableDatabase();
+            });
+            dbOpenThread.start();
+            dbOpenThread.join();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void setupToolbar() {
@@ -55,7 +90,9 @@ public class FreshnessActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 String tabName = tab.getText().toString();
-                if (tabSetting[FIRST].equals(tabName)) return;
+
+                //Hashmap으로 분류예정
+                if (tabSetting[FIRST].equals(tabName)){}
 
                 tabSetting[FIRST] = tabName;
                 tabSetting[SECOND] = "전체";
@@ -89,6 +126,44 @@ public class FreshnessActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+    }
+
+    private void setupFreshnessRecycler(){
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.GoodsEntry.COLUMN_NAME,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMN_TYPE
+        };
+
+        Cursor cursor = db.query(
+                DBContract.GoodsEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE
+        );
+
+        /**
+         * TODO: Recyclerview의 margin을 조정하는등을 해서 맞출 필요가 있음
+         * 참고 : https://github.com/google/flexbox-layout
+         */
+
+        RecyclerView recycler = findViewById(R.id.recycler_freshness_freshness);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        recycler.setLayoutManager(layoutManager);
+
+        FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
+        recycler.setAdapter(adapter);
+//        recycler.setLayoutManager(
+//                new LinearLayoutManager(
+//                        this, LinearLayoutManager.HORIZONTAL, false
+//                )
+//        );
     }
 
 //    private void setupFreshnessRecycler() {

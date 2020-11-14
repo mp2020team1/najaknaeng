@@ -141,6 +141,54 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "꽃등심");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-14");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "meat");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "꽃등심");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-14");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "meat");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "꽃등심");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-14");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "meat");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "꽃등심");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-14");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "meat");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
     }
 
     private void setupFreshnessRecycler() {

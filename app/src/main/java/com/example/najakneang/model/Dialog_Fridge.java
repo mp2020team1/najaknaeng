@@ -72,12 +72,18 @@ public class Dialog_Fridge extends Dialog implements View.OnClickListener {
                     dbHelper = new DBHelper(context.getApplicationContext());
                     db = dbHelper.getWritableDatabase();
 
-                    String sql = "SELECT EXISTS (SELECT * FROM " + DBContract.FridgeEntry.TABLE_NAME
-                        + " WHERE "+ DBContract.FridgeEntry.COLUMN_NAME + "='" + name + "' LIMIT 1)";
-                    Cursor cursor = db.rawQuery(sql, null);
-                    cursor.moveToFirst();
+                    Cursor cursor = db.query(
+                            DBContract.FridgeEntry.TABLE_NAME,
+                            null,
+                            DBContract.FridgeEntry.COLUMN_NAME + " = ? ",
+                            new String[]{ name },
+                            null,
+                            null,
+                            null,
+                            "1"
+                    );
 
-                    if (cursor.getInt(0) == 1) {
+                    if (cursor.getCount()>0) {
                         cursor.close();
                         Toast.makeText(context.getApplicationContext(), "이미 있는 냉장고입니다",Toast.LENGTH_SHORT).show();
                     } else {

@@ -3,7 +3,6 @@ package com.example.najakneang.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class MainFridgeViewPagerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFridgeViewPagerHolder holder, int position) {
-        if (!cursor.moveToPosition(position)){
+        if (!cursor.moveToPosition(holder.getAdapterPosition())){
             holder.text.setText("냉장고 추가");
             holder.view.setOnClickListener(view -> {
                 final Context context = view.getContext();
@@ -63,15 +62,13 @@ public class MainFridgeViewPagerAdapter
         String name = cursor.getString(
                 cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME));
         holder.text.setText(name);
+        holder.setIsRecyclable(false);
 
         holder.view.setOnClickListener(view -> {
-            Context context = view.getContext();
-            Log.i("cursor", cursor.getPosition() + "입니다.");
-
-            Intent intent = new Intent(context.getApplicationContext(), FridgeActivity.class);
+            Intent intent = new Intent(view.getContext(), FridgeActivity.class);
             intent.putExtra("FRIDGE", cursor.getString(
                     cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
-            context.startActivity(intent);
+            view.getContext().startActivity(intent);
         });
     }
 
