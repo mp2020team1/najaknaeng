@@ -28,13 +28,11 @@ class MainFreshnessRecyclerHolder extends RecyclerView.ViewHolder {
 }
 
 public class MainFreshnessRecyclerAdapter
-        extends RecyclerView.Adapter<MainFreshnessRecyclerHolder> {
+        extends RecyclerView.Adapter<MainFreshnessRecyclerHolder>{
 
     private final Cursor cursor;
 
-    public MainFreshnessRecyclerAdapter(Cursor cursor) {
-        this.cursor = cursor;
-    }
+    public MainFreshnessRecyclerAdapter(Cursor cursor) { this.cursor = cursor; }
 
     @NonNull
     @Override
@@ -47,19 +45,38 @@ public class MainFreshnessRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFreshnessRecyclerHolder holder, int position) {
-        if (!cursor.moveToPosition(position)) return;
+        if (!cursor.moveToPosition(position) || position>2) return;
 
         String name = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         String expireDate = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
         long remain = DBContract.GoodsEntry.getRemain(expireDate);
-        int image = cursor.getInt(
-                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_IMAGE));
+        String type = cursor.getString(
+                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
+
+        int image;
+        if(type.equals("fruit")){ image = R.drawable.fruit; }
+        else if(type.equals("vegetable")){ image = R.drawable.vegetable; }
+        else if(type.equals("meat")){ image = R.drawable.meat; }
+        else if(type.equals("fish")){ image = R.drawable.fish; }
+        else{ image = R.drawable.ic_launcher_background; }
 
         holder.name.setText(name);
-        holder.remain.setText(remain + "일");
+        if(remain>0){holder.remain.setText(remain + "일");}
+        else if(remain==0){holder.remain.setText("오늘까지");}
+        else{holder.remain.setText(Math.abs(remain) + "일 지남");}
+
         holder.image.setImageResource(image);
+//        int image = cursor.getInt(
+//                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_IMAGE));
+        /**
+         * type이름으로 바로 리소스 받기 제작 실패
+         */
+//        int resID =  R.drawable.class.getField(type).getInt("");
+//        int resID = context.getResources().getIdentifier(
+//                type,"drawable", context.getPackageName());
+//        int image = resID;
     }
 
     @Override
