@@ -2,12 +2,14 @@ package com.example.najakneang.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,19 +18,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
 import com.example.najakneang.activity.FridgeActivity;
+import com.example.najakneang.activity.FridgeSectionActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
 
 class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 
+    protected final View view;
     protected final TextView sectionName;
     protected final RecyclerView sectionPreview;
     private RecyclerView mainRecycler;
+    private AdapterView.OnItemClickListener mCLickListener = null;
+    private View.OnLongClickListener mLongClickListener = null;
 
 
     public FridgeRecyclerHolder(@NonNull View view) {
         super(view);
 
+        this.view = view;
         this.sectionName = view.findViewById(R.id.section_name_section_fridge);
         this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
         mainRecycler = view.findViewById(R.id.recycler_section_fridge);
@@ -37,20 +44,21 @@ class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
             public void onClick(View v) {
                 int pos = getAdapterPosition();
                 if(pos != mainRecycler.NO_POSITION){
-                    //mListener.onItemClick(v, pos);
+
                 }
             }
         });
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                int pos = getAdapterPosition();
-                if(pos != mainRecycler.NO_POSITION){
-                    //mLongListener.onItemLongClick(v, pos);
-                }
-                return true;
-            }
-        });
+//        view.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                int pos = getAdapterPosition();
+//                if(pos != mainRecycler.NO_POSITION){
+//                    mLongClickListener.onItemLongClick(v, pos);
+//                }
+//                return true;
+//            }
+//        });
+
     }
 
 }
@@ -100,6 +108,13 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
 //            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(sectionGoods);
 //            holder.sectionPreview.setAdapter(adapter);
             //holder.sectionPreview.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+            holder.view.setOnClickListener(view->{
+                Context context = view.getContext();
+                Intent intent = new Intent(context.getApplicationContext(), FridgeSectionActivity.class);
+                intent.putExtra("SECTION", name);
+                intent.putExtra("FRIDGE", fridge);
+                context.startActivity(intent);
+            });
         }
     }
 
