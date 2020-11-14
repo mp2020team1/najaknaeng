@@ -10,7 +10,7 @@
         android:layout_width="160dp"
         android:layout_height="120dp"
         android:layout_marginEnd="10dp"
-        android:id="@+id/thumbnail_item_recommend_main"
+        android:id="@+id/thumbnail_item_recommend"
         tools:ignore="ContentDescription" />
 
     <LinearLayout
@@ -23,13 +23,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:id="@+id/title_item_recommend_main" />
+            android:id="@+id/title_item_recommend" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:id="@+id/creator_item_recommend_main" />
+            android:id="@+id/creator_item_recommend" />
 
     </LinearLayout>
 
