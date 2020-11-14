@@ -5,50 +5,70 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
+import android.provider.BaseColumns;
+import android.util.Log;
+import android.widget.TextView;
 
-import com.example.najakneang.adapter.FridgeSectionRecyclerAdapter;
 import com.example.najakneang.R;
+import com.example.najakneang.adapter.FridgeRecyclerAdapter;
+import com.example.najakneang.db.DBContract;
+import com.example.najakneang.db.DBHelper;
 
-import java.util.ArrayList;
+import org.w3c.dom.Text;
 
 public class FridgeActivity extends AppCompatActivity {
 
-    private ArrayList<MainFreshnessRecyclerItem[]> itemList = new ArrayList<>();
-    private FridgeSectionRecyclerItem[] item = {
-            new FridgeSectionRecyclerItem("구역1"),
-            new FridgeSectionRecyclerItem("구역2")
-    };
-
+    DBHelper dbHelper;
+    SQLiteDatabase db;
+    TextView title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fridge);
+        title = (TextView) findViewById(R.id.fridgeTitle);
 
-        itemList.add(
-                new MainFreshnessRecyclerItem[] {
-                        new MainFreshnessRecyclerItem("품목1", R.drawable.ic_launcher_background, 3)
-                });
-        itemList.add(
-                new MainFreshnessRecyclerItem[] {
-                        new MainFreshnessRecyclerItem("품목2", R.drawable.ic_launcher_background, 30)
-                });
+        dbHelper = new DBHelper(getApplicationContext());
+        db = dbHelper.getWritableDatabase();
 
-        RecyclerView sectionRecycler = findViewById(R.id.recycler_section_fridge);
-        FridgeSectionRecyclerAdapter sectionAdapter = new FridgeSectionRecyclerAdapter(this, itemList, item);
 
-        sectionAdapter.setOnItemClickListener(new FridgeSectionRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int pos) {
-                Intent intent = new Intent(getApplicationContext(), FridgeSectionActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        sectionRecycler.setAdapter(sectionAdapter);
-        sectionRecycler.setLayoutManager(manager);
+        String fridgeName = getIntent().getStringExtra("FRIDGE");
+        title.setText(fridgeName);
+        loadSection(fridgeName);
     }
 
+    private void loadSection(String fridgeName) {
+
+        String[] projection = {
+            BaseColumns._ID,
+            DBContract.SectionEntry.COLUMN_NAME,
+            DBContract.SectionEntry.COLUMN_FRIDGE,
+            DBContract.SectionEntry.COLUMN_STORE_STATE
+        };
+
+        Cursor cursor = db.query(
+                DBContract.SectionEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_section_fridge);
+        FridgeRecyclerAdapter adapter = new FridgeRecyclerAdapter(cursor);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        setResult(RESULT_OK);
+        finish();
+    }
 }

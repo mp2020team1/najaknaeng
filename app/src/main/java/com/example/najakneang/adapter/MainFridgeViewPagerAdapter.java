@@ -33,7 +33,9 @@ public class MainFridgeViewPagerAdapter
 
     private final Cursor cursor;
 
-    public MainFridgeViewPagerAdapter(Cursor cursor) { this.cursor = cursor; }
+    public MainFridgeViewPagerAdapter(Cursor cursor) {
+        this.cursor = cursor;
+    }
 
     @NonNull
     @Override
@@ -68,7 +70,7 @@ public class MainFridgeViewPagerAdapter
 
             Intent intent = new Intent(context.getApplicationContext(), FridgeActivity.class);
             intent.putExtra("FRIDGE", cursor.getString(
-                    cursor.getColumnIndex(DBContract.FridgeEntry._ID)));
+                    cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
             context.startActivity(intent);
         });
     }

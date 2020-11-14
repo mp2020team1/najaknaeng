@@ -19,13 +19,6 @@ public class FridgeSectionActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase db;
 
-    private final MainFreshnessRecyclerItem[] items = {
-            new MainFreshnessRecyclerItem(
-                    "품목 1", R.drawable.ic_launcher_background, 3),
-            new MainFreshnessRecyclerItem(
-                    "품목 2", R.drawable.ic_launcher_background, 30)
-    };
-
     String[] projection = {
             BaseColumns._ID,
             DBContract.GoodsEntry.COLUMN_NAME,
