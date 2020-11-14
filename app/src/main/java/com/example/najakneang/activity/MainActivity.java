@@ -101,11 +101,53 @@ public class MainActivity extends AppCompatActivity {
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
         values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-01-23");
-        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "vegetable");
         values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
-        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
-        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "저장1");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "토마토");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "vegetable");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "저장1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "고등어");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-12-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "fish");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "저장2");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+
+        values = new ContentValues();
+        values.put(DBContract.SectionEntry.COLUMN_NAME, "저장1");
+        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, "냉");
+        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, "냉장");
+        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
+
+
+        values.put(DBContract.SectionEntry.COLUMN_NAME, "저장2");
+        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, "냉");
+        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, "냉동");
+        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
+
+        values = new ContentValues();
+        values.put(DBContract.FridgeEntry.COLUMN_NAME, "냉");
+        db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
     }
 
     private void setupFreshnessRecycler() {
