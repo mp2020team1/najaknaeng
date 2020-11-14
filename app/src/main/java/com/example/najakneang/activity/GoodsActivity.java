@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,8 +36,7 @@ public class GoodsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods);
 
-        Intent intent = getIntent();
-        int goodsId = intent.getIntExtra("goodsID", 0);
+        long goodsId = getIntent().getLongExtra("GOODSID",0);
 
         getGoodsCursor(goodsId);
         setupToolbar();
@@ -45,9 +45,10 @@ public class GoodsActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar_goods);
-        toolbar.setTitle(
-                cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME))
-        );
+
+        String title = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+        Log.i("title",title);
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -89,7 +90,7 @@ public class GoodsActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void getGoodsCursor(int id) {
+    private void getGoodsCursor(long id) {
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.GoodsEntry.COLUMN_NAME,
@@ -99,9 +100,9 @@ public class GoodsActivity extends AppCompatActivity {
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE
         };
 
-        String selection = DBContract.GoodsEntry._ID + " = ?";
+        String selection = DBContract.GoodsEntry._ID + "=?";
         String[] selectionArgs = { String.valueOf(id) };
-
+        Log.i("iisol",selection+"  "+selectionArgs[0]);
         cursor = db.query(
                 DBContract.GoodsEntry.TABLE_NAME,
                 projection,

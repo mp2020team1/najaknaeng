@@ -39,15 +39,15 @@ class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
         this.sectionName = view.findViewById(R.id.section_name_section_fridge);
         this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
         mainRecycler = view.findViewById(R.id.recycler_section_fridge);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = getAdapterPosition();
-                if(pos != mainRecycler.NO_POSITION){
-
-                }
-            }
-        });
+//        view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int pos = getAdapterPosition();
+//                if(pos != mainRecycler.NO_POSITION){
+//
+//                }
+//            }
+//        });
 //        view.setOnLongClickListener(new View.OnLongClickListener() {
 //            @Override
 //            public boolean onLongClick(View v) {
