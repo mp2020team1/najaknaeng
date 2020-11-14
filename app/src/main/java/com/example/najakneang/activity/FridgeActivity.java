@@ -37,6 +37,12 @@ public class FridgeActivity extends AppCompatActivity {
         String fridgeName = getIntent().getStringExtra("FRIDGE");
         title.setText(fridgeName);
         loadSection(fridgeName);
+        loadGoods(fridgeName);
+    }
+
+    private void loadGoods(String fridgeName) {
+//        RecyclerView recyclerView = findViewById(R.id.recycler_section_fridge);
+
     }
 
     private void loadSection(String fridgeName) {
@@ -64,6 +70,7 @@ public class FridgeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
     }
+
 
     @Override
     public void onBackPressed(){

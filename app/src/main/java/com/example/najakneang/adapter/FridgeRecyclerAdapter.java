@@ -76,28 +76,28 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
             String fridge = cursor.getString(
                     cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_FRIDGE));
             holder.sectionName.setText(name);
-            Context context = holder.itemView.getContext();
-            SQLiteDatabase db;
-            DBHelper dbHelper= new DBHelper(context);
-            db = dbHelper.getWritableDatabase();
-            Cursor sectionGoods = db.query(
-                    DBContract.GoodsEntry.TABLE_NAME,
-                    new String[] {
-                            DBContract.GoodsEntry.COLUMN_NAME,
-                            DBContract.GoodsEntry.COLUMN_FRIDGE,
-                            DBContract.GoodsEntry.COLUMN_SECTION,
-                            DBContract.GoodsEntry.COLUMN_EXPIREDATE
-                    },
-                    "FRIDGE=? and SECTION=?",
-                    new String[]{fridge,name},
-                    null,
-                    null,
-                    DBContract.GoodsEntry.COLUMN_EXPIREDATE
-            );
-
-            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(sectionGoods);
-            holder.sectionPreview.setAdapter(adapter);
-            holder.sectionPreview.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+//            Context context = holder.itemView.getContext();
+//            SQLiteDatabase db;
+//            DBHelper dbHelper= new DBHelper(context);
+//            db = dbHelper.getWritableDatabase();
+//            Cursor sectionGoods = db.query(
+//                    DBContract.GoodsEntry.TABLE_NAME,
+//                    new String[] {
+//                            DBContract.GoodsEntry.COLUMN_NAME,
+//                            DBContract.GoodsEntry.COLUMN_FRIDGE,
+//                            DBContract.GoodsEntry.COLUMN_SECTION,
+//                            DBContract.GoodsEntry.COLUMN_EXPIREDATE
+//                    },
+//                    "FRIDGE=? and SECTION=?",
+//                    new String[]{fridge,name},
+//                    null,
+//                    null,
+//                    DBContract.GoodsEntry.COLUMN_EXPIREDATE
+//            );
+//
+//            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(sectionGoods);
+//            holder.sectionPreview.setAdapter(adapter);
+            //holder.sectionPreview.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
 
