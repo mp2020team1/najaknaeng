@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
         setupRecommendRecycler();
         setonClickMaskLayout();
 
-        //Intent intent = new Intent(getApplicationContext(), GoodsActivity.class);
-        //intent.putExtra("goodsID", 1);
-        //startActivity(intent);
     }
 
     //두번 뒤로가기해야 꺼지게하기

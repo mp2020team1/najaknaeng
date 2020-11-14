@@ -59,7 +59,7 @@ public class GoodsActivity extends AppCompatActivity {
         TextView quantity = findViewById(R.id.text_quantity_goods);
         TextView remain = findViewById(R.id.text_remain_goods);
         TextView type = findViewById(R.id.text_type_goods);
-        // 그러고보니 메모가 있었네?.. TODO: DB에 메모 추가 후 연동 귀찮으면 버리자
+        // 그러고보니 메모가 있었네?.. TODO: DB에 메모 추가 후 연동 귀찮으면 버리자 -> 그래 버리자!
         EditText memo = findViewById(R.id.memo_goods);
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_goods);
 
