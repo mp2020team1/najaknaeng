@@ -1,8 +1,6 @@
 package com.example.najakneang.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
@@ -10,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.najakneang.R;
 import com.example.najakneang.activity.FridgeActivity;
 import com.example.najakneang.db.DBContract;
+import com.example.najakneang.model.Dialog_Fridge;
 
 class MainFridgeViewPagerHolder extends RecyclerView.ViewHolder {
     protected final View view;
@@ -35,9 +33,7 @@ public class MainFridgeViewPagerAdapter
 
     private final Cursor cursor;
 
-    public MainFridgeViewPagerAdapter(Cursor cursor) {
-        this.cursor = cursor;
-    }
+    public MainFridgeViewPagerAdapter(Cursor cursor) { this.cursor = cursor; }
 
     @NonNull
     @Override
@@ -54,25 +50,10 @@ public class MainFridgeViewPagerAdapter
             holder.text.setText("냉장고 추가");
             holder.view.setOnClickListener(view -> {
                 final Context context = view.getContext();
-                final View dialog_view= view.inflate(context,R.layout.dialog_fridge,null);
 
-                /**
-                 * TODO:Dialog의 OK버튼을 누르면 테이블에 추가된 냉장고 삽입
-                 * TODO:냉장고 추가 후, 커서를 한칸 뒤로 옮겨 냉장고 추가 버튼 앞에 만든 냉장고 추가
-                 * TODO:dialog_fridge.xml 디자인 바꾸기
-                 */
-
-                AlertDialog fridgeDialog = new AlertDialog.Builder(context)
-                        .setView(dialog_view)
-                        .setIcon(R.drawable.ic_launcher_foreground)
-                        .setTitle("냉장고 추가")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int pos)
-                            {
-                                Toast.makeText(context.getApplicationContext(),"냉장고 생성됨", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .show();
+                Dialog_Fridge dialog_fridge = new Dialog_Fridge(context);
+                dialog_fridge.setCancelable(false);
+                dialog_fridge.show();
             });
             return;
         }

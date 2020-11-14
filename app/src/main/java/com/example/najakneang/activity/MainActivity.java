@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
@@ -26,6 +27,7 @@ import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -40,6 +42,8 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
+    private long   backPressedTime = 0;
+
     DBHelper dbHelper;
     SQLiteDatabase db;
 
@@ -47,32 +51,102 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setDB();
 
-        dbHelper = new DBHelper(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
-        //insertFakeData(); //첫 시행이라면 데이터를 삽입해주세요! (한번만)
+        setonClickMaskLayout();
+        setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
+    }
+
+    //RecyclerView 정보 갱신
+    @Override
+    protected void onResume(){
+        super.onResume();
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
-        setupRecommendRecycler();
-        setonClickMaskLayout();
+    }
+
+    //두번 뒤로가기해야 꺼지게하기
+    @Override
+    public void onBackPressed(){
+        if (System.currentTimeMillis() <= backPressedTime + 2000) {
+            finish();
+            return;
+        }
+        backPressedTime = System.currentTimeMillis();
+        Toast.makeText(this, "뒤로 가기를 한 번 더 누르시면 종료됩니다", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setDB(){
+        try{
+            Thread dbOpenThread = new Thread(() -> {
+                dbHelper = new DBHelper(getApplicationContext());
+                db = dbHelper.getWritableDatabase();
+                insertFakeData();
+            });
+            dbOpenThread.start();
+            dbOpenThread.join();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
+        db.delete(DBContract.GoodsEntry.TABLE_NAME,null,null);
+        db.delete(DBContract.FridgeEntry.TABLE_NAME,null,null);
         ContentValues values = new ContentValues();
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "감자");
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "감 자");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2025-08-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "vegetable");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "사과");
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
         values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-01-23");
-        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "타입 1");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "fruit");
         values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
-        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
-        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "방어");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2002-11-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "fish");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "꽃등심");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-14");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "meat");
+        values.put(DBContract.GoodsEntry.COLUMN_IMAGE, R.drawable.ic_launcher_background);
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고_1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역_1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(DBContract.FridgeEntry.COLUMN_NAME, "LG 디오스");
+        db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
     }
 
     private void setupFreshnessRecycler() {
@@ -80,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 BaseColumns._ID,
                 DBContract.GoodsEntry.COLUMN_NAME,
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_IMAGE
+                DBContract.GoodsEntry.COLUMN_TYPE
         };
 
         Cursor cursor = db.query(
@@ -103,15 +177,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    /**
-     * 냉장고 슬라이더 설정
-     * TODO: 현재 자신의 냉장고 목록에 따라 조정되야됨
-     * TODO: 클릭하면 그 냉장고 화면으로 갈수 있어야됨
-     * TODO: 맨 마지막에 추가버튼 있어야됨
-     * 필요에 따라 item 클래스 생성해서 이름, 사진, 냉장고 id 같은것들 담을수있게해야할듯?
-     */
-    private void setupFridgeViewPager() {
-
+    public void setupFridgeViewPager() {
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.FridgeEntry.COLUMN_NAME
@@ -133,11 +199,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
     }
 
-
     private void setupRecommendRecycler() {
         ArrayList<YoutubeContent> contents = new ArrayList<>();
         try {
-
 
             Thread passingThread = new Thread(() -> {
                 String[] projection = {
@@ -154,12 +218,12 @@ public class MainActivity extends AppCompatActivity {
                         null,
                         null
                 );
-                Log.e("e","make cursor");
                 if(cursor.moveToNext()){
                     String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
                     getYoutubeContents(contents, ingredient);
                 }
                 cursor.close();
+
             });
             passingThread.start();
             passingThread.join();
@@ -186,10 +250,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 오늘의 추천메뉴 설정
-     * 재사용성을 위해 수정했음.
-     */
     private void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
         String api_key = YoutubeContent.YOUTUBE_API_KEY;
         ingredient += " 레시피";

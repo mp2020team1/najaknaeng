@@ -2,6 +2,7 @@ package com.example.najakneang.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -16,5 +17,12 @@ public class FridgeActivity extends AppCompatActivity {
 
         String test = getIntent().getStringExtra("FRIDGE");
         Log.i("FRIDGE", test);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        setResult(RESULT_OK);
+        finish();
     }
 }
