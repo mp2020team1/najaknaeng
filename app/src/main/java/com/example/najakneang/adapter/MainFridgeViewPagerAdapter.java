@@ -49,7 +49,7 @@ public class MainFridgeViewPagerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFridgeViewPagerHolder holder, int position) {
-        if (!cursor.moveToPosition(position)){
+        if (!cursor.moveToPosition(holder.getAdapterPosition())){
             holder.text.setText("냉장고 추가");
             holder.view.setOnClickListener(view -> {
                 final Context context = view.getContext();
@@ -69,10 +69,10 @@ public class MainFridgeViewPagerAdapter
         holder.view.setOnClickListener(view -> {
             Context context = view.getContext();
             Log.i("cursor", cursor.getPosition() + "입니다.");
-
+            Log.i("cursor", holder.text.getText().toString() + "입니다.");
             Intent intent = new Intent(context.getApplicationContext(), FridgeActivity.class);
-            intent.putExtra("FRIDGE", cursor.getString(
-                    cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
+
+            intent.putExtra("FRIDGE", holder.text.getText().toString());
             context.startActivity(intent);
         });
     }

@@ -23,32 +23,34 @@ class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 
     protected final TextView sectionName;
     protected final RecyclerView sectionPreview;
+    private RecyclerView mainRecycler;
+
 
     public FridgeRecyclerHolder(@NonNull View view) {
         super(view);
 
         this.sectionName = view.findViewById(R.id.section_name_section_fridge);
-        this.sectionPreview = view.findViewById(R.id.recycler_section_fridge);
-
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int pos = getAdapterPosition();
-//                if(pos != recyclerView.NO_POSITION){
-//                    mListener.onItemClick(v, pos);
-//                }
-//            }
-//        });
-//        view.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                int pos = getAdapterPosition();
-//                if(pos != recyclerView.NO_POSITION){
-//                    mLongListener.onItemLongClick(v, pos);
-//                }
-//                return true;
-//            }
-//        });
+        this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
+        mainRecycler = view.findViewById(R.id.recycler_section_fridge);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = getAdapterPosition();
+                if(pos != mainRecycler.NO_POSITION){
+                    //mListener.onItemClick(v, pos);
+                }
+            }
+        });
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                int pos = getAdapterPosition();
+                if(pos != mainRecycler.NO_POSITION){
+                    //mLongListener.onItemLongClick(v, pos);
+                }
+                return true;
+            }
+        });
     }
 
 }
