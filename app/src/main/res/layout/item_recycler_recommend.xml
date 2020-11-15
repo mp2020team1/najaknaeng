@@ -23,12 +23,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:maxLines = "2"
+            android:ellipsize="end"
             android:id="@+id/title_item_recommend" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:maxLines = "2"
+            android:ellipsize="end"
             android:id="@+id/creator_item_recommend" />
 
     </LinearLayout>

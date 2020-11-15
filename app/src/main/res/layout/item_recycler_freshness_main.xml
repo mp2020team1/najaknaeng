@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:layout_width="77dp"
+    android:layout_height="wrap_content"
     android:gravity="center"
-    android:padding="10dp"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image_item_freshness_main"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="5dp"
-        android:id="@+id/image_item_freshness_main" />
+        android:layout_marginBottom="5dp" />
 
     <TextView
+        android:id="@+id/name_item_freshness_main"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/name_item_freshness_main" />
+        android:layout_height="wrap_content" />
 
     <TextView
+        android:id="@+id/remain_item_freshness_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/remain_item_freshness_main" />
+        android:singleLine="true"
+        android:ellipsize="marquee" />
 
 </LinearLayout>

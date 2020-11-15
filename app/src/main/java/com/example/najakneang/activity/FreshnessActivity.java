@@ -36,7 +36,13 @@ public class FreshnessActivity extends AppCompatActivity {
     private static final int SECOND = 1;
     private final String[] tabSetting = {"전체", "전체"};
     static SQLiteDatabase db;
-    static HashMap<String,String> mapSelection = new HashMap<String,String>(){};
+    static HashMap<String,String> storageSelection = new HashMap<String,String>(){
+        {put("전체", "*"); put("냉장", "FRIDGE"); put("냉동", "FREEZE"); put("실온", "SRT");}
+    };
+    static HashMap<String,String> typeSelection = new HashMap<String,String>(){
+        {put("전체", "*"); put("과일", "FRUIT"); put("채소", "VEGETABLE"); put("수산","FISH");
+        put("육류", "MEAT"); put("유제품", "DAIRY"); put("반찬", "SIDE_DISH"); put("기타", "OTHER");}
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

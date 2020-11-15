@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -348,6 +349,9 @@ public class MainActivity extends AppCompatActivity {
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
+            }
+            else{
+                Log.i("Youtube", conn.getResponseCode() + "인 접속오류!"); //지우지 말것
             }
             conn.disconnect();
 
