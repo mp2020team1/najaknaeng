@@ -15,7 +15,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -28,7 +27,6 @@ import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,8 @@ import com.example.najakneang.activity.FridgeSectionActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
 
+
+//      TODO: 구역별 미리보기 만들기
 class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 
     protected final View view;
@@ -39,26 +40,6 @@ class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
         this.sectionName = view.findViewById(R.id.section_name_section_fridge);
         this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
         mainRecycler = view.findViewById(R.id.recycler_section_fridge);
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int pos = getAdapterPosition();
-//                if(pos != mainRecycler.NO_POSITION){
-//
-//                }
-//            }
-//        });
-//        view.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                int pos = getAdapterPosition();
-//                if(pos != mainRecycler.NO_POSITION){
-//                    mLongClickListener.onItemLongClick(v, pos);
-//                }
-//                return true;
-//            }
-//        });
-
     }
 
 }
@@ -86,28 +67,6 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
             String fridge = cursor.getString(
                     cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_FRIDGE));
             holder.sectionName.setText(name);
-//            Context context = holder.itemView.getContext();
-//            SQLiteDatabase db;
-//            DBHelper dbHelper= new DBHelper(context);
-//            db = dbHelper.getWritableDatabase();
-//            Cursor sectionGoods = db.query(
-//                    DBContract.GoodsEntry.TABLE_NAME,
-//                    new String[] {
-//                            DBContract.GoodsEntry.COLUMN_NAME,
-//                            DBContract.GoodsEntry.COLUMN_FRIDGE,
-//                            DBContract.GoodsEntry.COLUMN_SECTION,
-//                            DBContract.GoodsEntry.COLUMN_EXPIREDATE
-//                    },
-//                    "FRIDGE=? and SECTION=?",
-//                    new String[]{fridge,name},
-//                    null,
-//                    null,
-//                    DBContract.GoodsEntry.COLUMN_EXPIREDATE
-//            );
-//
-//            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(sectionGoods);
-//            holder.sectionPreview.setAdapter(adapter);
-            //holder.sectionPreview.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             holder.view.setOnClickListener(view->{
                 Context context = view.getContext();
                 Intent intent = new Intent(context.getApplicationContext(), FridgeSectionActivity.class);

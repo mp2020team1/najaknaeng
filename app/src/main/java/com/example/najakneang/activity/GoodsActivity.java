@@ -7,13 +7,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,13 +28,16 @@ public class GoodsActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private Cursor cursor;
-
+    // 임시 이미지
+    int imageType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods);
 
         long goodsId = getIntent().getLongExtra("GOODSID",0);
+        //임시 이미지 받기 TODO: 나중에 더 좋은 타입에 따른 이미지 불러오는 방법 찾기
+        imageType = getIntent().getIntExtra("IMAGE",0);
 
         getGoodsCursor(goodsId);
         setupToolbar();
@@ -47,7 +48,6 @@ public class GoodsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar_goods);
 
         String title = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
-        Log.i("title",title);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
@@ -67,7 +67,8 @@ public class GoodsActivity extends AppCompatActivity {
         String nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         String expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
         name.setText(nameStr);
-        image.setImageResource(cursor.getInt(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_IMAGE)));
+        //임시 이미지 적용
+        image.setImageResource(imageType);
         quantity.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY)));
         remain.setText(DBContract.GoodsEntry.getRemain(expireDate) + "일");
         type.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME)));
@@ -102,7 +103,6 @@ public class GoodsActivity extends AppCompatActivity {
 
         String selection = DBContract.GoodsEntry._ID + "=?";
         String[] selectionArgs = { String.valueOf(id) };
-        Log.i("iisol",selection+"  "+selectionArgs[0]);
         cursor = db.query(
                 DBContract.GoodsEntry.TABLE_NAME,
                 projection,

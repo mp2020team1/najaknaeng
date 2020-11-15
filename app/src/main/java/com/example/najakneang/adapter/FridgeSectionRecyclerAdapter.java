@@ -55,10 +55,6 @@ public class FridgeSectionRecyclerAdapter
 
         String name = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
-//        int quantity = cursor.getInt(
-//                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY));
-//        String registDate = cursor.getString(
-//                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_REGISTDATE));
         long id = cursor.getLong(
                 cursor.getColumnIndex(DBContract.GoodsEntry._ID));
         String expireDate = cursor.getString(
@@ -66,10 +62,7 @@ public class FridgeSectionRecyclerAdapter
         long remain = DBContract.GoodsEntry.getRemain(expireDate);
         String type = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
-//        String fridge = cursor.getString(
-//                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_FRIDGE));
-//        String section = cursor.getString(
-//                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_SECTION));
+
         int image;
         switch(type){
             case "fruit":
@@ -97,14 +90,7 @@ public class FridgeSectionRecyclerAdapter
             Context context = view.getContext();
             Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
             intent.putExtra("GOODSID", id);
-//            intent.putExtra("NAME", name);
-//            intent.putExtra("QUANTITY", quantity);
-//            intent.putExtra("REGISTDATE", registDate);
-//            intent.putExtra("EXPIREDATE", expireDate);
-//            intent.putExtra("TYPE", type);
-//            intent.putExtra("FRIDGE", fridge);
-//            intent.putExtra("SECTION", section);
-//            intent.putExtra("REMAIN", remain);
+            intent.putExtra("IMAGE", image);
             context.startActivity(intent);
         });
     }

@@ -1,16 +1,13 @@
 package com.example.najakneang.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,8 +65,6 @@ public class MainFridgeViewPagerAdapter
 
         holder.view.setOnClickListener(view -> {
             Context context = view.getContext();
-            Log.i("cursor", cursor.getPosition() + "입니다.");
-            Log.i("cursor", holder.text.getText().toString() + "입니다.");
             Intent intent = new Intent(context.getApplicationContext(), FridgeActivity.class);
 
             intent.putExtra("FRIDGE", holder.text.getText().toString());
