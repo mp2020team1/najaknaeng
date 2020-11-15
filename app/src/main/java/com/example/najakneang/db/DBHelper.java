@@ -11,7 +11,6 @@ public class DBHelper extends SQLiteOpenHelper {
             "CREATE TABLE "+ DBContract.GoodsEntry.TABLE_NAME +" ("+
                     DBContract.GoodsEntry._ID + " INTEGER PRIMARY KEY," +
                     DBContract.GoodsEntry.COLUMN_NAME + " TEXT," +
-                    DBContract.GoodsEntry.COLUMN_IMAGE + " INTEGER NOT NULL," +
                     DBContract.GoodsEntry.COLUMN_QUANTITY + " INTEGER NOT NULL," +
                     DBContract.GoodsEntry.COLUMN_REGISTDATE + " TEXT," +
                     DBContract.GoodsEntry.COLUMN_EXPIREDATE + " TEXT," +
@@ -35,7 +34,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES3 =
             "CREATE TABLE " + DBContract.FridgeEntry.TABLE_NAME + " (" +
                     DBContract.FridgeEntry._ID + " INTEGER PRIMARY KEY," +
-                    DBContract.FridgeEntry.COLUMN_NAME + " TEXT)";
+                    DBContract.FridgeEntry.COLUMN_NAME + " TEXT," +
+                    DBContract.FridgeEntry.COLUMN_CATEGORY + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES3 =
             "DROP TABLE IF EXISTS " + DBContract.FridgeEntry.TABLE_NAME;

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -35,8 +34,7 @@ public class GoodsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods);
 
-        Intent intent = getIntent();
-        int goodsId = intent.getIntExtra("goodsID", 0);
+        long goodsId = getIntent().getLongExtra("GOODSID",0);
 
         getGoodsCursor(goodsId);
         setupToolbar();
@@ -45,9 +43,9 @@ public class GoodsActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar_goods);
-        toolbar.setTitle(
-                cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME))
-        );
+
+        String title = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,17 +57,18 @@ public class GoodsActivity extends AppCompatActivity {
         TextView quantity = findViewById(R.id.text_quantity_goods);
         TextView remain = findViewById(R.id.text_remain_goods);
         TextView type = findViewById(R.id.text_type_goods);
-        // 그러고보니 메모가 있었네?.. TODO: DB에 메모 추가 후 연동 귀찮으면 버리자
+        // 그러고보니 메모가 있었네?.. TODO: DB에 메모 추가 후 연동 귀찮으면 버리자 -> 그래 버리자!
         EditText memo = findViewById(R.id.memo_goods);
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_goods);
 
         String nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         String expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
+        String typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         name.setText(nameStr);
-        image.setImageResource(cursor.getInt(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_IMAGE)));
+        image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(typeStr));
         quantity.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY)));
         remain.setText(DBContract.GoodsEntry.getRemain(expireDate) + "일");
-        type.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME)));
+        type.setText(typeStr);
 
         ArrayList<YoutubeContent> contents = new ArrayList<>();
         Handler handler = new Handler();
@@ -89,11 +88,10 @@ public class GoodsActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void getGoodsCursor(int id) {
+    private void getGoodsCursor(long id) {
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_IMAGE,
                 DBContract.GoodsEntry.COLUMN_QUANTITY,
                 DBContract.GoodsEntry.COLUMN_TYPE,
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE
@@ -101,7 +99,6 @@ public class GoodsActivity extends AppCompatActivity {
 
         String selection = DBContract.GoodsEntry._ID + " = ?";
         String[] selectionArgs = { String.valueOf(id) };
-
         cursor = db.query(
                 DBContract.GoodsEntry.TABLE_NAME,
                 projection,
@@ -109,10 +106,11 @@ public class GoodsActivity extends AppCompatActivity {
                 selectionArgs,
                 null,
                 null,
-                null
+                null,
+                "1"
         );
 
-        cursor.moveToNext();
+        cursor.moveToFirst();
     }
 
     @Override

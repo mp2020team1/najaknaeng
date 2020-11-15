@@ -1,53 +1,43 @@
 package com.example.najakneang.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.provider.BaseColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
+import com.example.najakneang.activity.FridgeSectionActivity;
+import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
 
 class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 
     protected final TextView sectionName;
+    protected final TextView sectionState;
     protected final RecyclerView sectionPreview;
 
     public FridgeRecyclerHolder(@NonNull View view) {
         super(view);
 
         this.sectionName = view.findViewById(R.id.section_name_section_fridge);
-        this.sectionPreview = view.findViewById(R.id.recycler_section_fridge);
-
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int pos = getAdapterPosition();
-//                if(pos != recyclerView.NO_POSITION){
-//                    mListener.onItemClick(v, pos);
-//                }
-//            }
-//        });
-//        view.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                int pos = getAdapterPosition();
-//                if(pos != recyclerView.NO_POSITION){
-//                    mLongListener.onItemLongClick(v, pos);
-//                }
-//                return true;
-//            }
-//        });
+        this.sectionState = view.findViewById(R.id.section_state_section_fridge);
+        this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
     }
 
 }
 
 public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHolder> {
 
+    private final SQLiteDatabase db = MainActivity.db;
     private final Cursor cursor;
 
     public FridgeRecyclerAdapter(Cursor cursor) { this.cursor = cursor; }
@@ -63,39 +53,65 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
 
     @Override
     public void onBindViewHolder(@NonNull FridgeRecyclerHolder holder, int position) {
-        if(cursor.moveToPosition(position)) {
+        Context context = holder.itemView.getContext();
+
+        if (cursor.moveToPosition(position)) {
             String name = cursor.getString(
                     cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_NAME));
+            String state = cursor.getString(
+                    cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
             String fridge = cursor.getString(
                     cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_FRIDGE));
+
+
             holder.sectionName.setText(name);
-//            Context context = holder.itemView.getContext();
-//            SQLiteDatabase db;
-//            DBHelper dbHelper= new DBHelper(context);
-//            db = dbHelper.getWritableDatabase();
-//            Cursor sectionGoods = db.query(
-//                    DBContract.GoodsEntry.TABLE_NAME,
-//                    new String[] {
-//                            DBContract.GoodsEntry.COLUMN_NAME,
-//                            DBContract.GoodsEntry.COLUMN_FRIDGE,
-//                            DBContract.GoodsEntry.COLUMN_SECTION,
-//                            DBContract.GoodsEntry.COLUMN_EXPIREDATE
-//                    },
-//                    "FRIDGE=? and SECTION=?",
-//                    new String[]{fridge,name},
-//                    null,
-//                    null,
-//                    DBContract.GoodsEntry.COLUMN_EXPIREDATE
-//            );
-//
-//            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(sectionGoods);
-//            holder.sectionPreview.setAdapter(adapter);
-            //holder.sectionPreview.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+            holder.sectionState.setText(state);
+            holder.itemView.setOnClickListener(view -> {
+                Intent intent = new Intent(context.getApplicationContext(), FridgeSectionActivity.class);
+                intent.putExtra("SECTION", name);
+                intent.putExtra("FRIDGE", fridge);
+                context.startActivity(intent);
+            });
+
+            Cursor goodsCursor = getGoodsCursor(fridge, name);
+            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(goodsCursor);
+            holder.sectionPreview.setAdapter(adapter);
+            holder.sectionPreview.setLayoutManager(
+                    new LinearLayoutManager(
+                            context, LinearLayoutManager.HORIZONTAL, false
+                    )
+            );
         }
+
+        if (position == getItemCount() - 1) cursor.close();
     }
 
     @Override
-    public int getItemCount() {
-        return cursor.getCount();
+    public int getItemCount() { return cursor.getCount(); }
+
+    private Cursor getGoodsCursor(String fridgeName, String sectionName) {
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.GoodsEntry.COLUMN_NAME,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMN_TYPE,
+                DBContract.GoodsEntry.COLUMN_FRIDGE,
+                DBContract.GoodsEntry.COLUMN_SECTION
+        };
+
+        String selection = DBContract.GoodsEntry.COLUMN_FRIDGE + " = ? AND " +
+                DBContract.GoodsEntry.COLUMN_SECTION + " = ?";
+        String[] selectionArgs = { fridgeName, sectionName };
+
+        return db.query(
+                DBContract.GoodsEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null,
+                "3"
+        );
     }
 }
