@@ -17,16 +17,11 @@ import com.example.najakneang.R;
 
 public class FridgeSectionActivity extends AppCompatActivity {
 
-    DBHelper dbHelper;
-    SQLiteDatabase db;
-
+    SQLiteDatabase db = MainActivity.db;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section);
-
-        dbHelper = new DBHelper(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
 
         String fridge = getIntent().getStringExtra("FRIDGE");
         String section = getIntent().getStringExtra("SECTION");
@@ -41,7 +36,6 @@ public class FridgeSectionActivity extends AppCompatActivity {
                 BaseColumns._ID,
                 DBContract.GoodsEntry.COLUMN_NAME,
                 DBContract.GoodsEntry.COLUMN_QUANTITY,
-                DBContract.GoodsEntry.COLUMN_IMAGE,
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE,
                 DBContract.GoodsEntry.COLUMN_TYPE,

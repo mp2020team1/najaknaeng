@@ -50,7 +50,7 @@ public class FreshnessRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull FreshnessRecyclerHolder holder, int position) {
-
+        if (position == getItemCount() - 1) cursor.close();
     }
 
     @Override

@@ -28,16 +28,13 @@ public class GoodsActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private Cursor cursor;
-    // 임시 이미지
-    int imageType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods);
 
         long goodsId = getIntent().getLongExtra("GOODSID",0);
-        //임시 이미지 받기 TODO: 나중에 더 좋은 타입에 따른 이미지 불러오는 방법 찾기
-        imageType = getIntent().getIntExtra("IMAGE",0);
 
         getGoodsCursor(goodsId);
         setupToolbar();
@@ -66,12 +63,12 @@ public class GoodsActivity extends AppCompatActivity {
 
         String nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         String expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
+        String typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         name.setText(nameStr);
-        //임시 이미지 적용
-        image.setImageResource(imageType);
+        image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(typeStr));
         quantity.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY)));
         remain.setText(DBContract.GoodsEntry.getRemain(expireDate) + "일");
-        type.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME)));
+        type.setText(typeStr);
 
         ArrayList<YoutubeContent> contents = new ArrayList<>();
         Handler handler = new Handler();
@@ -95,13 +92,12 @@ public class GoodsActivity extends AppCompatActivity {
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_IMAGE,
                 DBContract.GoodsEntry.COLUMN_QUANTITY,
                 DBContract.GoodsEntry.COLUMN_TYPE,
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE
         };
 
-        String selection = DBContract.GoodsEntry._ID + "=?";
+        String selection = DBContract.GoodsEntry._ID + " = ?";
         String[] selectionArgs = { String.valueOf(id) };
         cursor = db.query(
                 DBContract.GoodsEntry.TABLE_NAME,
@@ -110,10 +106,11 @@ public class GoodsActivity extends AppCompatActivity {
                 selectionArgs,
                 null,
                 null,
-                null
+                null,
+                "1"
         );
 
-        cursor.moveToNext();
+        cursor.moveToFirst();
     }
 
     @Override

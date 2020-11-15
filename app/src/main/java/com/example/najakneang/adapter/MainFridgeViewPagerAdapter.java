@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -18,13 +21,16 @@ import com.example.najakneang.db.DBContract;
 import com.example.najakneang.model.Dialog_Fridge;
 
 class MainFridgeViewPagerHolder extends RecyclerView.ViewHolder {
-    protected final View view;
+
     protected final TextView text;
+    protected final FrameLayout layout;
+    protected final ImageView addIcon;
 
     public MainFridgeViewPagerHolder(@NonNull View view) {
         super(view);
-        this.view = view;
         this.text = view.findViewById(R.id.text_item_fridge_main);
+        this.layout = view.findViewById(R.id.layout_item_fridge_main);
+        this.addIcon = view.findViewById(R.id.add_icon_item_fridge_main);
     }
 }
 
@@ -46,34 +52,38 @@ public class MainFridgeViewPagerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MainFridgeViewPagerHolder holder, int position) {
-        if (!cursor.moveToPosition(holder.getAdapterPosition())){
-            holder.text.setText("냉장고 추가");
-            holder.view.setOnClickListener(view -> {
-                final Context context = view.getContext();
-                final View dialog_view= view.inflate(context,R.layout.dialog_fridge,null);
+        Context context = holder.itemView.getContext();
 
-                Dialog_Fridge dialog_fridge = new Dialog_Fridge(context);
+        if (!cursor.moveToPosition(position)) {
+            holder.layout.setBackgroundColor(context.getColor(R.color.gray_light));
+            holder.addIcon.setVisibility(View.VISIBLE);
+            holder.itemView.setOnClickListener(view -> {
+                Dialog_Fridge dialog_fridge = new Dialog_Fridge(view.getContext());
                 dialog_fridge.setCancelable(false);
                 dialog_fridge.show();
             });
+
+            cursor.close();
             return;
         }
 
         String name = cursor.getString(
                 cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME));
+        String category = cursor.getString(
+                cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_CATEGORY));
+
         holder.text.setText(name);
-
-        holder.view.setOnClickListener(view -> {
-            Context context = view.getContext();
+        holder.layout.setBackgroundResource(DBContract.FridgeEntry.categoryImageMap.get(category));
+        holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context.getApplicationContext(), FridgeActivity.class);
-
-            intent.putExtra("FRIDGE", holder.text.getText().toString());
+            intent.putExtra("FRIDGE", name);
+            intent.putExtra("CATEGORY", category);
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return cursor.getCount()+1;
+        return cursor.getCount() + 1;
     }
 }

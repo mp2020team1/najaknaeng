@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.najakneang.activity.FridgeSectionActivity;
 import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
@@ -63,34 +62,15 @@ public class FridgeSectionRecyclerAdapter
         String type = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
 
-        int image;
-        switch(type){
-            case "fruit":
-                image = R.drawable.fruit;
-                break;
-            case "vegetable":
-                image = R.drawable.vegetable;
-                break;
-            case "meat":
-                image = R.drawable.meat;
-                break;
-            case "fish":
-                image = R.drawable.fish;
-                break;
-            default:
-                image = R.drawable.ic_launcher_background;
-        }
-
         holder.name.setText(name);
-        if(remain>0){holder.remain.setText(remain + "일");}
-        else if(remain==0){holder.remain.setText("오늘까지");}
-        else{holder.remain.setText(Math.abs(remain) + "일 지남");}
-        holder.image.setImageResource(image);
+        holder.remain.setText(
+                remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
+        );
+        holder.image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(type));
         holder.view.setOnClickListener(view->{
             Context context = view.getContext();
             Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
             intent.putExtra("GOODSID", id);
-            intent.putExtra("IMAGE", image);
             context.startActivity(intent);
         });
     }

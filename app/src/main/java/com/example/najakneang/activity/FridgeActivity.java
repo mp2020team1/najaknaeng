@@ -1,13 +1,19 @@
 package com.example.najakneang.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.najakneang.R;
@@ -18,56 +24,78 @@ import com.example.najakneang.db.DBHelper;
 
 public class FridgeActivity extends AppCompatActivity {
 
-    DBHelper dbHelper;
-    SQLiteDatabase db;
-    TextView title;
+    private final SQLiteDatabase db = MainActivity.db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fridge);
-        title = (TextView) findViewById(R.id.fridgeTitle);
 
-        dbHelper = new DBHelper(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
+        Intent intent = getIntent();
+        String fridgeName = intent.getStringExtra("FRIDGE");
+        String fridgeCategory = intent.getStringExtra("CATEGORY");
 
-
-        String fridgeName = getIntent().getStringExtra("FRIDGE");
-        title.setText(fridgeName);
         loadSection(fridgeName);
-        loadGoods(fridgeName);
+
+        setupToolbar(fridgeName, fridgeCategory);
     }
 
-    private void loadGoods(String fridgeName) {
-//        RecyclerView recyclerView = findViewById(R.id.recycler_section_fridge);
+    private void setupToolbar(String name, String category) {
+        Toolbar toolbar = findViewById(R.id.toolbar_fridge);
 
+        toolbar.setTitle(name);
+        toolbar.setSubtitle(category);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void loadSection(String fridgeName) {
-
+    private void loadSection(String name) {
         String[] projection = {
-            BaseColumns._ID,
-            DBContract.SectionEntry.COLUMN_NAME,
-            DBContract.SectionEntry.COLUMN_FRIDGE,
-            DBContract.SectionEntry.COLUMN_STORE_STATE
+                BaseColumns._ID,
+                DBContract.SectionEntry.COLUMN_NAME,
+                DBContract.SectionEntry.COLUMN_FRIDGE,
+                DBContract.SectionEntry.COLUMN_STORE_STATE
         };
 
-        Cursor cursor = db.query(
+        String selection = DBContract.SectionEntry.COLUMN_FRIDGE + " = ?";
+        String[] selectionArgs = { name };
+
+        Cursor sectionCursor = db.query(
                 DBContract.SectionEntry.TABLE_NAME,
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null,
                 null,
                 null
         );
 
         RecyclerView recyclerView = findViewById(R.id.recycler_section_fridge);
-        FridgeRecyclerAdapter adapter = new FridgeRecyclerAdapter(cursor);
+        FridgeRecyclerAdapter adapter = new FridgeRecyclerAdapter(sectionCursor);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_fridge, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.option_add:
+                // section 추가 기능
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed(){

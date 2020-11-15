@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="5dp"
-        android:id="@+id/image_item_freshness_main" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/image_item_freshness_main" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:id="@+id/name_item_freshness_main" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/remain_item_freshness_main" />
+
+    </LinearLayout>
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/name_item_freshness_main" />
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:src="@drawable/ic_more_horizontal"
+        android:id="@+id/more_icon_item_freshness_main" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/remain_item_freshness_main" />
-
-</LinearLayout>
+</FrameLayout>
