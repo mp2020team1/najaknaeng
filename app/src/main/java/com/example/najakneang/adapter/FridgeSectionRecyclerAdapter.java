@@ -50,29 +50,31 @@ public class FridgeSectionRecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull FridgeSectionRecyclerHolder holder, int position) {
-        if (!cursor.moveToPosition(position) || position>2) return;
+        if (cursor.moveToPosition(position)) {
+            String name = cursor.getString(
+                    cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+            long id = cursor.getLong(
+                    cursor.getColumnIndex(DBContract.GoodsEntry._ID));
+            String expireDate = cursor.getString(
+                    cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
+            long remain = DBContract.GoodsEntry.getRemain(expireDate);
+            String type = cursor.getString(
+                    cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
 
-        String name = cursor.getString(
-                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
-        long id = cursor.getLong(
-                cursor.getColumnIndex(DBContract.GoodsEntry._ID));
-        String expireDate = cursor.getString(
-                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
-        long remain = DBContract.GoodsEntry.getRemain(expireDate);
-        String type = cursor.getString(
-                cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
+            holder.name.setText(name);
+            holder.remain.setText(
+                    remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
+            );
+            holder.image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(type));
+            holder.view.setOnClickListener(view -> {
+                Context context = view.getContext();
+                Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
+                intent.putExtra("GOODSID", id);
+                context.startActivity(intent);
+            });
+        }
 
-        holder.name.setText(name);
-        holder.remain.setText(
-                remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
-        );
-        holder.image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(type));
-        holder.view.setOnClickListener(view->{
-            Context context = view.getContext();
-            Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
-            intent.putExtra("GOODSID", id);
-            context.startActivity(intent);
-        });
+        if (position == getItemCount() - 1) cursor.close();
     }
 
     @Override

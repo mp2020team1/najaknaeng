@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setDB(){
-        try{
+        try {
             Thread dbOpenThread = new Thread(() -> {
                 dbHelper = new DBHelper(getApplicationContext());
                 db = dbHelper.getWritableDatabase();
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             });
             dbOpenThread.start();
             dbOpenThread.join();
-        }catch(Exception e){
+        } catch(Exception e){
             e.printStackTrace();
         }
     }
