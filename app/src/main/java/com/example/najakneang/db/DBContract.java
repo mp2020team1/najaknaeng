@@ -52,7 +52,8 @@ public final class DBContract {
         public static final HashMap<String, Integer> categoryImageMap = new HashMap<String, Integer>() {
             {
                 put("냉장고", R.drawable.img_fridge);
-                put("김치냉장고", R.drawable.img_fridge_kimchi);
+                put("김치 냉장고", R.drawable.img_fridge_kimchi);
+                put("와인 냉장고", R.drawable.img_fridge_kimchi);
                 put("팬트리", R.drawable.img_pantry);
             }
         };

@@ -82,4 +82,3 @@ public class FridgeSectionRecyclerAdapter
         return cursor.getCount();
     }
 }
-

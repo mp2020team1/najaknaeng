@@ -4,7 +4,8 @@ import android.graphics.Bitmap;
 
 public class YoutubeContent {
 
-    public static final String YOUTUBE_API_KEY = "AIzaSyBvbUl4A4Y7lAbfAoUunccnorGm0YoqNfE";
+//    public static final String YOUTUBE_API_KEY = "AIzaSyBvbUl4A4Y7lAbfAoUunccnorGm0YoqNfE";
+    public static final String YOUTUBE_API_KEY = "AIzaSyAO2w4y965a2vd1V-2drGRtLlrUWzA1hGg";
 
     private String title;
     private String creator;

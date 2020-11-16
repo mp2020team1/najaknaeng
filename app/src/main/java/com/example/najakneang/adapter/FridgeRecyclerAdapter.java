@@ -74,7 +74,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
             });
 
             Cursor goodsCursor = getGoodsCursor(fridge, name);
-            MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(goodsCursor);
+            FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(goodsCursor);
             holder.sectionPreview.setAdapter(adapter);
             holder.sectionPreview.setLayoutManager(
                     new LinearLayoutManager(

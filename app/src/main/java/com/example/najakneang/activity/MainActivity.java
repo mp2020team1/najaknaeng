@@ -20,7 +20,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.najakneang.adapter.MainFreshnessRecyclerAdapter;
+import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
+import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
@@ -44,16 +45,16 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity {
 
     private long backPressedTime = 0;
-
-    DBHelper dbHelper;
-    public static SQLiteDatabase db;
+    static public int fridge_id = 0;
+    static public SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setDB();
+
+        setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
     }
 
     //RecyclerView 정보 갱신
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
-        setupRecommendRecycler();
     }
 
     //두번 뒤로가기해야 꺼지게하기
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private void setDB(){
         try {
             Thread dbOpenThread = new Thread(() -> {
-                dbHelper = new DBHelper(getApplicationContext());
+                DBHelper dbHelper = new DBHelper(getApplicationContext());
                 db = dbHelper.getWritableDatabase();
                 //insertFakeData();
             });
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
+        db.delete(DBContract.GoodsEntry.TABLE_NAME, null, null);
         ContentValues values = new ContentValues();
 
         values.put(DBContract.FridgeEntry.COLUMN_NAME, "냉장고 1");
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         values.clear();
 
         values.put(DBContract.FridgeEntry.COLUMN_NAME, "김치냉장고 1");
-        values.put(DBContract.FridgeEntry.COLUMN_CATEGORY, "김치냉장고");
+        values.put(DBContract.FridgeEntry.COLUMN_CATEGORY, "김치 냉장고");
         db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
         values.clear();
 
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("i", cursor.getCount()+"");
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
-        MainFreshnessRecyclerAdapter adapter = new MainFreshnessRecyclerAdapter(cursor);
+        FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(
@@ -247,8 +248,8 @@ public class MainActivity extends AppCompatActivity {
         MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(cursor);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        viewPager.setCurrentItem(fridge_id);
     }
-
 
     private void setupRecommendRecycler() {
         String[] projection = {
@@ -296,10 +297,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * 오늘의 추천메뉴 설정
-     * 재사용성을 위해 수정했음.
-     */
     public static void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
         String api_key = YoutubeContent.YOUTUBE_API_KEY;
         ingredient += " 레시피";
@@ -358,6 +355,9 @@ public class MainActivity extends AppCompatActivity {
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
+            }
+            else{
+                Log.i("Youtube", conn.getResponseCode() + "인 접속오류!"); //지우지 말것
             }
             conn.disconnect();
 

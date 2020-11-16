@@ -3,28 +3,54 @@ package com.example.najakneang.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.najakneang.R;
+import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
+import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
+import com.example.najakneang.db.DBContract;
+import com.example.najakneang.db.DBHelper;
+import com.google.android.flexbox.AlignSelf;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.HashMap;
 
 public class FreshnessActivity extends AppCompatActivity {
 
     private static final int FIRST = 0;
     private static final int SECOND = 1;
+
+    private static String select_first = DBContract.SectionEntry.COLUMN_STORE_STATE;
+    private static String select_second = DBContract.GoodsEntry.COLUMN_TYPE;
+
+    private final SQLiteDatabase db = MainActivity.db;
+
     private final String[] tabSetting = {"전체", "전체"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_freshness);
 
+        setupFreshnessRecycler();
         setupToolbar();
         setupTabLayout();
     }
@@ -40,14 +66,11 @@ public class FreshnessActivity extends AppCompatActivity {
         TabLayout firstTab = findViewById(R.id.tablayout_first_freshness);
         TabLayout secondTab = findViewById(R.id.tablayout_second_freshness);
 
-        String[] firstTabNameList = {"전체", "냉장", "냉동", "실온"};
-        String[] secondTabNameList = {"전체", "과일", "채소", "수산", "육류", "유제품", "반찬", "기타"};
-
-        for (String name: firstTabNameList) {
+        for (String name: getResources().getStringArray(R.array.firstTab) ) {
             firstTab.addTab(firstTab.newTab().setText(name));
         }
 
-        for (String name: secondTabNameList) {
+        for (String name: getResources().getStringArray(R.array.secondTab)) {
             secondTab.addTab(secondTab.newTab().setText(name));
         }
 
@@ -55,14 +78,14 @@ public class FreshnessActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 String tabName = tab.getText().toString();
-                if (tabSetting[FIRST].equals(tabName)) return;
+
+                select_first = tabName.equals("전체") ? DBContract.SectionEntry.COLUMN_STORE_STATE : "\"" + tabName + "\"";
+                setupFreshnessRecycler();
 
                 tabSetting[FIRST] = tabName;
                 tabSetting[SECOND] = "전체";
                 TabLayout.Tab secondEveryTab = secondTab.getTabAt(0);
                 secondEveryTab.select();
-
-//                adjustItems();
             }
 
             @Override
@@ -76,11 +99,12 @@ public class FreshnessActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 String tabName = tab.getText().toString();
+
+                select_second = tabName.equals("전체") ? DBContract.GoodsEntry.COLUMN_TYPE : "\"" + tabName + "\"";
+                setupFreshnessRecycler();
                 if (tabSetting[SECOND].equals(tabName)) return;
 
                 tabSetting[SECOND] = tabName;
-
-//                adjustItems();
             }
 
             @Override
@@ -91,19 +115,50 @@ public class FreshnessActivity extends AppCompatActivity {
         });
     }
 
-//    private void setupFreshnessRecycler() {
-//        RecyclerView recycler = findViewById(R.id.recycler_freshness_freshness);
-//
-//        recycler.setAdapter(adapter);
-//        recycler.setLayoutManager(new GridLayoutManager(this, 4));
-//    }
-//
-//    // TODO: Tab을 누를때마다 바뀌는 tabSetting에 따라 items를 조절해주고 recycler 새로고침
-//    private void adjustItems() {
-//        // Items 조절 알고리즘 필요!
-//
-//        adapter.notifyDataSetChanged();
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_freshness, menu);
+        return true;
+    }
+
+    private void setupFreshnessRecycler() {
+        // TODO: 실온은 따로 팬트리만 불러와야함.. 우짠다냐
+
+        String sql =
+                "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + ", " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + ", " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + ", " +
+                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE + ", " +
+                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_STORE_STATE +
+                " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.FridgeEntry.TABLE_NAME +
+                " ON " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = " +
+                DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + " = " +
+                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME +
+                " WHERE " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_STORE_STATE + " = " + select_first + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + " = " + select_second +
+                " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE;
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        /**
+         * TODO: Recyclerview의 margin을 조정하는등을 해서 맞출 필요가 있음
+         * 참고 : https://github.com/google/flexbox-layout
+         */
+
+        RecyclerView recycler = findViewById(R.id.recycler_freshness_freshness);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        recycler.setLayoutManager(layoutManager);
+
+        FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
+        recycler.setAdapter(adapter);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
