@@ -17,7 +17,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBContract.GoodsEntry.COLUMN_TYPE + " TEXT," +
                     DBContract.GoodsEntry.COLUMN_FRIDGE + " TEXT," +
                     DBContract.GoodsEntry.COLUMN_SECTION + " TEXT)";
-
     private static final String SQL_DELETE_ENTRIES1 =
             "DROP TABLE IF EXISTS " + DBContract.GoodsEntry.TABLE_NAME;
 

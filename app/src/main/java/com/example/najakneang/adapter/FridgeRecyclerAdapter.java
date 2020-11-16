@@ -96,7 +96,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE,
                 DBContract.GoodsEntry.COLUMN_TYPE,
                 DBContract.GoodsEntry.COLUMN_FRIDGE,
-                DBContract.GoodsEntry.COLUMN_SECTION
+                DBContract.GoodsEntry.COLUMN_SECTION,
         };
 
         String selection = DBContract.GoodsEntry.COLUMN_FRIDGE + " = ? AND " +
