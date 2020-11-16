@@ -79,17 +79,13 @@ public class FreshnessActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 String tabName = tab.getText().toString();
 
-                select_first = tabName.equals("전체") ? DBContract.SectionEntry.COLUMN_STORE_STATE : tabName;
+                select_first = tabName.equals("전체") ? DBContract.SectionEntry.COLUMN_STORE_STATE : "\"" + tabName + "\"";
                 setupFreshnessRecycler();
-                //Hashmap으로 분류예정
-                if (tabSetting[FIRST].equals(tabName)){ }
 
                 tabSetting[FIRST] = tabName;
                 tabSetting[SECOND] = "전체";
                 TabLayout.Tab secondEveryTab = secondTab.getTabAt(0);
                 secondEveryTab.select();
-
-//                adjustItems();
             }
 
             @Override
@@ -104,13 +100,11 @@ public class FreshnessActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 String tabName = tab.getText().toString();
 
-                select_second = tabName.equals("전체") ? DBContract.GoodsEntry.COLUMN_TYPE : tabName;
+                select_second = tabName.equals("전체") ? DBContract.GoodsEntry.COLUMN_TYPE : "\"" + tabName + "\"";
                 setupFreshnessRecycler();
                 if (tabSetting[SECOND].equals(tabName)) return;
 
                 tabSetting[SECOND] = tabName;
-
-//                adjustItems();
             }
 
             @Override
@@ -129,20 +123,24 @@ public class FreshnessActivity extends AppCompatActivity {
     }
 
     private void setupFreshnessRecycler() {
-        /**
-         * TODO:SQL 구문에 문제가 있음! 확인바람!
-         */
-        String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + "," +
-                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + "," +
-                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + "," +
-                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + "," +
-                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE + "," +
+        // TODO: 실온은 따로 팬트리만 불러와야함.. 우짠다냐
+
+        String sql =
+                "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + ", " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + ", " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + ", " +
+                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE + ", " +
                 DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_STORE_STATE +
-                " FROM " + DBContract.SectionEntry.TABLE_NAME + " INNER JOIN " + DBContract.GoodsEntry.TABLE_NAME +
+                " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.FridgeEntry.TABLE_NAME +
                 " ON " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = " +
-                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
+                DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + " = " +
+                DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME +
                 " WHERE " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_STORE_STATE + " = " + select_first + " AND " +
-                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + "=" + select_second +
+                DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + " = " + select_second +
                 " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE;
 
         Cursor cursor = db.rawQuery(sql, null);
