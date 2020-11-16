@@ -7,36 +7,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.activity.GoodsActivity;
+import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
 
-import java.util.HashMap;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * TODO:MainFreshnessRecycler랑 FreshnessRecycler랑 코드 일부분만 다르고 다를게 없다.
- * 따라서 MainActivty나 FreshnessActivty 둘 중어디냐에 따라 다른 기능을 냈으면..
- */
-
 class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
+    protected final View view;
     protected final TextView name;
     protected final TextView remain;
     protected final CircleImageView image;
-    protected final Context context;
+    protected final ImageView moreIcon;
 
     public FreshnessRecyclerHolder(@NonNull View view) {
         super(view);
-        this.context = view.getContext();
+        this.view = view;
         this.name = view.findViewById(R.id.name_item_freshness_main);
         this.remain = view.findViewById(R.id.remain_item_freshness_main);
         this.image = view.findViewById(R.id.image_item_freshness_main);
+        this.moreIcon = view.findViewById(R.id.more_icon_item_freshness_main);
     }
 }
 
@@ -44,10 +41,6 @@ public class FreshnessRecyclerAdapter
         extends RecyclerView.Adapter<FreshnessRecyclerHolder>{
 
     private final Cursor cursor;
-    private final HashMap<String,Integer> typeSelection = new HashMap<String, Integer>(){
-        {put("vegetable", R.drawable.vegetable); put("과일", R.drawable.fruit);
-         put("fish", R.drawable.fish); put("meat", R.drawable.meat);}
-    };
 
     public FreshnessRecyclerAdapter(Cursor cursor) { this.cursor = cursor; }
 
@@ -56,47 +49,45 @@ public class FreshnessRecyclerAdapter
     public FreshnessRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_recycler_freshness_main, viewGroup, false);
+
         return new FreshnessRecyclerHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FreshnessRecyclerHolder holder, int position) {
-        if (!cursor.moveToPosition(position)) return;
-
+        if (!cursor.moveToPosition(position)) {
+            if(holder.view.getContext().getClass() == MainActivity.class){holder.moreIcon.setVisibility(View.VISIBLE);}
+            cursor.close();
+            return;
+        }
 
         String name = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+        long id = cursor.getLong(
+                cursor.getColumnIndex(DBContract.GoodsEntry._ID));
         String expireDate = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
         long remain = DBContract.GoodsEntry.getRemain(expireDate);
         String type = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
 
-        int image;
-        if(type.equals("fruit")){ image = R.drawable.fruit; }
-        else if(type.equals("vegetable")){ image = R.drawable.vegetable; }
-        else if(type.equals("meat")){ image = R.drawable.meat; }
-        else if(type.equals("fish")){ image = R.drawable.fish; }
-        else{ image = R.drawable.ic_launcher_background; }
-
         holder.name.setText(name);
-        if(remain>0){holder.remain.setText(remain + "일");}
-        else if(remain==0){holder.remain.setText("오늘까지");}
-        else{holder.remain.setText(Math.abs(remain) + "일 지남");}
-
+        holder.remain.setText(
+                remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
+        );
+        Integer image = DBContract.GoodsEntry.typeIconMap.get(type);
         holder.image.setImageResource(image);
 
         holder.view.setOnClickListener(view -> {
-            String ingredientID = cursor.getString(
-                    cursor.getColumnIndex(DBContract.GoodsEntry._ID));
-            Intent intent = new Intent(view.getContext(), GoodsActivity.class);
-            intent.putExtra("IngredientID", ingredientID);
-            view.getContext().startActivity(intent);
+            Context context = view.getContext();
+            Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
+            intent.putExtra("GOODSID", id);
+            context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return cursor.getCount();
+        return cursor.getCount() + 1;
     }
 }

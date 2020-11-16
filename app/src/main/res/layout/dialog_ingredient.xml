@@ -9,7 +9,7 @@
         android:layout_height="40dp"
         android:background="#2F89D1"
         android:gravity="center"
-        android:text="냉장고 추가하기"
+        android:text="재료 추가하기"
         android:textColor="#ffffff"
         android:textSize="16dp"
         android:textStyle="bold" />
@@ -25,16 +25,15 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="냉장고 이름"
+            android:text="재료 이름"
             android:textStyle="bold"
             android:textSize="16dp" />
 
         <EditText
-            android:id="@+id/editFridgeName"
+            android:id="@+id/editIngredientName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="냉장고 이름은 중복이 불가능합니다!"
             android:inputType="textPersonName" />
 
         <TextView
@@ -46,7 +45,7 @@
             android:text="냉장고 종류" />
 
         <Spinner
-            android:id="@+id/category_spinner"
+            android:id="@+id/ingredient_type_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"/>

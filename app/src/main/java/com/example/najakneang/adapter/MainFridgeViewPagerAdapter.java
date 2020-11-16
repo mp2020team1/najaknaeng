@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
 import com.example.najakneang.activity.FridgeActivity;
+import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.model.Dialog_Fridge;
 
@@ -75,6 +76,7 @@ public class MainFridgeViewPagerAdapter
         holder.text.setText(name);
         holder.layout.setBackgroundResource(DBContract.FridgeEntry.categoryImageMap.get(category));
         holder.itemView.setOnClickListener(view -> {
+            MainActivity.fridge_id = holder.getAdapterPosition();
             Intent intent = new Intent(context.getApplicationContext(), FridgeActivity.class);
             intent.putExtra("FRIDGE", name);
             intent.putExtra("CATEGORY", category);

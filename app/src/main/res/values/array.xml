@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerArray">
+        <item> 냉장고 종류를 선택하세요 </item>
+        <item> 냉장고 </item>
+        <item> 김치 냉장고 </item>
+        <item> 와인 냉장고 </item>
+        <item> 팬트리 </item>
+    </string-array>
+
+    <string-array name="firstTab">
+        <item> 전체 </item>
+        <item> 냉장 </item>
+        <item> 냉동 </item>
+        <item> 실온 </item>
+    </string-array>
+
+    <string-array name="secondTab">
+        <item> 전체 </item>
+        <item> 과일 </item>
+        <item> 채소 </item>
+        <item> 수산 </item>
+        <item> 육류 </item>
+        <item> 유제품 </item>
+        <item> 반찬 </item>
+        <item> 기타 </item>
+    </string-array>
+
+</resources>
