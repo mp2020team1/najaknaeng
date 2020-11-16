@@ -14,13 +14,10 @@ import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.example.najakneang.R;
 import com.example.najakneang.adapter.FridgeRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.db.DBHelper;
-
 
 public class FridgeActivity extends AppCompatActivity {
 

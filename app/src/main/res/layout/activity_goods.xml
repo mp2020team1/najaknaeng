@@ -36,7 +36,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:id="@+id/name_goods" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/location_goods" />
 
         </LinearLayout>
 
@@ -118,20 +125,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:textSize="18sp"
-                android:text="메모" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:id="@+id/memo_goods"
-                android:lines="4" />
 
             <TextView
                 android:layout_width="wrap_content"

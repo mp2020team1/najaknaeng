@@ -53,18 +53,20 @@ public class GoodsActivity extends AppCompatActivity {
 
     private void setupGoodsView() {
         TextView name = findViewById(R.id.name_goods);
+        TextView location = findViewById(R.id.location_goods);
         ImageView image = findViewById(R.id.image_goods);
         TextView quantity = findViewById(R.id.text_quantity_goods);
         TextView remain = findViewById(R.id.text_remain_goods);
         TextView type = findViewById(R.id.text_type_goods);
-        // 그러고보니 메모가 있었네?.. TODO: DB에 메모 추가 후 연동 귀찮으면 버리자 -> 그래 버리자!
-        EditText memo = findViewById(R.id.memo_goods);
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_goods);
 
         String nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         String expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
         String typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
+        String fridge = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_FRIDGE));
+        String section = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_SECTION));
         name.setText(nameStr);
+        location.setText(fridge + " / " + section);
         image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(typeStr));
         quantity.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY)));
         remain.setText(DBContract.GoodsEntry.getRemain(expireDate) + "일");
@@ -94,7 +96,9 @@ public class GoodsActivity extends AppCompatActivity {
                 DBContract.GoodsEntry.COLUMN_NAME,
                 DBContract.GoodsEntry.COLUMN_QUANTITY,
                 DBContract.GoodsEntry.COLUMN_TYPE,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMN_FRIDGE,
+                DBContract.GoodsEntry.COLUMN_SECTION
         };
 
         String selection = DBContract.GoodsEntry._ID + " = ?";
