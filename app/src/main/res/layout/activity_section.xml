@@ -18,8 +18,10 @@
             app:titleTextColor="@color/black" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fridge_section_item"
+            android:id="@+id/recycler_section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
     </LinearLayout>
+
 </ScrollView>
