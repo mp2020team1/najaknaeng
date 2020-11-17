@@ -90,16 +90,8 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
     public int getItemCount() { return cursor.getCount(); }
 
     private Cursor getGoodsCursor(String fridgeName, String sectionName) {
-//        String[] projection = {
-//                BaseColumns._ID,
-//                DBContract.GoodsEntry.COLUMN_NAME,
-//                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-//                DBContract.GoodsEntry.COLUMN_TYPE,
-//                DBContract.GoodsEntry.COLUMN_FRIDGE,
-//                DBContract.GoodsEntry.COLUMN_SECTION,
-//        };
 
-        String SQL = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+ BaseColumns._ID+", "+
+        String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+ BaseColumns._ID+", "+
                 DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_NAME +", "+
                 DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_EXPIREDATE +", "+
                 DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_TYPE +", "+
@@ -116,21 +108,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_SECTION + " = '" + sectionName +
                 "' ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
 
-//        String selection = DBContract.GoodsEntry.COLUMN_FRIDGE + " = ? AND " +
-//                DBContract.GoodsEntry.COLUMN_SECTION + " = ?";
-//        String[] selectionArgs = { fridgeName, sectionName };
+        return db.rawQuery(sql, null);
 
-        return db.rawQuery(SQL, null);
-
-//                db.query(
-//                DBContract.GoodsEntry.TABLE_NAME,
-//                projection,
-//                selection,
-//                selectionArgs,
-//                null,
-//                null,
-//                null,
-//                "3"
-//        );
     }
 }

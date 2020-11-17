@@ -72,7 +72,7 @@ public class FreshnessRecyclerAdapter
         String state = cursor.getString(
                 cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
         holder.name.setText(name);
-        holder.name.setTextColor(Color.parseColor(setRemainColor(remain, state)));
+        holder.name.setTextColor(Color.parseColor(DBContract.GoodsEntry.getRemainColor(state, remain)));
         holder.remain.setText(
                 remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
         );
@@ -85,13 +85,6 @@ public class FreshnessRecyclerAdapter
             intent.putExtra("GOODSID", id);
             context.startActivity(intent);
         });
-    }
-
-    private String setRemainColor(long remain, String state) {
-        if(state.equals("냉동")) return "#1E90FF";
-        if(remain < 0) return "#FF0000";
-        if(remain < 7) return "#EEEE00";
-        else return "#444444";
     }
 
     @Override

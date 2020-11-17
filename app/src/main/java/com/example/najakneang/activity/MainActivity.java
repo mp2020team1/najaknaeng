@@ -185,15 +185,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupFreshnessRecycler() {
-//        String[] projection = {
-//                BaseColumns._ID,
-//                DBContract.GoodsEntry.COLUMN_NAME,
-//                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-//                DBContract.GoodsEntry.COLUMN_TYPE,
-//                DBContract.GoodsEntry.COLUMN_SECTION,
-//        };
 
-        String SQL = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+BaseColumns._ID+", "+
+        String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+BaseColumns._ID+", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_NAME +", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_TYPE +", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE +", "+
@@ -207,20 +200,8 @@ public class MainActivity extends AppCompatActivity {
                 " = " + DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE +
                 " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
 
-        Cursor cursor = db.rawQuery(SQL,null);
+        Cursor cursor = db.rawQuery(sql,null);
 
-//        Cursor cursor = db.query(
-//                DBContract.GoodsEntry.TABLE_NAME,
-//                projection,
-//                null,
-//                null,
-//                null,
-//                null,
-//                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-//                "3"
-//        );
-
-        Log.i("i", cursor.getCount()+"");
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
         FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
         recyclerView.setAdapter(adapter);
