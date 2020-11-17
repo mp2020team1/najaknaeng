@@ -10,12 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.najakneang.adapter.FridgeSectionRecyclerAdapter;
+import com.example.najakneang.adapter.SectionRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.R;
 
-public class FridgeSectionActivity extends AppCompatActivity {
+public class SectionActivity extends AppCompatActivity {
 
     SQLiteDatabase db = MainActivity.db;
 
@@ -54,7 +53,7 @@ public class FridgeSectionActivity extends AppCompatActivity {
         );
 
         RecyclerView recyclerView = findViewById(R.id.fridge_section_item);
-        FridgeSectionRecyclerAdapter adapter = new FridgeSectionRecyclerAdapter(cursor);
+        SectionRecyclerAdapter adapter = new SectionRecyclerAdapter(cursor);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
 

@@ -6,10 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,12 +19,9 @@ import androidx.annotation.NonNull;
 import com.example.najakneang.R;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.db.DBHelper;
-
-import java.lang.reflect.Array;
 
 
-public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
+public class GoodsDialog extends Dialog implements View.OnClickListener {
     /**
      * TODO:냉장고에 재료 추가 Dialog layout 구성을 아직 안함!
      */
@@ -45,7 +40,7 @@ public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
 
     SQLiteDatabase db = MainActivity.db;
 
-    public Dialog_Ingredient(@NonNull Context context){
+    public GoodsDialog(@NonNull Context context){
         super(context);
         this.context = context;
     }
@@ -61,7 +56,7 @@ public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
         getWindow().setAttributes(layoutParams);
 
         //Dialog 레이아웃 지정
-        setContentView(R.layout.dialog_ingredient);
+        setContentView(R.layout.dialog_goods);
 
         fridge_name = findViewById(R.id.editFridgeName);
         btn_ok = findViewById(R.id.btn_ok);

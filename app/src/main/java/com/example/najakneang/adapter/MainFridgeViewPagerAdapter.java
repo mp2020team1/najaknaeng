@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -19,7 +18,7 @@ import com.example.najakneang.R;
 import com.example.najakneang.activity.FridgeActivity;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.model.Dialog_Fridge;
+import com.example.najakneang.model.FridgeDialog;
 
 class MainFridgeViewPagerHolder extends RecyclerView.ViewHolder {
 
@@ -59,9 +58,9 @@ public class MainFridgeViewPagerAdapter
             holder.layout.setBackgroundColor(context.getColor(R.color.gray_light));
             holder.addIcon.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
-                Dialog_Fridge dialog_fridge = new Dialog_Fridge(view.getContext());
-                dialog_fridge.setCancelable(false);
-                dialog_fridge.show();
+                FridgeDialog fridgeDialog = new FridgeDialog(view.getContext());
+                fridgeDialog.setCancelable(false);
+                fridgeDialog.show();
             });
 
             cursor.close();
