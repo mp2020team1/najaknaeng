@@ -183,37 +183,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupFreshnessRecycler() {
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_TYPE,
-                DBContract.GoodsEntry.COLUMN_SECTION,
-        };
+//        String[] projection = {
+//                BaseColumns._ID,
+//                DBContract.GoodsEntry.COLUMN_NAME,
+//                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+//                DBContract.GoodsEntry.COLUMN_TYPE,
+//                DBContract.GoodsEntry.COLUMN_SECTION,
+//        };
 
-//        String SQL = "SELECT " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_STORE_STATE +", "+
-//                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_NAME +", "+
-//                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE +", "+
-//                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_TYPE +", "+
-//                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +
-//                " FROM " + DBContract.GoodsEntry.TABLE_NAME +
-//                " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
-//                " ON " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +
-//                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_NAME +
-//                " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
+        String SQL = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+BaseColumns._ID+", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_NAME +", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_TYPE +", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE +", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +", "+
+                DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_STORE_STATE +
+                " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                " ON " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +
+                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_FRIDGE +
+                " = " + DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE +
+                " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
 
-//        Cursor cursor = db.rawQuery(SQL,null);
+        Cursor cursor = db.rawQuery(SQL,null);
 
-        Cursor cursor = db.query(
-                DBContract.GoodsEntry.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                "3"
-        );
+//        Cursor cursor = db.query(
+//                DBContract.GoodsEntry.TABLE_NAME,
+//                projection,
+//                null,
+//                null,
+//                null,
+//                null,
+//                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+//                "3"
+//        );
 
         Log.i("i", cursor.getCount()+"");
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
