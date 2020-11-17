@@ -109,10 +109,12 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 " FROM " + DBContract.GoodsEntry.TABLE_NAME +
                 " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
                 " ON " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +
-                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_NAME +
-                " WHERE " + DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_FRIDGE + " = " + fridgeName + " AND " +
-                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_SECTION + " = " + sectionName +
-                " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
+                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_FRIDGE +
+                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_FRIDGE +
+                " WHERE " + DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_FRIDGE + " = '" + fridgeName + "' AND " +
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_SECTION + " = '" + sectionName +
+                "' ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
 
 //        String selection = DBContract.GoodsEntry.COLUMN_FRIDGE + " = ? AND " +
 //                DBContract.GoodsEntry.COLUMN_SECTION + " = ?";

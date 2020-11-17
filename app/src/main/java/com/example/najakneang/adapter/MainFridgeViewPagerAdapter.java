@@ -63,7 +63,7 @@ public class MainFridgeViewPagerAdapter
                 fridgeDialog.show();
             });
 
-            cursor.close();
+            //cursor.close();
             return;
         }
 
