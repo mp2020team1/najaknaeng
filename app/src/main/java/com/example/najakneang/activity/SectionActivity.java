@@ -4,9 +4,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,9 +29,41 @@ public class SectionActivity extends AppCompatActivity {
 
         String fridge = getIntent().getStringExtra("FRIDGE");
         String section = getIntent().getStringExtra("SECTION");
-        TextView title = (TextView) findViewById(R.id.section_name);
-        title.setText(section);
+        String storeState = getIntent().getStringExtra("STORESTATE");
+        //TextView title = (TextView) findViewById(R.id.section_name);
+        //title.setText(section);
         setupFreshnessRecycler(fridge, section);
+        setupToolbar(section, storeState);
+    }
+
+    private void setupToolbar(String name, String storeState) {
+        Toolbar toolbar = findViewById(R.id.toolbar_section);
+
+        toolbar.setTitle(name);
+        toolbar.setSubtitle(storeState);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_section, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.section_add:
+                // item 추가 기능
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupFreshnessRecycler(String fridge, String section) {
