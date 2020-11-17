@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setDB();
         setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
-        
+
     }
 
     //RecyclerView 정보 갱신

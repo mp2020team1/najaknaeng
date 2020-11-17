@@ -54,7 +54,7 @@ public class MainFridgeViewPagerAdapter
     public void onBindViewHolder(@NonNull MainFridgeViewPagerHolder holder, int position) {
         Context context = holder.itemView.getContext();
 
-        if (!cursor.moveToPosition(position)) {
+        if (!cursor.moveToPosition(holder.getAdapterPosition())) {
             holder.layout.setBackgroundColor(context.getColor(R.color.gray_light));
             holder.addIcon.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
@@ -63,7 +63,6 @@ public class MainFridgeViewPagerAdapter
                 fridgeDialog.show();
             });
 
-            cursor.close();
             return;
         }
 
