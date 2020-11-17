@@ -7,30 +7,21 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.najakneang.R;
 import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
-import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.db.DBHelper;
-import com.google.android.flexbox.AlignSelf;
+import com.example.najakneang.model.RecyclerViewEmptySupport;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.HashMap;
 
 public class FreshnessActivity extends AppCompatActivity {
 
@@ -150,13 +141,14 @@ public class FreshnessActivity extends AppCompatActivity {
          * 참고 : https://github.com/google/flexbox-layout
          */
 
-        RecyclerView recycler = findViewById(R.id.recycler_freshness_freshness);
+        TextView emptyView = findViewById(R.id.empty_view_recycler_freshness);
+        RecyclerViewEmptySupport recycler = findViewById(R.id.recycler_freshness_freshness);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         layoutManager.setFlexDirection(FlexDirection.ROW);
         recycler.setLayoutManager(layoutManager);
-
-        FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
+        recycler.setEmptyView(emptyView);
         recycler.setAdapter(adapter);
     }
 

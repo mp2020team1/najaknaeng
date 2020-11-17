@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.najakneang.adapter.SectionRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
+import com.example.najakneang.model.RecyclerViewEmptySupport;
 
 public class SectionActivity extends AppCompatActivity {
 
@@ -57,11 +58,10 @@ public class SectionActivity extends AppCompatActivity {
                 DBContract.GoodsEntry.COLUMN_EXPIREDATE
         );
 
-        RecyclerView recyclerView = findViewById(R.id.fridge_section_item);
+        RecyclerView recyclerView = findViewById(R.id.recycler_section);
         SectionRecyclerAdapter adapter = new SectionRecyclerAdapter(cursor);
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-
+        recyclerView.setAdapter(adapter);
     }
 
     private void setupToolbar(String name, String storeState) {
