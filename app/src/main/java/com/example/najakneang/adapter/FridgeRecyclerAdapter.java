@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
-import com.example.najakneang.activity.FridgeSectionActivity;
+import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
 
@@ -67,7 +67,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
             holder.sectionName.setText(name);
             holder.sectionState.setText(state);
             holder.itemView.setOnClickListener(view -> {
-                Intent intent = new Intent(context.getApplicationContext(), FridgeSectionActivity.class);
+                Intent intent = new Intent(context.getApplicationContext(), SectionActivity.class);
                 intent.putExtra("SECTION", name);
                 intent.putExtra("FRIDGE", fridge);
                 context.startActivity(intent);

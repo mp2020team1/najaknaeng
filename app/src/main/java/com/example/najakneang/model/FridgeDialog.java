@@ -26,7 +26,7 @@ import com.example.najakneang.db.DBHelper;
 import java.lang.reflect.Array;
 
 
-public class Dialog_Fridge extends Dialog implements View.OnClickListener {
+public class FridgeDialog extends Dialog implements View.OnClickListener {
 
     public interface DialogEventListener {
         public void DialogEvent(boolean value);
@@ -42,7 +42,7 @@ public class Dialog_Fridge extends Dialog implements View.OnClickListener {
 
     SQLiteDatabase db = MainActivity.db;
 
-    public Dialog_Fridge(@NonNull Context context){
+    public FridgeDialog(@NonNull Context context){
         super(context);
         this.context = context;
     }
