@@ -17,10 +17,8 @@ import android.os.Handler;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
 import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
@@ -55,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setDB();
-
         setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
+        
     }
 
     //RecyclerView 정보 갱신
