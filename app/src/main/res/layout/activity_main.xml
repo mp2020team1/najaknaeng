@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.MainActivity">
 
     <LinearLayout
@@ -62,12 +63,23 @@
 
         </FrameLayout>
 
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewpager_fridge_main"
-            android:layout_marginBottom="20dp"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp" />
+            android:layout_height="wrap_content">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewpager_fridge_main"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="120dp" />
+
+            <me.relex.circleindicator.CircleIndicator3
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom"
+                android:id="@+id/circle_indicator_viewpager_fridge_main" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -42,6 +42,8 @@ import java.util.ArrayList;
 
 import java.util.Scanner;
 
+import me.relex.circleindicator.CircleIndicator3;
+
 public class MainActivity extends AppCompatActivity {
 
     private long backPressedTime = 0;
@@ -216,6 +218,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setCurrentItem(fridge_id);
+
+        CircleIndicator3 indicator = findViewById(R.id.circle_indicator_viewpager_fridge_main);
+        indicator.setViewPager(viewPager);
     }
 
     private void setupRecommendRecycler() {
