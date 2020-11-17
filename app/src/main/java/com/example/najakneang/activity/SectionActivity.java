@@ -30,10 +30,38 @@ public class SectionActivity extends AppCompatActivity {
         String fridge = getIntent().getStringExtra("FRIDGE");
         String section = getIntent().getStringExtra("SECTION");
         String storeState = getIntent().getStringExtra("STORESTATE");
-        //TextView title = (TextView) findViewById(R.id.section_name);
-        //title.setText(section);
         setupFreshnessRecycler(fridge, section);
         setupToolbar(section, storeState);
+    }
+
+    private void setupFreshnessRecycler(String fridge, String section) {
+
+        String[] projection = {
+                BaseColumns._ID,
+                DBContract.GoodsEntry.COLUMN_NAME,
+                DBContract.GoodsEntry.COLUMN_QUANTITY,
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
+                DBContract.GoodsEntry.COLUMN_TYPE,
+                DBContract.GoodsEntry.COLUMN_FRIDGE,
+                DBContract.GoodsEntry.COLUMN_SECTION,
+        };
+
+        Cursor cursor = db.query(
+                DBContract.GoodsEntry.TABLE_NAME,
+                projection,
+                "FRIDGE=? and SECTION=?",
+                new String[]{fridge,section},
+                null,
+                null,
+                DBContract.GoodsEntry.COLUMN_EXPIREDATE
+        );
+
+        RecyclerView recyclerView = findViewById(R.id.fridge_section_item);
+        SectionRecyclerAdapter adapter = new SectionRecyclerAdapter(cursor);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+
     }
 
     private void setupToolbar(String name, String storeState) {
@@ -64,35 +92,5 @@ public class SectionActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setupFreshnessRecycler(String fridge, String section) {
-
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_QUANTITY,
-                DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_TYPE,
-                DBContract.GoodsEntry.COLUMN_FRIDGE,
-                DBContract.GoodsEntry.COLUMN_SECTION,
-        };
-
-        Cursor cursor = db.query(
-                DBContract.GoodsEntry.TABLE_NAME,
-                projection,
-                "FRIDGE=? and SECTION=?",
-                    new String[]{fridge,section},
-                null,
-                null,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE
-        );
-
-        RecyclerView recyclerView = findViewById(R.id.fridge_section_item);
-        SectionRecyclerAdapter adapter = new SectionRecyclerAdapter(cursor);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-
     }
 }
