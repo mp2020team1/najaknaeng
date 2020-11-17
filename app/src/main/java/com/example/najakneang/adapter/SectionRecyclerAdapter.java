@@ -17,13 +17,13 @@ import com.example.najakneang.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-class FridgeSectionRecyclerHolder extends RecyclerView.ViewHolder {
+class SectionRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView name;
     protected final TextView remain;
     protected final CircleImageView image;
     protected final View view;
 
-    public FridgeSectionRecyclerHolder(@NonNull View view) {
+    public SectionRecyclerHolder(@NonNull View view) {
         super(view);
         this.view = view;
         this.name = view.findViewById(R.id.name_item_freshness_main);
@@ -32,24 +32,24 @@ class FridgeSectionRecyclerHolder extends RecyclerView.ViewHolder {
     }
 }
 
-public class FridgeSectionRecyclerAdapter
-        extends RecyclerView.Adapter<FridgeSectionRecyclerHolder>{
+public class SectionRecyclerAdapter
+        extends RecyclerView.Adapter<SectionRecyclerHolder>{
 
     private final Cursor cursor;
 
-    public FridgeSectionRecyclerAdapter(Cursor cursor) { this.cursor = cursor; }
+    public SectionRecyclerAdapter(Cursor cursor) { this.cursor = cursor; }
 
     @NonNull
     @Override
-    public FridgeSectionRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public SectionRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_recycler_freshness_main, viewGroup, false);
 
-        return new FridgeSectionRecyclerHolder(view);
+        return new SectionRecyclerHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FridgeSectionRecyclerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SectionRecyclerHolder holder, int position) {
         if (cursor.moveToPosition(position)) {
             String name = cursor.getString(
                     cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));

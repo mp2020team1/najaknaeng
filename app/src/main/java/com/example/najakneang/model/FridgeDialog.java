@@ -26,10 +26,7 @@ import com.example.najakneang.db.DBHelper;
 import java.lang.reflect.Array;
 
 
-public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
-    /**
-     * TODO:냉장고에 재료 추가 Dialog layout 구성을 아직 안함!
-     */
+public class FridgeDialog extends Dialog implements View.OnClickListener {
 
     public interface DialogEventListener {
         public void DialogEvent(boolean value);
@@ -45,7 +42,7 @@ public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
 
     SQLiteDatabase db = MainActivity.db;
 
-    public Dialog_Ingredient(@NonNull Context context){
+    public FridgeDialog(@NonNull Context context){
         super(context);
         this.context = context;
     }
@@ -61,20 +58,31 @@ public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
         getWindow().setAttributes(layoutParams);
 
         //Dialog 레이아웃 지정
-        setContentView(R.layout.dialog_ingredient);
+        setContentView(R.layout.dialog_fridge);
 
         fridge_name = findViewById(R.id.editFridgeName);
         btn_ok = findViewById(R.id.btn_ok);
         btn_cancel = findViewById(R.id.btn_cancel);
-        spinner = findViewById(R.id.ingredient_type_spinner);
+        spinner = findViewById(R.id.category_spinner);
 
         btn_ok.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.secondTab, android.R.layout.simple_spinner_item);
+                R.array.spinnerArray, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i("spinner", spinner.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -84,7 +92,7 @@ public class Dialog_Ingredient extends Dialog implements View.OnClickListener {
                 String name = fridge_name.getText().toString();
                 if(name.trim().getBytes().length > 0){
                     Cursor cursor = db.query(
-                            DBContract.GoodsEntry.TABLE_NAME,
+                            DBContract.FridgeEntry.TABLE_NAME,
                             null,
                             DBContract.FridgeEntry.COLUMN_NAME + " = ? ",
                             new String[]{ name },
