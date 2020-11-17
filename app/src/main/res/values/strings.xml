@@ -4,6 +4,9 @@
 
     <string name="str_alert_items">신선도 위험품목</string>
     <string name="str_today_recommended">오늘의 추천 메뉴</string>
+
+    <string name="text_empty_view">품목이 없습니다.</string>
+
     <string name="type_goods">분류</string>
     <string name="remain_goods">남은 유통기한</string>
     <string name="quantity_goods">수량</string>

@@ -22,7 +22,6 @@ import com.example.najakneang.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
-    protected final View view;
     protected final TextView name;
     protected final TextView remain;
     protected final CircleImageView image;
@@ -30,7 +29,6 @@ class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
 
     public FreshnessRecyclerHolder(@NonNull View view) {
         super(view);
-        this.view = view;
         this.name = view.findViewById(R.id.name_item_freshness_main);
         this.remain = view.findViewById(R.id.remain_item_freshness_main);
         this.image = view.findViewById(R.id.image_item_freshness_main);
@@ -57,7 +55,7 @@ public class FreshnessRecyclerAdapter
     @Override
     public void onBindViewHolder(@NonNull FreshnessRecyclerHolder holder, int position) {
         if (!cursor.moveToPosition(position)) {
-            if(holder.view.getContext().getClass() == MainActivity.class){holder.moreIcon.setVisibility(View.VISIBLE);}
+            if (holder.itemView.getContext().getClass() == MainActivity.class) { holder.moreIcon.setVisibility(View.VISIBLE); }
             cursor.close();
             return;
         }
@@ -81,7 +79,7 @@ public class FreshnessRecyclerAdapter
         Integer image = DBContract.GoodsEntry.typeIconMap.get(type);
         holder.image.setImageResource(image);
 
-        holder.view.setOnClickListener(view -> {
+        holder.itemView.setOnClickListener(view -> {
             Context context = view.getContext();
             Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
             intent.putExtra("GOODSID", id);
