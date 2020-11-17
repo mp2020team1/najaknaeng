@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             Thread dbOpenThread = new Thread(() -> {
                 DBHelper dbHelper = new DBHelper(getApplicationContext());
                 db = dbHelper.getWritableDatabase();
-//                insertFakeData();
+                //insertFakeData();
             });
             dbOpenThread.start();
             dbOpenThread.join();
@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
         values.clear();
 
-
         values.put(DBContract.SectionEntry.COLUMN_NAME, "구역 1");
         values.put(DBContract.SectionEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, "냉장");
@@ -124,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
         db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
         values.clear();
 
+        values.put(DBContract.SectionEntry.COLUMN_NAME, "구역 1");
+        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, "김치냉장고 1");
+        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, "냉장");
+        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
+        values.clear();
 
         values.put(DBContract.GoodsEntry.COLUMN_NAME, "감자");
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-01-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-21");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "채소");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
@@ -144,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-05-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-10-23");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "채소");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
@@ -163,26 +167,38 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 2");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
         values.clear();
+
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "배추김치");
+        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
+        values.put(
+                DBContract.GoodsEntry.COLUMN_REGISTDATE,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        );
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-11-23");
+        values.put(DBContract.GoodsEntry.COLUMN_TYPE, "반찬");
+        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "김치냉장고 1");
+        values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
+        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+        values.clear();
     }
 
     private void setupFreshnessRecycler() {
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_TYPE
-        };
 
-        Cursor cursor = db.query(
-                DBContract.GoodsEntry.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                "3"
-        );
+        String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+BaseColumns._ID+", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_NAME +", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_TYPE +", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE +", "+
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +", "+
+                DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_STORE_STATE +
+                " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                " ON " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +
+                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_FRIDGE +
+                " = " + DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE +
+                " ORDER BY " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
+
+        Cursor cursor = db.rawQuery(sql,null);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
         FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
@@ -193,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 )
         );
     }
+
 
     public void setupFridgeViewPager() {
         String[] projection = {

@@ -3,6 +3,7 @@ package com.example.najakneang.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,8 +69,10 @@ public class FreshnessRecyclerAdapter
         long remain = DBContract.GoodsEntry.getRemain(expireDate);
         String type = cursor.getString(
                 cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
-
+        String state = cursor.getString(
+                cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
         holder.name.setText(name);
+        holder.name.setTextColor(Color.parseColor(DBContract.GoodsEntry.getRemainColor(state, remain)));
         holder.remain.setText(
                 remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
         );

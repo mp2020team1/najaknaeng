@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.BaseColumns;
@@ -65,7 +66,9 @@ public class GoodsActivity extends AppCompatActivity {
         String typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
         String fridge = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_FRIDGE));
         String section = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_SECTION));
+        String state = cursor.getString(cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
         name.setText(nameStr);
+        name.setTextColor(Color.parseColor(DBContract.GoodsEntry.getRemainColor(state, DBContract.GoodsEntry.getRemain(expireDate))));
         location.setText(fridge + " / " + section);
         image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(typeStr));
         quantity.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY)));
@@ -91,28 +94,26 @@ public class GoodsActivity extends AppCompatActivity {
     }
 
     private void getGoodsCursor(long id) {
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_QUANTITY,
-                DBContract.GoodsEntry.COLUMN_TYPE,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_FRIDGE,
-                DBContract.GoodsEntry.COLUMN_SECTION
-        };
 
-        String selection = DBContract.GoodsEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
-        cursor = db.query(
-                DBContract.GoodsEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null,
-                "1"
-        );
+        String sql =
+                "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_QUANTITY + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_REGISTDATE + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + ", " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + ", " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_STORE_STATE +
+                        " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                        " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                        " ON " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + " = " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
+                        " WHERE " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry._ID + " = " + id + " LIMIT 1";
+
+        cursor = db.rawQuery(sql,null);
 
         cursor.moveToFirst();
     }

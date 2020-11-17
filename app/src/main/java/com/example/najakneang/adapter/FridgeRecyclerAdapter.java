@@ -90,28 +90,25 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
     public int getItemCount() { return cursor.getCount(); }
 
     private Cursor getGoodsCursor(String fridgeName, String sectionName) {
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_TYPE,
-                DBContract.GoodsEntry.COLUMN_FRIDGE,
-                DBContract.GoodsEntry.COLUMN_SECTION
-        };
 
-        String selection = DBContract.GoodsEntry.COLUMN_FRIDGE + " = ? AND " +
-                DBContract.GoodsEntry.COLUMN_SECTION + " = ?";
-        String[] selectionArgs = { fridgeName, sectionName };
+        String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+ BaseColumns._ID+", "+
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_NAME +", "+
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_EXPIREDATE +", "+
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_TYPE +", "+
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_FRIDGE +", "+
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_SECTION +", "+
+                DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_STORE_STATE+
+                " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                " ON " + DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_SECTION +
+                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_FRIDGE +
+                " = " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_FRIDGE +
+                " WHERE " + DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_FRIDGE + " = '" + fridgeName + "' AND " +
+                DBContract.GoodsEntry.TABLE_NAME+"."+ DBContract.GoodsEntry.COLUMN_SECTION + " = '" + sectionName +
+                "' ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + " LIMIT 3";
 
-        return db.query(
-                DBContract.GoodsEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null,
-                "3"
-        );
+        return db.rawQuery(sql, null);
+
     }
 }

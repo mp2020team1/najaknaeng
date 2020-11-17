@@ -36,6 +36,12 @@ public final class DBContract {
                 put("반찬", R.drawable.ic_launcher_background);
             }
         };
+        public static String getRemainColor(String state, long remain){
+            if(state.equals("냉동")) return "#1E90FF";
+            if(remain < 0) return "#FF0000";
+            if(remain < 7) return "#EEEE00";
+            else return "#9C9C9C";
+        }
     }
 
     public static class SectionEntry implements BaseColumns{
