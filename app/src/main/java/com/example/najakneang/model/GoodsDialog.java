@@ -92,7 +92,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         typeSpinner.setSelection(0);
 
         if (context.getClass() == FreshnessActivity.class) {
-            ArrayList<String> fridge_name = new ArrayList<>();
+            ArrayList<String> fridgeNameList = new ArrayList<>();
             Cursor cursor = db.query(
                     DBContract.FridgeEntry.TABLE_NAME,
                     new String[]{DBContract.FridgeEntry.COLUMN_NAME},
@@ -103,28 +103,26 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     null
             );
 
-            fridge_name.add("냉장고를 선택해주세요");
+            fridgeNameList.add("냉장고를 선택해주세요");
 
             while(cursor.moveToNext()){
-                fridge_name.add(cursor.getString(
+                fridgeNameList.add(cursor.getString(
                         cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
             }
             cursor.close();
 
-            final ArrayAdapter<String> fridge_adapter = new ArrayAdapter<>(context,
-                    android.R.layout.simple_spinner_item, fridge_name);
-            fridge_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            fridgeSpinner.setAdapter(fridge_adapter);
+            final ArrayAdapter<String> fridgeAdapter = new ArrayAdapter<>(context,
+                    android.R.layout.simple_spinner_item, fridgeNameList);
+            fridgeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            fridgeSpinner.setAdapter(fridgeAdapter);
             fridgeSpinner.setSelection(0,false);
             fridgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     ArrayList<String> sectionNameList = new ArrayList<>();
-                    String test = fridgeSpinner.getSelectedItem().toString();
-                    Log.i("Activated", test);
                     Cursor cursor = db.query(
                             DBContract.SectionEntry.TABLE_NAME,
-                            new String[]{DBContract.SectionEntry.COLUMN_NAME},
+                            new String[]{ DBContract.SectionEntry.COLUMN_NAME },
                             DBContract.SectionEntry.COLUMN_FRIDGE + " = ? ",
                             new String[]{ fridgeSpinner.getSelectedItem().toString() },
                             null,
@@ -213,10 +211,10 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
 
-                        if(context.getClass() == FreshnessActivity.class){((FreshnessActivity)context).
-                                setupFreshnessRecycler(); }
-                        else if(context.getClass() == SectionActivity.class){((SectionActivity)context).
-                                setupFreshnessRecycler(fridge,section);}
+                        if (context.getClass() == FreshnessActivity.class) {
+                            ((FreshnessActivity)context).setupFreshnessRecycler(); }
+                        else if (context.getClass() == SectionActivity.class) {
+                            ((SectionActivity)context).setupFreshnessRecycler(fridge, section);}
 
                         dismiss();
                     }
