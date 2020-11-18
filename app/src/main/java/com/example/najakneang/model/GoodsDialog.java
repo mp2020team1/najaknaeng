@@ -80,6 +80,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         typeSpinner = findViewById(R.id.spinner_type_goods_dialog);
         fridgeSpinner = findViewById(R.id.spinner_fridge_goods_dialog);
         sectionSpinner = findViewById(R.id.spinner_section_goods_dialog);
+        fridgeLayout = findViewById(R.id.fridge_layout);
 
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
@@ -91,7 +92,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         typeSpinner.setSelection(0);
 
         if (context.getClass() == FreshnessActivity.class) {
-            ArrayList<String> fridge_name = new ArrayList<>();
+            ArrayList<String> fridgeNameList = new ArrayList<>();
             Cursor cursor = db.query(
                     DBContract.FridgeEntry.TABLE_NAME,
                     new String[]{DBContract.FridgeEntry.COLUMN_NAME},
@@ -102,18 +103,18 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     null
             );
 
-            fridge_name.add("냉장고를 선택해주세요");
+            fridgeNameList.add("냉장고를 선택해주세요");
 
             while(cursor.moveToNext()){
-                fridge_name.add(cursor.getString(
+                fridgeNameList.add(cursor.getString(
                         cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
             }
             cursor.close();
 
-            final ArrayAdapter<String> fridge_adapter = new ArrayAdapter<>(context,
-                    android.R.layout.simple_spinner_item, fridge_name);
-            fridge_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            fridgeSpinner.setAdapter(fridge_adapter);
+            final ArrayAdapter<String> fridgeAdapter = new ArrayAdapter<>(context,
+                    android.R.layout.simple_spinner_item, fridgeNameList);
+            fridgeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            fridgeSpinner.setAdapter(fridgeAdapter);
             fridgeSpinner.setSelection(0,false);
             fridgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
