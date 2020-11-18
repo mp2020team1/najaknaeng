@@ -174,7 +174,7 @@ public class FreshnessActivity extends AppCompatActivity {
             goodsDialog.show();
         }
         else if(item.getItemId() == R.id.ingredient_remove){
-            remove_item = true;
+            remove_item = remove_item?false:true;
 
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);

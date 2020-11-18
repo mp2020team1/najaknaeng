@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/ingredient_confirm"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_check"
         android:visible="false"
         android:title="CofirmOption"
         app:showAsAction="always" />
