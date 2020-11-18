@@ -56,10 +56,10 @@ public class MainFridgeViewPagerAdapter
         Context context = holder.itemView.getContext();
 
         if (!cursor.moveToPosition(position)) {
-            Log.i("adapter", position + "번째와 " + holder.getAdapterPosition());
             holder.layout.setBackgroundColor(context.getColor(R.color.gray_light));
             holder.addIcon.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
+                MainActivity.fridge_id = holder.getAdapterPosition()-1;
                 FridgeDialog fridgeDialog = new FridgeDialog(view.getContext());
                 fridgeDialog.setCancelable(false);
                 fridgeDialog.show();

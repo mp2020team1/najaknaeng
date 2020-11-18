@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.najakneang.adapter.SectionRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
+import com.example.najakneang.model.GoodsDialog;
 import com.example.najakneang.model.RecyclerViewEmptySupport;
 
 public class SectionActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class SectionActivity extends AppCompatActivity {
         setupToolbar(section, storeState);
     }
 
-    private void setupFreshnessRecycler(String fridge, String section) {
+    public void setupFreshnessRecycler(String fridge, String section) {
 
         String[] projection = {
                 BaseColumns._ID,
@@ -88,7 +89,9 @@ public class SectionActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.section_add:
-                // item 추가 기능
+                GoodsDialog goodsDialog = new GoodsDialog(this);
+                goodsDialog.setCancelable(false);
+                goodsDialog.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -9,7 +9,7 @@
         android:layout_height="40dp"
         android:background="#2F89D1"
         android:gravity="center"
-        android:text="재료 추가하기"
+        android:text="구역 추가하기"
         android:textColor="#ffffff"
         android:textSize="16dp"
         android:textStyle="bold" />
@@ -25,129 +25,34 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="재료 이름"
+            android:text="구역 이름"
             android:textStyle="bold"
             android:textSize="16dp" />
 
         <EditText
-            android:id="@+id/ingredient_Name"
+            android:id="@+id/section_Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="개수" />
-
-                <EditText
-                    android:id="@+id/ingredient_Quantity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="numberSigned" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="종류"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/ingredient_type_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-
-        </LinearLayout>
-
         <TextView
-            android:id="@+id/registerText"
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="유통기한"
+            android:textStyle="bold"
             android:textSize="16dp"
-            android:textStyle="bold" />
+            android:text="구역 종류" />
 
-        <EditText
-            android:id="@+id/ingredient_expireDate"
+        <Spinner
+            android:id="@+id/section_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="yyyy-mm-dd"
-            android:inputType="date" />
+            android:spinnerMode="dropdown"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="냉장고" />
-
-                <Spinner
-                    android:id="@+id/ingredient_fridge_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/registerDateText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="종류"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/ingredient_section_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-
-        </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

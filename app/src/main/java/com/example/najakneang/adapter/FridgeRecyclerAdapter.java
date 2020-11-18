@@ -15,19 +15,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
+import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
 
 class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 
+    protected final View view;
     protected final TextView sectionName;
     protected final TextView sectionState;
     protected final RecyclerView sectionPreview;
 
     public FridgeRecyclerHolder(@NonNull View view) {
         super(view);
-
+        this.view = view;
         this.sectionName = view.findViewById(R.id.section_name_section_fridge);
         this.sectionState = view.findViewById(R.id.section_state_section_fridge);
         this.sectionPreview = view.findViewById(R.id.sub_recycler_section_fridge);
@@ -70,6 +72,16 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 Intent intent = new Intent(context.getApplicationContext(), SectionActivity.class);
                 intent.putExtra("SECTION", name);
                 intent.putExtra("FRIDGE", fridge);
+                context.startActivity(intent);
+            });
+            /**
+             * TODO:SectionActivity 버그가 있음!!
+             */
+            holder.itemView.setOnClickListener(view -> {
+                Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
+                intent.putExtra("FIRDGE", fridge);
+                intent.putExtra("STORAGESTATE", state);
+                intent.putExtra("SECTION", name);
                 context.startActivity(intent);
             });
 

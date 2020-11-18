@@ -6,10 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,20 +17,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.najakneang.R;
+import com.example.najakneang.activity.FridgeActivity;
 import com.example.najakneang.activity.MainActivity;
+import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
-import com.example.najakneang.db.DBHelper;
 
-import java.lang.reflect.Array;
-
-
-public class FridgeDialog extends Dialog implements View.OnClickListener {
+public class SectionDialog extends Dialog implements View.OnClickListener {
 
     public interface DialogEventListener {
         public void DialogEvent(boolean value);
     }
 
     private Context context;
+    private String current_fridge;
     private DialogEventListener onDialogEventListener;
 
     private EditText fridge_name;
@@ -42,8 +39,9 @@ public class FridgeDialog extends Dialog implements View.OnClickListener {
 
     SQLiteDatabase db = MainActivity.db;
 
-    public FridgeDialog(@NonNull Context context){
+    public SectionDialog(@NonNull Context context, String current_fridge){
         super(context);
+        this.current_fridge = current_fridge;
         this.context = context;
     }
 
@@ -58,18 +56,18 @@ public class FridgeDialog extends Dialog implements View.OnClickListener {
         getWindow().setAttributes(layoutParams);
 
         //Dialog 레이아웃 지정
-        setContentView(R.layout.dialog_fridge);
+        setContentView(R.layout.dialog_section);
 
-        fridge_name = findViewById(R.id.editFridgeName);
+        fridge_name = findViewById(R.id.section_Name);
         btn_ok = findViewById(R.id.btn_ok);
         btn_cancel = findViewById(R.id.btn_cancel);
-        spinner = findViewById(R.id.category_spinner);
+        spinner = findViewById(R.id.section_spinner);
 
         btn_ok.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.fridgeArray, android.R.layout.simple_spinner_item);
+                R.array.sectionArray, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
@@ -80,33 +78,17 @@ public class FridgeDialog extends Dialog implements View.OnClickListener {
             case R.id.btn_ok:
                 String name = fridge_name.getText().toString();
                 if(name.trim().getBytes().length > 0){
-                    Cursor cursor = db.query(
-                            DBContract.FridgeEntry.TABLE_NAME,
-                            null,
-                            DBContract.FridgeEntry.COLUMN_NAME + " = ? ",
-                            new String[]{ name },
-                            null,
-                            null,
-                            null,
-                            "1"
-                    );
-
                     if(spinner.getSelectedItemPosition() == 0){
-                        cursor.close();
-                        Toast.makeText(context.getApplicationContext(), "냉장고 종류를 지정해주세요",Toast.LENGTH_SHORT).show();
-                    }
-                    else if (cursor.getCount()>0) {
-                        cursor.close();
-                        Toast.makeText(context.getApplicationContext(), "이미 있는 냉장고입니다",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), "구역 종류를 지정해주세요",Toast.LENGTH_SHORT).show();
                     } else {
-                        cursor.close();
                         ContentValues values = new ContentValues();
-                        values.put(DBContract.FridgeEntry.COLUMN_NAME, name);
-                        values.put(DBContract.FridgeEntry.COLUMN_CATEGORY, spinner.getSelectedItem().toString());
+                        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, current_fridge);
+                        values.put(DBContract.SectionEntry.COLUMN_NAME, name);
+                        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, spinner.getSelectedItem().toString());
                         db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
 
                         //현재 페이지에 정보갱신
-                        ((MainActivity)context).setupFridgeViewPager();
+                        ((FridgeActivity)context).loadSection(current_fridge);
                         Toast.makeText(context.getApplicationContext(), "냉장고가 추가되었습니다",Toast.LENGTH_SHORT).show();
                         dismiss();
                     }

@@ -18,10 +18,13 @@ import android.view.MenuItem;
 import com.example.najakneang.R;
 import com.example.najakneang.adapter.FridgeRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
+import com.example.najakneang.model.GoodsDialog;
+import com.example.najakneang.model.SectionDialog;
 
 public class FridgeActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
+    private String fridgeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,7 @@ public class FridgeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fridge);
 
         Intent intent = getIntent();
-        String fridgeName = intent.getStringExtra("FRIDGE");
+        fridgeName = intent.getStringExtra("FRIDGE");
         String fridgeCategory = intent.getStringExtra("CATEGORY");
 
         loadSection(fridgeName);
@@ -47,7 +50,7 @@ public class FridgeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void loadSection(String name) {
+    public void loadSection(String name) {
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.SectionEntry.COLUMN_NAME,
@@ -88,7 +91,9 @@ public class FridgeActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.option_add:
-                // section 추가 기능
+                SectionDialog sectionDialog = new SectionDialog(this, fridgeName);
+                sectionDialog.setCancelable(false);
+                sectionDialog.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

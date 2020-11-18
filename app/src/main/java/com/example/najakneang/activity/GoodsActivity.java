@@ -7,12 +7,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.BaseColumns;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +33,7 @@ public class GoodsActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private Cursor cursor;
+    private String nameStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,7 @@ public class GoodsActivity extends AppCompatActivity {
         TextView type = findViewById(R.id.text_type_goods);
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_goods);
 
-        String nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
+        nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
         String expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
         String typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
         String fridge = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_FRIDGE));
@@ -119,10 +124,22 @@ public class GoodsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_goods, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        }
+        else if(item.getItemId() == R.id.purchase){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "https://search.shopping.naver.com/search/all?query=" +
+                    nameStr + "&cat_id=&frm=NVSHATC" ));
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

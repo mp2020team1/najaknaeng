@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="spinnerArray">
+    <string-array name="fridgeArray">
+        <item> 냉장고 종류를 선택하세요 </item>
+        <item> 냉장고 </item>
+        <item> 김치 냉장고 </item>
+        <item> 와인 냉장고 </item>
+        <item> 팬트리 </item>
+    </string-array>
+
+    <string-array name="sectionArray">
         <item> 냉장고 종류를 선택하세요 </item>
         <item> 냉장고 </item>
         <item> 김치 냉장고 </item>

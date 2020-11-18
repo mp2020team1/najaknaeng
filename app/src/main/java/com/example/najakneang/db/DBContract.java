@@ -30,8 +30,8 @@ public final class DBContract {
             {
                 put("과일", R.drawable.ic_fruit);
                 put("채소", R.drawable.ic_vegetable);
-                put("수산", R.drawable.ic_fish);
-                put("육류", R.drawable.ic_type_meat);
+                put("수산", R.drawable.ic_fishery);
+                put("육류", R.drawable.ic_meat);
                 put("유제품", R.drawable.ic_dairy);
                 put("반찬", R.drawable.ic_sidedish);
             }
@@ -59,7 +59,7 @@ public final class DBContract {
             {
                 put("냉장고", R.drawable.img_fridge);
                 put("김치 냉장고", R.drawable.img_fridge_kimchi);
-                put("와인 냉장고", R.drawable.img_fridge_kimchi);
+                put("와인 냉장고", R.drawable.img_fridge_alcohol);
                 put("팬트리", R.drawable.img_pantry);
             }
         };
