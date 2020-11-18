@@ -74,6 +74,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 Intent intent = new Intent(context.getApplicationContext(), SectionActivity.class);
                 intent.putExtra("SECTION", name);
                 intent.putExtra("FRIDGE", fridge);
+                intent.putExtra("STORESTATE", state);
                 context.startActivity(intent);
             });
 
