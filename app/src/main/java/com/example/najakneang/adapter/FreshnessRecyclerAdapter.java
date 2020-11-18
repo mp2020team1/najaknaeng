@@ -99,23 +99,19 @@ public class FreshnessRecyclerAdapter
         Integer image = DBContract.GoodsEntry.typeIconMap.get(type);
         holder.image.setImageResource(image);
 
-        if(FreshnessActivity.remove_item || SectionActivity.remove_item){
+        if (FreshnessActivity.remove_item || SectionActivity.remove_item) {
             holder.checkbox.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
-                holder.checkbox.setChecked(holder.checkbox.isChecked()?false:true);
+                holder.checkbox.setChecked(!holder.checkbox.isChecked());
             });
-            holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-               @Override
-               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                   holder.layout.setBackgroundResource(isChecked?R.drawable.border:R.drawable.non_border);
-                   if(isChecked){removeList.add(id);}
-                   else{removeList.remove(id);}
-               }
+            holder.checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                holder.layout.setBackgroundResource(isChecked ? R.drawable.border : R.drawable.non_border);
+                if (isChecked) removeList.add(id);
+                else removeList.remove(id);
             });
         }
         else{
             holder.checkbox.setChecked(false);
-            holder.checkbox.setVisibility(View.INVISIBLE);
             holder.itemView.setOnClickListener(view -> {
                 Context context = view.getContext();
                 Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);

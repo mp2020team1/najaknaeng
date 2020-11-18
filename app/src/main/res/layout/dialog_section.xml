@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -17,39 +17,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="60dp"
-        android:padding = "10dp"
-        android:orientation="vertical">
+        android:layout_marginVertical="50dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/name_section_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="구역 이름"
-            android:textStyle="bold"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/section_Name"
+            android:id="@+id/edit_name_section_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:ems="10"
             android:inputType="textPersonName" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/state_section_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:text="구역 종류"
             android:textSize="16dp"
-            android:text="구역 종류" />
+            android:textStyle="bold" />
 
         <Spinner
-            android:id="@+id/section_spinner"
+            android:id="@+id/spinner_state_section_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown" />
 
 
     </LinearLayout>
@@ -61,7 +61,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/btn_ok"
+            android:id="@+id/btn_ok_section_dialog"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -74,16 +74,18 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/btn_cancel"
+            android:id="@+id/btn_cancel_section_dialog"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="#2F89D1"
+            android:background="@color/white"
             android:clickable="true"
             android:gravity="center"
             android:text="취소"
-            android:textColor="#ffffff"
+            android:textColor="#2F89D1"
             android:textSize="16dp"
             android:textStyle="bold" />
+
     </LinearLayout>
+
 </LinearLayout>

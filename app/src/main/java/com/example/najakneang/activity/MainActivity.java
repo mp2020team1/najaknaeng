@@ -48,27 +48,25 @@ import me.relex.circleindicator.CircleIndicator3;
 public class MainActivity extends AppCompatActivity {
 
     private long backPressedTime = 0;
-    static public int fridge_id = 0;
-    static public SQLiteDatabase db;
+    public static int fridge_id = 0;
+    public static SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         setDB();
         setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
 
         Button credit = findViewById(R.id.credit);
-        credit.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
-                        .setTitle("크레딧")
-                        .setIcon(R.drawable.ic_kitchen)
-                        .setPositiveButton("감사합니다", null)
-                        .setMessage(getString(R.string.credit))
-                        .show();
-            }
+        credit.setOnClickListener(view -> {
+            new AlertDialog.Builder(MainActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                    .setTitle("크레딧")
+                    .setIcon(R.drawable.ic_kitchen)
+                    .setPositiveButton("감사합니다", null)
+                    .setMessage(getString(R.string.credit))
+                    .show();
         });
 
     }
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             Thread dbOpenThread = new Thread(() -> {
                 DBHelper dbHelper = new DBHelper(getApplicationContext());
                 db = dbHelper.getWritableDatabase();
-                insertFakeData();
+//                insertFakeData();
             });
             dbOpenThread.start();
             dbOpenThread.join();
@@ -207,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupFreshnessRecycler() {
-
         String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+BaseColumns._ID+", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_NAME +", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_TYPE +", "+

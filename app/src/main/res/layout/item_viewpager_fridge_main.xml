@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:id="@+id/add_icon_item_fridge_main"
         android:src="@drawable/ic_add_circle"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:tint="@android:color/darker_gray" />
 
 </FrameLayout>
