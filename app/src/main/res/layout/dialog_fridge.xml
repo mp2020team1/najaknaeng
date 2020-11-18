@@ -11,7 +11,7 @@
         android:gravity="center"
         android:text="냉장고 추가하기"
         android:textColor="#ffffff"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="냉장고 이름"
             android:textStyle="bold"
-            android:textSize="16dp" />
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edit_name_fridge_dialog"
@@ -42,9 +42,10 @@
             android:id="@+id/category_fridge_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="16dp"
-            android:text="냉장고 종류" />
+            android:layout_marginBottom="8dp"
+            android:text="냉장고 종류"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/spinner_category_fridge_dialog"
@@ -70,7 +71,7 @@
             android:gravity="center"
             android:text="확인"
             android:textColor="#ffffff"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -83,7 +84,7 @@
             android:gravity="center"
             android:text="취소"
             android:textColor="#2F89D1"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>

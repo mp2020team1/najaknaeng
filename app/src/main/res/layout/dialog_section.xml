@@ -11,7 +11,7 @@
         android:gravity="center"
         android:text="구역 추가하기"
         android:textColor="#ffffff"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="구역 이름"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <EditText
@@ -41,8 +41,9 @@
             android:id="@+id/state_section_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="구역 종류"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <Spinner
@@ -70,7 +71,7 @@
             android:gravity="center"
             android:text="확인"
             android:textColor="#ffffff"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -83,7 +84,7 @@
             android:gravity="center"
             android:text="취소"
             android:textColor="#2F89D1"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>

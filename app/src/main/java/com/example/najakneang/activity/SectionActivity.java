@@ -8,7 +8,6 @@ import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,7 +22,6 @@ import com.example.najakneang.adapter.SectionRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
 import com.example.najakneang.model.GoodsDialog;
-import com.example.najakneang.model.RecyclerViewEmptySupport;
 
 public class SectionActivity extends AppCompatActivity {
 
@@ -100,7 +98,7 @@ public class SectionActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         }
-        else if(item.getItemId() == R.id.option_remove){
+        else if (item.getItemId() == R.id.option_remove) {
             AlertDialog alertDialog = new AlertDialog.Builder(SectionActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                     .setTitle("구역 제거")
                     .setIcon(R.drawable.ic_remove)
@@ -121,8 +119,8 @@ public class SectionActivity extends AppCompatActivity {
 
             return true;
         }
-        else if(item.getItemId() == R.id.ingredient_add){
-            GoodsDialog goodsDialog = new GoodsDialog(this);
+        else if (item.getItemId() == R.id.ingredient_add) {
+            GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section);
             goodsDialog.setCancelable(false);
             goodsDialog.show();
         }
@@ -138,7 +136,7 @@ public class SectionActivity extends AppCompatActivity {
 
             setupFreshnessRecycler(fridge, section);
         }
-        else if(item.getItemId() == R.id.ingredient_confirm){
+        else if (item.getItemId() == R.id.ingredient_confirm) {
             remove_item = false;
 
             Menu menu = toolbar.getMenu();
@@ -147,9 +145,12 @@ public class SectionActivity extends AppCompatActivity {
             tmpItem = menu.findItem(R.id.ingredient_confirm);
             tmpItem.setVisible(false);
 
-            for(int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++){
-                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
-                        new String[]{FreshnessRecyclerAdapter.removeList.get(i).toString()});
+            for (int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++) {
+                db.delete(
+                        DBContract.GoodsEntry.TABLE_NAME,
+                        DBContract.FridgeEntry._ID + "=?",
+                        new String[]{ FreshnessRecyclerAdapter.removeList.get(i).toString() }
+                );
             }
 
             if(FreshnessRecyclerAdapter.removeList.size() != 0){

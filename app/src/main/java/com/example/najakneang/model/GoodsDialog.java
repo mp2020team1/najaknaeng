@@ -119,11 +119,9 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     ArrayList<String> sectionNameList = new ArrayList<>();
-                    String test = fridgeSpinner.getSelectedItem().toString();
-                    Log.i("Activated", test);
                     Cursor cursor = db.query(
                             DBContract.SectionEntry.TABLE_NAME,
-                            new String[]{DBContract.SectionEntry.COLUMN_NAME},
+                            new String[]{ DBContract.SectionEntry.COLUMN_NAME },
                             DBContract.SectionEntry.COLUMN_FRIDGE + " = ? ",
                             new String[]{ fridgeSpinner.getSelectedItem().toString() },
                             null,
@@ -212,10 +210,10 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
 
-                        if(context.getClass() == FreshnessActivity.class){((FreshnessActivity)context).
-                                setupFreshnessRecycler(); }
-                        else if(context.getClass() == SectionActivity.class){((SectionActivity)context).
-                                setupFreshnessRecycler(fridge,section);}
+                        if (context.getClass() == FreshnessActivity.class) {
+                            ((FreshnessActivity)context).setupFreshnessRecycler(); }
+                        else if (context.getClass() == SectionActivity.class) {
+                            ((SectionActivity)context).setupFreshnessRecycler(fridge, section);}
 
                         dismiss();
                     }
