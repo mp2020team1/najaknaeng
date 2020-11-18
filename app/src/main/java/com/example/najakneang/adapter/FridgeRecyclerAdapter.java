@@ -19,13 +19,14 @@ import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;
+import com.example.najakneang.model.RecyclerViewEmptySupport;
 
 class FridgeRecyclerHolder extends  RecyclerView.ViewHolder{
 
     protected final View view;
     protected final TextView sectionName;
     protected final TextView sectionState;
-    protected final RecyclerView sectionPreview;
+    protected final RecyclerViewEmptySupport sectionPreview;
 
     public FridgeRecyclerHolder(@NonNull View view) {
         super(view);
@@ -56,6 +57,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
     @Override
     public void onBindViewHolder(@NonNull FridgeRecyclerHolder holder, int position) {
         Context context = holder.itemView.getContext();
+        View view = holder.itemView;
 
         if (cursor.moveToPosition(position)) {
             String name = cursor.getString(
@@ -68,7 +70,7 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
 
             holder.sectionName.setText(name);
             holder.sectionState.setText(state);
-            holder.itemView.setOnClickListener(view -> {
+            view.setOnClickListener(v -> {
                 Intent intent = new Intent(context.getApplicationContext(), SectionActivity.class);
                 intent.putExtra("SECTION", name);
                 intent.putExtra("FRIDGE", fridge);
@@ -76,7 +78,11 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
             });
 
             Cursor goodsCursor = getGoodsCursor(fridge, name);
+
+            TextView emptyView = view.findViewById(R.id.empty_view_sub_recycler_section_fridge);
             FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(goodsCursor);
+            holder.sectionPreview.setExpend(true);
+            holder.sectionPreview.setEmptyView(emptyView);
             holder.sectionPreview.setAdapter(adapter);
             holder.sectionPreview.setLayoutManager(
                     new LinearLayoutManager(

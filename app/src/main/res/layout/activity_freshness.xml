@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:text="@string/text_empty_view"
+            android:text="@string/text_goods_empty_view"
             android:id="@+id/empty_view_recycler_freshness" />
 
     </FrameLayout>

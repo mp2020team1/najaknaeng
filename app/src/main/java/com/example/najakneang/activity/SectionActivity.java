@@ -71,8 +71,10 @@ public class SectionActivity extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(sql, null);
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_section);
+        TextView emptyView = findViewById(R.id.empty_view_recycler_section);
+        RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_section);
         SectionRecyclerAdapter adapter = new SectionRecyclerAdapter(cursor);
+        recyclerView.setEmptyView(emptyView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         recyclerView.setAdapter(adapter);
     }

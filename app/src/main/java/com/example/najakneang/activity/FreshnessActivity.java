@@ -158,8 +158,9 @@ public class FreshnessActivity extends AppCompatActivity {
         FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         layoutManager.setFlexDirection(FlexDirection.ROW);
-        recycler.setLayoutManager(layoutManager);
+        recycler.setExpend(true);
         recycler.setEmptyView(emptyView);
+        recycler.setLayoutManager(layoutManager);
         recycler.setAdapter(adapter);
     }
 

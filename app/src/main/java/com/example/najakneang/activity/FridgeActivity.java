@@ -16,6 +16,7 @@ import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.najakneang.R;
@@ -23,6 +24,7 @@ import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
 import com.example.najakneang.adapter.FridgeRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.model.GoodsDialog;
+import com.example.najakneang.model.RecyclerViewEmptySupport;
 import com.example.najakneang.model.SectionDialog;
 
 public class FridgeActivity extends AppCompatActivity {
@@ -82,8 +84,10 @@ public class FridgeActivity extends AppCompatActivity {
                 null
         );
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_section_fridge);
+        TextView emptyView = findViewById(R.id.empty_view_recycler_section_fridge);
+        RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_section_fridge);
         FridgeRecyclerAdapter adapter = new FridgeRecyclerAdapter(sectionCursor);
+        recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }

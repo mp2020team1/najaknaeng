@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
@@ -27,6 +28,7 @@ import com.example.najakneang.db.DBContract;
 import com.example.najakneang.db.DBHelper;
 import com.example.najakneang.adapter.MainFridgeViewPagerAdapter;
 import com.example.najakneang.adapter.RecommendRecyclerAdapter;
+import com.example.najakneang.model.RecyclerViewEmptySupport;
 import com.example.najakneang.model.YoutubeContent;
 import com.example.najakneang.R;
 
@@ -221,8 +223,11 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(sql,null);
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_freshness_main);
+        TextView emptyView = findViewById(R.id.empty_view_recycler_freshness_main);
+        RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_freshness_main);
         FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
+        recyclerView.setExpend(true);
+        recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(
@@ -283,20 +288,22 @@ public class MainActivity extends AppCompatActivity {
             if (cursor.moveToNext()){
                 String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
                 getYoutubeContents(contents, ingredient);
-
-                handler.post(() -> {
-                    RecyclerView recyclerView = findViewById(R.id.recycler_recommend_main);
-                    RecommendRecyclerAdapter adapter = new RecommendRecyclerAdapter(contents);
-
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(
-                            new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                    );
-                    recyclerView.setNestedScrollingEnabled(false);
-                    recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-                });
             }
-            cursor.close();
+
+            handler.post(() -> {
+                TextView emptyView = findViewById(R.id.empty_view_recycler_recommend_main);
+                RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_recommend_main);
+                RecommendRecyclerAdapter adapter = new RecommendRecyclerAdapter(contents);
+
+                recyclerView.setEmptyView(emptyView);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                );
+                recyclerView.setAdapter(adapter);
+                recyclerView.setNestedScrollingEnabled(false);
+                recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+                Log.d("Test", "setupRecommendRecycler: " + recyclerView);
+            });
         }).start();
     }
 
@@ -360,11 +367,11 @@ public class MainActivity extends AppCompatActivity {
                                 new YoutubeContent(title, creator, videoId, thumbnail)
                         );
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            else{
+            else {
                 Log.i("Youtube", conn.getResponseCode() + "인 접속오류!"); //지우지 말것
             }
             conn.disconnect();

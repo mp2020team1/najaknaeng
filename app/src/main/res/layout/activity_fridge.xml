@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".activity.FridgeActivity" >
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginBottom="20dp"
+        android:id="@+id/toolbar_fridge"
+        app:titleTextColor="@color/black" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/toolbar_fridge"
-            app:titleTextColor="@color/black" />
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:text="@string/text_section_empty_view"
+            android:id="@+id/empty_view_recycler_section_fridge" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.najakneang.model.RecyclerViewEmptySupport
             android:id="@+id/recycler_section_fridge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
-</ScrollView>
+    </FrameLayout>
+
+</LinearLayout>

@@ -25,10 +25,24 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sub_recycler_section_fridge"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                android:text="@string/text_goods_empty_view"
+                android:id="@+id/empty_view_sub_recycler_section_fridge" />
+
+            <com.example.najakneang.model.RecyclerViewEmptySupport
+                android:id="@+id/sub_recycler_section_fridge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -54,11 +54,26 @@
                     android:text="@string/str_alert_items"
                     android:textSize="20sp" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_freshness_main"
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/alert_freshness_main" />
+                    android:layout_below="@+id/alert_freshness_main">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone"
+                        android:text="@string/text_goods_empty_view"
+                        android:id="@+id/empty_view_recycler_freshness_main" />
+
+                    <com.example.najakneang.model.RecyclerViewEmptySupport
+                        android:id="@+id/recycler_freshness_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/alert_freshness_main" />
+
+                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/icon_freshness_main"
@@ -126,17 +141,31 @@
 
             </LinearLayout>
 
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- recyclerView를 다보이게하려면 relativeLayout에 넣어야됨... 대체왜? -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_recommend_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/text_recommend_empty_view"
+                    android:id="@+id/empty_view_recycler_recommend_main" />
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <!-- recyclerView를 다보이게하려면 relativeLayout에 넣어야됨... 대체왜? -->
+                    <com.example.najakneang.model.RecyclerViewEmptySupport
+                        android:id="@+id/recycler_recommend_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+            </FrameLayout>
 
         </LinearLayout>
 
