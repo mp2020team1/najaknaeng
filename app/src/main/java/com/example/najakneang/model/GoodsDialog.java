@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -32,25 +31,19 @@ import java.util.ArrayList;
 
 
 public class GoodsDialog extends Dialog implements View.OnClickListener {
-    public interface DialogEventListener {
-        public void DialogEvent(boolean value);
-    }
 
     private String fridge;
     private String section;
+    private final Context context;
 
-    private Context context;
-    private DialogEventListener onDialogEventListener;
-
-    private TextView btn_ok;
-    private TextView btn_cancel;
     private EditText name;
     private EditText quantity;
-    private EditText expire_date;
-    private Spinner type_spinner;
-    private Spinner fridge_spinner;
-    private Spinner section_spinner;
-    private LinearLayout fridge_layout;
+
+    private EditText expireDate;
+    private Spinner typeSpinner;
+    private Spinner fridgeSpinner;
+    private Spinner sectionSpinner;
+    private LinearLayout fridgeLayout;
 
     SQLiteDatabase db = MainActivity.db;
 
@@ -79,29 +72,25 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         //Dialog 레이아웃 지정
         setContentView(R.layout.dialog_goods);
 
-        btn_ok = findViewById(R.id.btn_ok);
-        btn_cancel = findViewById(R.id.btn_cancel);
-        name = findViewById(R.id.ingredient_Name);
-        quantity = findViewById(R.id.ingredient_Quantity);
-        expire_date = findViewById(R.id.ingredient_expireDate);
-        type_spinner = findViewById(R.id.ingredient_type_spinner);
-        fridge_spinner = findViewById(R.id.ingredient_fridge_spinner);
-        section_spinner = findViewById(R.id.ingredient_section_spinner);
-        fridge_layout = findViewById(R.id.fridge_layout);
+        TextView okBtn = findViewById(R.id.btn_ok_goods_dialog);
+        TextView cancelBtn = findViewById(R.id.btn_cancel_goods_dialog);
+        name = findViewById(R.id.edit_name_goods_dialog);
+        quantity = findViewById(R.id.edit_quantity_goods_dialog);
+        expireDate = findViewById(R.id.edit_expire_date_goods_dialog);
+        typeSpinner = findViewById(R.id.spinner_type_goods_dialog);
+        fridgeSpinner = findViewById(R.id.spinner_fridge_goods_dialog);
+        sectionSpinner = findViewById(R.id.spinner_section_goods_dialog);
 
-        btn_ok.setOnClickListener(this);
-        btn_cancel.setOnClickListener(this);
+        okBtn.setOnClickListener(this);
+        cancelBtn.setOnClickListener(this);
 
-        final ArrayAdapter<CharSequence> type_adapter = ArrayAdapter.createFromResource(context,
+        final ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(context,
                 R.array.secondTab, android.R.layout.simple_spinner_item);
-        type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        type_spinner.setAdapter(type_adapter);
-        type_spinner.setSelection(0);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(typeAdapter);
+        typeSpinner.setSelection(0);
 
-        if(context.getClass() == FreshnessActivity.class){
-//            fridge_spinner.setVisibility(View.VISIBLE);
-//            section_spinner.setVisibility(View.VISIBLE);
-
+        if (context.getClass() == FreshnessActivity.class) {
             ArrayList<String> fridge_name = new ArrayList<>();
             Cursor cursor = db.query(
                     DBContract.FridgeEntry.TABLE_NAME,
@@ -124,37 +113,37 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
             final ArrayAdapter<String> fridge_adapter = new ArrayAdapter<>(context,
                     android.R.layout.simple_spinner_item, fridge_name);
             fridge_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            fridge_spinner.setAdapter(fridge_adapter);
-            fridge_spinner.setSelection(0,false);
-            fridge_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            fridgeSpinner.setAdapter(fridge_adapter);
+            fridgeSpinner.setSelection(0,false);
+            fridgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    ArrayList<String> section_name = new ArrayList<>();
-                    String test = fridge_spinner.getSelectedItem().toString();
+                    ArrayList<String> sectionNameList = new ArrayList<>();
+                    String test = fridgeSpinner.getSelectedItem().toString();
                     Log.i("Activated", test);
                     Cursor cursor = db.query(
                             DBContract.SectionEntry.TABLE_NAME,
                             new String[]{DBContract.SectionEntry.COLUMN_NAME},
                             DBContract.SectionEntry.COLUMN_FRIDGE + " = ? ",
-                            new String[]{ fridge_spinner.getSelectedItem().toString() },
+                            new String[]{ fridgeSpinner.getSelectedItem().toString() },
                             null,
                             null,
                             null
                     );
 
-                    section_name.add("구역을 선택해주세요");
+                    sectionNameList.add("구역을 선택해주세요");
 
-                    while(cursor.moveToNext()){
-                        section_name.add(cursor.getString(
+                    while (cursor.moveToNext()) {
+                        sectionNameList.add(cursor.getString(
                                 cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
                     }
                     cursor.close();
 
                     final ArrayAdapter<String> section_adapter = new ArrayAdapter<>(context,
-                            android.R.layout.simple_spinner_item, section_name);
+                            android.R.layout.simple_spinner_item, sectionNameList);
                     section_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    section_spinner.setAdapter(section_adapter);
-                    section_spinner.setSelection(0,false);
+                    sectionSpinner.setAdapter(section_adapter);
+                    sectionSpinner.setSelection(0,false);
                 }
 
                 @Override
@@ -164,17 +153,17 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
             });
         }
         else{
-            fridge_layout.setVisibility(View.GONE);
+            fridgeLayout.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onClick(View v){
-        switch(v.getId()){
-            case R.id.btn_ok:
+        switch (v.getId()) {
+            case R.id.btn_ok_goods_dialog:
                 String nameStr = name.getText().toString();
                 String quantityStr = quantity.getText().toString();
-                String expireDateStr = expire_date.getText().toString();
+                String expireDateStr = expireDate.getText().toString();
                 if(nameStr.trim().getBytes().length == 0){
                     Toast.makeText(context.getApplicationContext(),
                             "이름을 입력해주세요",Toast.LENGTH_SHORT).show();
@@ -187,7 +176,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     Toast.makeText(context.getApplicationContext(),
                             "수량 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                 }
-                else if(type_spinner.getSelectedItemPosition() == 0){
+                else if(typeSpinner.getSelectedItemPosition() == 0){
                     Toast.makeText(context.getApplicationContext(),
                             "종류를 선택해주세요",Toast.LENGTH_SHORT).show();
                 }
@@ -195,17 +184,16 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     Toast.makeText(context.getApplicationContext(),
                             "날짜 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                 }
-                else if(fridge_spinner.getSelectedItemPosition() == 0 && fridge_layout.getVisibility() == View.GONE){
+                else if (fridgeSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.GONE){
                     Toast.makeText(context.getApplicationContext(),
                             "냉장고를 선택해주세요",Toast.LENGTH_SHORT).show();
                 }
-                else if(section_spinner.getSelectedItemPosition() == 0 && fridge_layout.getVisibility() == View.GONE){
+                else if (sectionSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.GONE){
                     Toast.makeText(context.getApplicationContext(),
                             "구역을 선택해주세요",Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     LocalDate expireDate;
-                    try{
+                    try {
                         expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
                         ContentValues values = new ContentValues();
@@ -216,11 +204,11 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
                         );
                         values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, expireDateStr);
-                        values.put(DBContract.GoodsEntry.COLUMN_TYPE, type_spinner.getSelectedItem().toString());
+                        values.put(DBContract.GoodsEntry.COLUMN_TYPE, typeSpinner.getSelectedItem().toString());
                         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE,
-                                fridge_layout.getVisibility() == View.GONE? fridge:fridge_spinner.getSelectedItem().toString());
+                                fridgeLayout.getVisibility() == View.GONE? fridgeSpinner.getSelectedItem().toString():fridge);
                         values.put(DBContract.GoodsEntry.COLUMN_SECTION,
-                                fridge_layout.getVisibility() == View.GONE? section:section_spinner.getSelectedItem().toString());
+                                fridgeLayout.getVisibility() == View.GONE? sectionSpinner.getSelectedItem().toString():section);
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
 
@@ -231,14 +219,14 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
 
                         dismiss();
                     }
-                    catch(Exception e){
+                    catch (Exception e) {
                         Toast.makeText(context.getApplicationContext(),
                                 "날짜 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
                 break;
-            case R.id.btn_cancel:
+            case R.id.btn_cancel_goods_dialog:
                 dismiss();
                 break;
         }

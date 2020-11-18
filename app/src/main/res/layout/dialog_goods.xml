@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -17,29 +17,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="60dp"
-        android:padding = "10dp"
-        android:orientation="vertical">
+        android:layout_marginVertical="50dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/name_goods_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="재료 이름"
-            android:textStyle="bold"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/ingredient_Name"
+            android:id="@+id/edit_name_goods_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:ems="10"
             android:inputType="textPersonName" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -49,15 +49,16 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/quantity_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="개수" />
 
                 <EditText
-                    android:id="@+id/ingredient_Quantity"
+                    android:id="@+id/edit_quantity_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
                     android:ems="10"
                     android:inputType="numberSigned" />
             </LinearLayout>
@@ -69,7 +70,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/type_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="종류"
@@ -77,7 +78,7 @@
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/ingredient_type_spinner"
+                    android:id="@+id/spinner_type_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dropdown" />
@@ -86,7 +87,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/registerText"
+            android:id="@+id/expire_date_goods_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="유통기한"
@@ -94,9 +95,10 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/ingredient_expireDate"
+            android:id="@+id/edit_expire_date_goods_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:ems="10"
             android:hint="yyyymmdd"
             android:inputType="date" />
@@ -114,16 +116,17 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/fridge_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="냉장고" />
 
                 <Spinner
-                    android:id="@+id/ingredient_fridge_spinner"
+                    android:id="@+id/spinner_fridge_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dropdown" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -133,7 +136,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/registerDateText"
+                    android:id="@+id/section_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="종류"
@@ -141,7 +144,7 @@
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/ingredient_section_spinner"
+                    android:id="@+id/spinner_section_goods_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dropdown" />
@@ -150,6 +153,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -157,7 +161,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/btn_ok"
+            android:id="@+id/btn_ok_goods_dialog"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -170,16 +174,18 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/btn_cancel"
+            android:id="@+id/btn_cancel_goods_dialog"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="#2F89D1"
+            android:background="@color/white"
             android:clickable="true"
             android:gravity="center"
             android:text="취소"
-            android:textColor="#ffffff"
+            android:textColor="#2F89D1"
             android:textSize="16dp"
             android:textStyle="bold" />
+
     </LinearLayout>
+
 </LinearLayout>

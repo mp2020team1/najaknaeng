@@ -59,7 +59,7 @@ public class MainFridgeViewPagerAdapter
             holder.layout.setBackgroundColor(context.getColor(R.color.gray_light));
             holder.addIcon.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
-                MainActivity.fridge_id = holder.getAdapterPosition()-1;
+                MainActivity.fridge_id = position;
                 FridgeDialog fridgeDialog = new FridgeDialog(view.getContext());
                 fridgeDialog.setCancelable(false);
                 fridgeDialog.show();
