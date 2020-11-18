@@ -113,6 +113,7 @@ public class FreshnessRecyclerAdapter
             });
         }
         else{
+            holder.checkbox.setChecked(false);
             holder.checkbox.setVisibility(View.INVISIBLE);
             holder.itemView.setOnClickListener(view -> {
                 Context context = view.getContext();
