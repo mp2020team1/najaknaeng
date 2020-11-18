@@ -175,24 +175,17 @@ public class FreshnessActivity extends AppCompatActivity {
             goodsDialog.show();
         }
         else if(item.getItemId() == R.id.ingredient_remove){
-            item.setIcon(remove_item?R.drawable.ic_cancel:R.drawable.ic_eat);
+            item.setIcon(remove_item?R.drawable.ic_eat:R.drawable.ic_cancel);
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(remove_item?true:false);
+            tmpItem.setVisible(remove_item);
             tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(remove_item?false:true);
+            tmpItem.setVisible(!remove_item);
 
             remove_item = remove_item?false:true;
             setupFreshnessRecycler();
         }
         else if(item.getItemId() == R.id.ingredient_confirm){
-            remove_item = false;
-
-            Menu menu = toolbar.getMenu();
-            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(true);
-            tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(false);
 
             for(int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++){
                 db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
@@ -200,10 +193,20 @@ public class FreshnessActivity extends AppCompatActivity {
             }
 
             if(FreshnessRecyclerAdapter.removeList.size() != 0){
+                remove_item = false;
+
+                Menu menu = toolbar.getMenu();
+                MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+                tmpItem.setVisible(true);
+                tmpItem = menu.findItem(R.id.ingredient_confirm);
+                tmpItem.setVisible(false);
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                setupFreshnessRecycler();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "재료를 골라주세요", Toast.LENGTH_SHORT).show();
             }
 
-            setupFreshnessRecycler();
         }
         return super.onOptionsItemSelected(item);
     }

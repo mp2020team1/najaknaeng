@@ -80,6 +80,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         typeSpinner = findViewById(R.id.spinner_type_goods_dialog);
         fridgeSpinner = findViewById(R.id.spinner_fridge_goods_dialog);
         sectionSpinner = findViewById(R.id.spinner_section_goods_dialog);
+        fridgeLayout = findViewById(R.id.fridge_layout);
 
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
@@ -206,9 +207,9 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                         values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, expireDateStr);
                         values.put(DBContract.GoodsEntry.COLUMN_TYPE, typeSpinner.getSelectedItem().toString());
                         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE,
-                                fridgeLayout.getVisibility() == View.GONE? fridgeSpinner.getSelectedItem().toString():fridge);
+                                fridgeLayout.getVisibility() == View.GONE? fridge:fridgeSpinner.getSelectedItem().toString());
                         values.put(DBContract.GoodsEntry.COLUMN_SECTION,
-                                fridgeLayout.getVisibility() == View.GONE? sectionSpinner.getSelectedItem().toString():section);
+                                fridgeLayout.getVisibility() == View.GONE? section:sectionSpinner.getSelectedItem().toString());
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
 

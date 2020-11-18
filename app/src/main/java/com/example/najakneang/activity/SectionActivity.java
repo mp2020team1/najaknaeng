@@ -129,34 +129,45 @@ public class SectionActivity extends AppCompatActivity {
             item.setIcon(remove_item?R.drawable.ic_eat:R.drawable.ic_cancel);
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(remove_item?false:true);
+            tmpItem.setVisible(remove_item);
             tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(remove_item?true:false);
+            tmpItem.setVisible(!remove_item);
 
             remove_item = remove_item?false:true;
 
             setupFreshnessRecycler(fridge, section);
         }
         else if(item.getItemId() == R.id.ingredient_confirm){
-            remove_item = false;
 
-            Menu menu = toolbar.getMenu();
-            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(true);
-            tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(false);
-
-            for(int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++){
+            for(int i = 0; i<SectionRecyclerAdapter.removeList.size(); i++){
                 db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
-                        new String[]{FreshnessRecyclerAdapter.removeList.get(i).toString()});
+                        new String[]{SectionRecyclerAdapter.removeList.get(i).toString()});
             }
 
-            if(FreshnessRecyclerAdapter.removeList.size() != 0){
+            if(SectionRecyclerAdapter.removeList.size() != 0){
+                remove_item = false;
+
+                item.setVisible(false);
+                Menu menu = toolbar.getMenu();
+                MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+                tmpItem.setVisible(true);
+                tmpItem = menu.findItem(R.id.ingredient_remove);
+                tmpItem.setIcon(R.drawable.ic_eat);
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
-            }
 
-            setupFreshnessRecycler(fridge, section);
+                setupFreshnessRecycler(fridge, section);
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "재료를 골라주세요", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        remove_item = false;
+        finish();
     }
 }

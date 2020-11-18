@@ -14,9 +14,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.activity.GoodsActivity;
+import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -43,8 +47,12 @@ public class SectionRecyclerAdapter
         extends RecyclerView.Adapter<SectionRecyclerHolder>{
 
     private final Cursor cursor;
+    public static ArrayList<Long> removeList;
 
-    public SectionRecyclerAdapter(Cursor cursor) { this.cursor = cursor; }
+    public SectionRecyclerAdapter(Cursor cursor) {
+        this.cursor = cursor;
+        removeList = new ArrayList<>();
+    }
 
     @NonNull
     @Override
@@ -76,12 +84,26 @@ public class SectionRecyclerAdapter
                     remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
             );
             holder.image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(type));
-            holder.view.setOnClickListener(view -> {
-                Context context = view.getContext();
-                Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
-                intent.putExtra("GOODSID", id);
-                context.startActivity(intent);
-            });
+            if (SectionActivity.remove_item) {
+                holder.checkbox.setVisibility(View.VISIBLE);
+                holder.itemView.setOnClickListener(view -> {
+                    holder.checkbox.setChecked(!holder.checkbox.isChecked());
+                });
+                holder.checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    holder.layout.setBackgroundResource(isChecked ? R.drawable.border : R.drawable.non_border);
+                    if (isChecked) removeList.add(id);
+                    else removeList.remove(id);
+                });
+            }
+            else{
+                holder.checkbox.setChecked(false);
+                holder.view.setOnClickListener(view -> {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
+                    intent.putExtra("GOODSID", id);
+                    context.startActivity(intent);
+                });
+            }
         }
 
         if (position == getItemCount() - 1) cursor.close();

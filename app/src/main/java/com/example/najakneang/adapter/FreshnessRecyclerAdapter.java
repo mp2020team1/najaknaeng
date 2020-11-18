@@ -56,7 +56,7 @@ public class FreshnessRecyclerAdapter
 
     public FreshnessRecyclerAdapter(Cursor cursor) {
         this.cursor = cursor;
-        if(FreshnessActivity.remove_item || SectionActivity.remove_item){ removeList = new ArrayList<>();}
+        removeList = new ArrayList<>();
     }
 
     @NonNull
@@ -99,7 +99,7 @@ public class FreshnessRecyclerAdapter
         Integer image = DBContract.GoodsEntry.typeIconMap.get(type);
         holder.image.setImageResource(image);
 
-        if (FreshnessActivity.remove_item || SectionActivity.remove_item) {
+        if (FreshnessActivity.remove_item) {
             holder.checkbox.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
                 holder.checkbox.setChecked(!holder.checkbox.isChecked());
