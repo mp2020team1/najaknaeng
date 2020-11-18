@@ -1,5 +1,6 @@
 package com.example.najakneang.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,8 @@ import android.os.Handler;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
@@ -55,6 +58,19 @@ public class MainActivity extends AppCompatActivity {
         setDB();
         setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
 
+        Button credit = findViewById(R.id.credit);
+        credit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                        .setTitle("크레딧")
+                        .setIcon(R.drawable.ic_kitchen)
+                        .setPositiveButton("감사합니다", null)
+                        .setMessage(getString(R.string.credit))
+                        .show();
+            }
+        });
+
     }
 
     //RecyclerView 정보 갱신
@@ -82,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             Thread dbOpenThread = new Thread(() -> {
                 DBHelper dbHelper = new DBHelper(getApplicationContext());
                 db = dbHelper.getWritableDatabase();
-                //insertFakeData();
+                insertFakeData();
             });
             dbOpenThread.start();
             dbOpenThread.join();
@@ -94,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
     // 임의의 가데이터 입력 함수
     private void insertFakeData() {
         db.delete(DBContract.GoodsEntry.TABLE_NAME, null, null);
+        db.delete(DBContract.FridgeEntry.TABLE_NAME,null,null);
+        db.delete(DBContract.SectionEntry.TABLE_NAME, null, null);
         ContentValues values = new ContentValues();
 
         values.put(DBContract.FridgeEntry.COLUMN_NAME, "냉장고 1");
@@ -120,6 +138,12 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.SectionEntry.COLUMN_NAME, "구역 2");
         values.put(DBContract.SectionEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, "냉동");
+        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
+        values.clear();
+
+        values.put(DBContract.SectionEntry.COLUMN_NAME, "구역 3");
+        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, "냉장고 1");
+        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, "실온");
         db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
         values.clear();
 
@@ -155,20 +179,20 @@ public class MainActivity extends AppCompatActivity {
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
         values.clear();
 
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "고등어");
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "방어");
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-12-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2002-12-23");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "수산");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 2");
         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
         values.clear();
 
-        values.put(DBContract.GoodsEntry.COLUMN_NAME, "배추김치");
+        values.put(DBContract.GoodsEntry.COLUMN_NAME, "120년 김치만 연구한 전통 장인의 정성이 가득 담긴 굉장히 엄청난 배추김치");
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,

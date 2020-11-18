@@ -4,15 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/ingredient_remove"
+        android:icon="@drawable/ic_eat"
+        android:title="RemoveOption"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/ingredient_add"
         android:icon="@drawable/ic_add"
         android:title="AddOption"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/ingredient_subtract"
+        android:id="@+id/ingredient_confirm"
         android:icon="@drawable/ic_add"
-        android:title="SubtractOption"
+        android:visible="false"
+        android:title="CofirmOption"
         app:showAsAction="always" />
 
 </menu>

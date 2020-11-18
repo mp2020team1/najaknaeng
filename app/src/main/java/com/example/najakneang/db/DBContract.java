@@ -28,12 +28,12 @@ public final class DBContract {
         }
         public static final HashMap<String, Integer> typeIconMap = new HashMap<String, Integer>() {
             {
-                put("과일", R.drawable.ic_type_fruit);
-                put("채소", R.drawable.ic_type_vegetable);
-                put("수산", R.drawable.ic_type_fish);
+                put("과일", R.drawable.ic_fruit);
+                put("채소", R.drawable.ic_vegetable);
+                put("수산", R.drawable.ic_fish);
                 put("육류", R.drawable.ic_type_meat);
-                put("유제품", R.drawable.ic_launcher_background);
-                put("반찬", R.drawable.ic_launcher_background);
+                put("유제품", R.drawable.ic_dairy);
+                put("반찬", R.drawable.ic_sidedish);
             }
         };
         public static String getRemainColor(String state, long remain){

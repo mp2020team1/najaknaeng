@@ -10,4 +10,6 @@
     <string name="type_goods">분류</string>
     <string name="remain_goods">남은 유통기한</string>
     <string name="quantity_goods">수량</string>
+
+    <string name="credit">\nMade by 홍석주, 채원찬, 이현준, 조현진\n\n[ Thanks for ]\n아이콘출처 등등</string>
 </resources>

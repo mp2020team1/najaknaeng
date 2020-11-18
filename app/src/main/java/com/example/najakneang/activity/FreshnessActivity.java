@@ -3,10 +3,13 @@ package com.example.najakneang.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.najakneang.R;
 import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
+import com.example.najakneang.model.GoodsDialog;
 import com.example.najakneang.model.RecyclerViewEmptySupport;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
@@ -28,12 +32,16 @@ public class FreshnessActivity extends AppCompatActivity {
     private static final int FIRST = 0;
     private static final int SECOND = 1;
 
+    private Toolbar toolbar;
+
     private static String select_first = DBContract.SectionEntry.COLUMN_STORE_STATE;
     private static String select_second = DBContract.GoodsEntry.COLUMN_TYPE;
 
     private final SQLiteDatabase db = MainActivity.db;
 
     private final String[] tabSetting = {"전체", "전체"};
+
+    public static boolean remove_item = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +55,7 @@ public class FreshnessActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar_freshness);
+        toolbar = findViewById(R.id.toolbar_freshness);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,7 +121,7 @@ public class FreshnessActivity extends AppCompatActivity {
         return true;
     }
 
-    private void setupFreshnessRecycler() {
+    public void setupFreshnessRecycler() {
         // TODO: 실온은 따로 팬트리만 불러와야함.. 우짠다냐
 
         String sql =
@@ -159,6 +167,38 @@ public class FreshnessActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        }
+        else if(item.getItemId() == R.id.ingredient_add){
+            GoodsDialog goodsDialog = new GoodsDialog(this);
+            goodsDialog.setCancelable(false);
+            goodsDialog.show();
+        }
+        else if(item.getItemId() == R.id.ingredient_remove){
+            remove_item = true;
+
+            Menu menu = toolbar.getMenu();
+            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+            tmpItem.setVisible(false);
+            tmpItem = menu.findItem(R.id.ingredient_confirm);
+            tmpItem.setVisible(true);
+
+            setupFreshnessRecycler();
+        }
+        else if(item.getItemId() == R.id.ingredient_confirm){
+            remove_item = false;
+
+            Menu menu = toolbar.getMenu();
+            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+            tmpItem.setVisible(true);
+            tmpItem = menu.findItem(R.id.ingredient_confirm);
+            tmpItem.setVisible(false);
+
+            for(int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++){
+                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
+                        new String[]{FreshnessRecyclerAdapter.removeList.get(i).toString()});
+            }
+
+            setupFreshnessRecycler();
         }
         return super.onOptionsItemSelected(item);
     }

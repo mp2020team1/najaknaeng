@@ -1,46 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="10dp"
+    android:id="@+id/itemFrame"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <CheckBox
+        android:id="@+id/itemSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:visibility="invisible" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/item_layout"
+        android:layout_width="77dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="#00000000"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="5dp"
-        android:background="#00000000">
+        android:padding="5dp">
 
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_item_freshness_main"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/image_item_freshness_main" />
+            android:layout_marginBottom="5dp" />
 
         <TextView
+            android:id="@+id/name_item_freshness_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:id="@+id/name_item_freshness_main" />
+            android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/remain_item_freshness_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:id="@+id/remain_item_freshness_main" />
+            android:ellipsize="end"
+            android:maxLines="1" />
 
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/more_icon_item_freshness_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="invisible"
         android:src="@drawable/ic_more_horizontal"
-        android:id="@+id/more_icon_item_freshness_main" />
+        android:visibility="invisible" />
 
 </FrameLayout>

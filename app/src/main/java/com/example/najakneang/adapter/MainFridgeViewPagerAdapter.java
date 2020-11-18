@@ -3,6 +3,7 @@ package com.example.najakneang.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,8 @@ public class MainFridgeViewPagerAdapter
     public void onBindViewHolder(@NonNull MainFridgeViewPagerHolder holder, int position) {
         Context context = holder.itemView.getContext();
 
-        if (!cursor.moveToPosition(holder.getAdapterPosition())) {
+        if (!cursor.moveToPosition(position)) {
+            Log.i("adapter", position + "번째와 " + holder.getAdapterPosition());
             holder.layout.setBackgroundColor(context.getColor(R.color.gray_light));
             holder.addIcon.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
@@ -62,7 +64,6 @@ public class MainFridgeViewPagerAdapter
                 fridgeDialog.setCancelable(false);
                 fridgeDialog.show();
             });
-
             return;
         }
 

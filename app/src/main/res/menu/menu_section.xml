@@ -7,4 +7,10 @@
         android:icon="@drawable/ic_add"
         android:title="AddOption"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/section_remove"
+        android:icon="@drawable/ic_add"
+        android:title="AddOption"
+        app:showAsAction="always" />
 </menu>
