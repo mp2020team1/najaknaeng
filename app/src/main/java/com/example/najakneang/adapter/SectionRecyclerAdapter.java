@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,10 +25,14 @@ class SectionRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView remain;
     protected final CircleImageView image;
     protected final View view;
+    protected final CheckBox checkbox;
+    protected final FrameLayout layout;
 
     public SectionRecyclerHolder(@NonNull View view) {
         super(view);
         this.view = view;
+        this.checkbox = view.findViewById(R.id.itemSelect);
+        this.layout = view.findViewById(R.id.itemFrame);
         this.name = view.findViewById(R.id.name_item_freshness_main);
         this.remain = view.findViewById(R.id.remain_item_freshness_main);
         this.image = view.findViewById(R.id.image_item_freshness_main);

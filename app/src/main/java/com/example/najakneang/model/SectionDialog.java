@@ -86,7 +86,7 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
                         values.put(DBContract.SectionEntry.COLUMN_FRIDGE, current_fridge);
                         values.put(DBContract.SectionEntry.COLUMN_NAME, name);
                         values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, spinner.getSelectedItem().toString());
-                        db.insert(DBContract.FridgeEntry.TABLE_NAME, null, values);
+                        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
 
                         //현재 페이지에 정보갱신
                         ((FridgeActivity)context).loadSection(current_fridge);

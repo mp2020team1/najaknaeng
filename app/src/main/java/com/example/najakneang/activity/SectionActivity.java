@@ -111,7 +111,6 @@ public class SectionActivity extends AppCompatActivity {
                             db.delete(DBContract.SectionEntry.TABLE_NAME, DBContract.SectionEntry.COLUMN_FRIDGE + "=? AND " +
                                             DBContract.SectionEntry.COLUMN_NAME + "=?",
                                     new String[]{fridge, section});
-                            setResult(RESULT_OK);
                             finish();
                             Toast.makeText(getApplicationContext(), "구역이 삭제되었습니다", Toast.LENGTH_SHORT).show();
                         }
@@ -122,19 +121,19 @@ public class SectionActivity extends AppCompatActivity {
             return true;
         }
         else if(item.getItemId() == R.id.ingredient_add){
-            GoodsDialog goodsDialog = new GoodsDialog(this);
+            GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section);
             goodsDialog.setCancelable(false);
             goodsDialog.show();
         }
         else if(item.getItemId() == R.id.ingredient_remove){
-            remove_item = remove_item?false:true;
-
-            item.setIcon(remove_item?R.drawable.ic_cancel:R.drawable.ic_eat);
+            item.setIcon(remove_item?R.drawable.ic_eat:R.drawable.ic_cancel);
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(false);
+            tmpItem.setVisible(remove_item?false:true);
             tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(true);
+            tmpItem.setVisible(remove_item?true:false);
+
+            remove_item = remove_item?false:true;
 
             setupFreshnessRecycler(fridge, section);
         }

@@ -218,9 +218,9 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                         values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, expireDateStr);
                         values.put(DBContract.GoodsEntry.COLUMN_TYPE, type_spinner.getSelectedItem().toString());
                         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE,
-                                fridge_layout.getVisibility() == View.GONE? fridge_spinner.getSelectedItem().toString():fridge);
+                                fridge_layout.getVisibility() == View.GONE? fridge:fridge_spinner.getSelectedItem().toString());
                         values.put(DBContract.GoodsEntry.COLUMN_SECTION,
-                                fridge_layout.getVisibility() == View.GONE? section_spinner.getSelectedItem().toString():section);
+                                fridge_layout.getVisibility() == View.GONE? section:section_spinner.getSelectedItem().toString());
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
 

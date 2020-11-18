@@ -44,6 +44,13 @@ public class FridgeActivity extends AppCompatActivity {
         setupToolbar(fridgeName, fridgeCategory);
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        loadSection(fridgeName);
+    }
+
     private void setupToolbar(String name, String category) {
         Toolbar toolbar = findViewById(R.id.toolbar_fridge);
 
