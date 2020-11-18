@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import androidx.annotation.NonNull;
 import com.example.najakneang.R;
 import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.activity.MainActivity;
+import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
 
 import java.time.LocalDate;
@@ -34,6 +36,9 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         public void DialogEvent(boolean value);
     }
 
+    private String fridge;
+    private String section;
+
     private Context context;
     private DialogEventListener onDialogEventListener;
 
@@ -45,12 +50,20 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
     private Spinner type_spinner;
     private Spinner fridge_spinner;
     private Spinner section_spinner;
+    private LinearLayout fridge_layout;
 
     SQLiteDatabase db = MainActivity.db;
 
     public GoodsDialog(@NonNull Context context){
         super(context);
         this.context = context;
+    }
+
+    public GoodsDialog(@NonNull Context context, String fridge, String section){
+        super(context);
+        this.context = context;
+        this.fridge = fridge;
+        this.section = section;
     }
 
     @Override
@@ -74,6 +87,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         type_spinner = findViewById(R.id.ingredient_type_spinner);
         fridge_spinner = findViewById(R.id.ingredient_fridge_spinner);
         section_spinner = findViewById(R.id.ingredient_section_spinner);
+        fridge_layout = findViewById(R.id.fridge_layout);
 
         btn_ok.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
@@ -85,8 +99,8 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         type_spinner.setSelection(0);
 
         if(context.getClass() == FreshnessActivity.class){
-            fridge_spinner.setVisibility(View.VISIBLE);
-            section_spinner.setVisibility(View.VISIBLE);
+//            fridge_spinner.setVisibility(View.VISIBLE);
+//            section_spinner.setVisibility(View.VISIBLE);
 
             ArrayList<String> fridge_name = new ArrayList<>();
             Cursor cursor = db.query(
@@ -150,8 +164,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
             });
         }
         else{
-            fridge_spinner.setVisibility(View.INVISIBLE);
-            section_spinner.setVisibility(View.INVISIBLE);
+            fridge_layout.setVisibility(View.GONE);
         }
     }
 
@@ -182,33 +195,39 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     Toast.makeText(context.getApplicationContext(),
                             "날짜 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                 }
-                else if(fridge_spinner.getSelectedItemPosition() == 0){
+                else if(fridge_spinner.getSelectedItemPosition() == 0 && fridge_layout.getVisibility() == View.GONE){
                     Toast.makeText(context.getApplicationContext(),
                             "냉장고를 선택해주세요",Toast.LENGTH_SHORT).show();
                 }
-                else if(section_spinner.getSelectedItemPosition() == 0){
+                else if(section_spinner.getSelectedItemPosition() == 0 && fridge_layout.getVisibility() == View.GONE){
                     Toast.makeText(context.getApplicationContext(),
                             "구역을 선택해주세요",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     LocalDate expireDate;
                     try{
-                        expireDate = LocalDate.parse(expireDateStr);
+                        expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
                         ContentValues values = new ContentValues();
                         values.put(DBContract.GoodsEntry.COLUMN_NAME, nameStr);
                         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, Integer.parseInt(quantityStr));
                         values.put(
                                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
                         );
                         values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, expireDateStr);
                         values.put(DBContract.GoodsEntry.COLUMN_TYPE, type_spinner.getSelectedItem().toString());
-                        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, fridge_spinner.getSelectedItem().toString());
-                        values.put(DBContract.GoodsEntry.COLUMN_SECTION, section_spinner.getSelectedItem().toString());
+                        values.put(DBContract.GoodsEntry.COLUMN_FRIDGE,
+                                fridge_layout.getVisibility() == View.GONE? fridge_spinner.getSelectedItem().toString():fridge);
+                        values.put(DBContract.GoodsEntry.COLUMN_SECTION,
+                                fridge_layout.getVisibility() == View.GONE? section_spinner.getSelectedItem().toString():section);
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
-                        if(context.getClass() == FreshnessActivity.class){((FreshnessActivity)context).setupFreshnessRecycler(); }
+
+                        if(context.getClass() == FreshnessActivity.class){((FreshnessActivity)context).
+                                setupFreshnessRecycler(); }
+                        else if(context.getClass() == SectionActivity.class){((SectionActivity)context).
+                                setupFreshnessRecycler(fridge,section);}
 
                         dismiss();
                     }

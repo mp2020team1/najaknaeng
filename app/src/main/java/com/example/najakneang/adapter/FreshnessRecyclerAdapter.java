@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.MainActivity;
+import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
 
@@ -55,7 +56,7 @@ public class FreshnessRecyclerAdapter
 
     public FreshnessRecyclerAdapter(Cursor cursor) {
         this.cursor = cursor;
-        if(FreshnessActivity.remove_item){ removeList = new ArrayList<>();}
+        if(FreshnessActivity.remove_item || SectionActivity.remove_item){ removeList = new ArrayList<>();}
     }
 
     @NonNull
@@ -98,7 +99,7 @@ public class FreshnessRecyclerAdapter
         Integer image = DBContract.GoodsEntry.typeIconMap.get(type);
         holder.image.setImageResource(image);
 
-        if(FreshnessActivity.remove_item){
+        if(FreshnessActivity.remove_item || SectionActivity.remove_item){
             holder.checkbox.setVisibility(View.VISIBLE);
             holder.itemView.setOnClickListener(view -> {
                 holder.checkbox.setChecked(holder.checkbox.isChecked()?false:true);

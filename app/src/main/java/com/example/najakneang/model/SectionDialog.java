@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -89,7 +90,8 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
 
                         //현재 페이지에 정보갱신
                         ((FridgeActivity)context).loadSection(current_fridge);
-                        Toast.makeText(context.getApplicationContext(), "냉장고가 추가되었습니다",Toast.LENGTH_SHORT).show();
+                        Log.i("Fridge", current_fridge);
+                        Toast.makeText(context.getApplicationContext(), "구역이 추가되었습니다",Toast.LENGTH_SHORT).show();
                         dismiss();
                     }
 

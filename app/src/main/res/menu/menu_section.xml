@@ -3,14 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/section_add"
+        android:id="@+id/option_remove"
+        android:icon="@drawable/ic_remove"
+        android:title="SectionRemoveOption"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ingredient_remove"
+        android:icon="@drawable/ic_eat"
+        android:title="IngredientRemoveOption"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ingredient_add"
         android:icon="@drawable/ic_add"
         android:title="AddOption"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/section_remove"
-        android:icon="@drawable/ic_add"
-        android:title="AddOption"
+        android:id="@+id/ingredient_confirm"
+        android:icon="@drawable/ic_check"
+        android:visible="false"
+        android:title="CofirmOption"
         app:showAsAction="always" />
 </menu>

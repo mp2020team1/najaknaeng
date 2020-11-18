@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -176,6 +177,7 @@ public class FreshnessActivity extends AppCompatActivity {
         else if(item.getItemId() == R.id.ingredient_remove){
             remove_item = remove_item?false:true;
 
+            item.setIcon(remove_item?R.drawable.ic_cancel:R.drawable.ic_eat);
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
             tmpItem.setVisible(false);
@@ -198,9 +200,20 @@ public class FreshnessActivity extends AppCompatActivity {
                         new String[]{FreshnessRecyclerAdapter.removeList.get(i).toString()});
             }
 
+            if(FreshnessRecyclerAdapter.removeList.size() != 0){
+                Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+            }
+
             setupFreshnessRecycler();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        remove_item = false;
+        finish();
     }
 
 }

@@ -9,4 +9,10 @@
         android:title="AddOption"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/option_remove"
+        android:icon="@drawable/ic_remove"
+        android:title="RemoveOption"
+        app:showAsAction="always" />
+
 </menu>

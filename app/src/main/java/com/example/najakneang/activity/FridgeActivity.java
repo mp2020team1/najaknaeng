@@ -1,11 +1,13 @@
 package com.example.najakneang.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,8 +16,10 @@ import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.najakneang.R;
+import com.example.najakneang.adapter.FreshnessRecyclerAdapter;
 import com.example.najakneang.adapter.FridgeRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.model.GoodsDialog;
@@ -94,6 +98,24 @@ public class FridgeActivity extends AppCompatActivity {
                 SectionDialog sectionDialog = new SectionDialog(this, fridgeName);
                 sectionDialog.setCancelable(false);
                 sectionDialog.show();
+                return true;
+            case R.id.option_remove:
+                AlertDialog alertDialog = new AlertDialog.Builder(FridgeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                        .setTitle("냉장고 제거")
+                        .setIcon(R.drawable.ic_remove)
+                        .setMessage("정말로 삭제하시겠습니까?")
+                        .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                db.delete(DBContract.FridgeEntry.TABLE_NAME, DBContract.FridgeEntry.COLUMN_NAME + "=?",
+                                        new String[]{fridgeName});
+                                setResult(RESULT_OK);
+                                finish();
+                                Toast.makeText(getApplicationContext(), "냉장고가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("아니요", null)
+                        .show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

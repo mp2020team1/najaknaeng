@@ -98,10 +98,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="yyyy-mm-dd"
+            android:hint="yyyymmdd"
             android:inputType="date" />
 
         <LinearLayout
+            android:id="@+id/fridge_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">

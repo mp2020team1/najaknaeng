@@ -74,10 +74,6 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 intent.putExtra("FRIDGE", fridge);
                 context.startActivity(intent);
             });
-            /**
-             * TODO:SectionActivity 버그가 있음!!
-             */
-
 
             Cursor goodsCursor = getGoodsCursor(fridge, name);
             FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(goodsCursor);

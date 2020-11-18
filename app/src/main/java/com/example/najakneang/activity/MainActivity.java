@@ -157,9 +157,9 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-11-21");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "20201121");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "채소");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
@@ -170,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2020-10-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "20201023");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "채소");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");
@@ -183,9 +183,9 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2002-12-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "20021223");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "수산");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 2");
@@ -196,9 +196,9 @@ public class MainActivity extends AppCompatActivity {
         values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, 1);
         values.put(
                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         );
-        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "2021-11-23");
+        values.put(DBContract.GoodsEntry.COLUMN_EXPIREDATE, "20211123");
         values.put(DBContract.GoodsEntry.COLUMN_TYPE, "반찬");
         values.put(DBContract.GoodsEntry.COLUMN_FRIDGE, "김치냉장고 1");
         values.put(DBContract.GoodsEntry.COLUMN_SECTION, "구역 1");

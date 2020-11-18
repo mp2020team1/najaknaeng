@@ -5,6 +5,7 @@ import android.provider.BaseColumns;
 import com.example.najakneang.R;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
@@ -23,7 +24,7 @@ public final class DBContract {
         public static final String COLUMN_SECTION = "SECTION";
         public static long getRemain(String expireDateStr) {
             LocalDate today = LocalDate.now();
-            LocalDate expireDate = LocalDate.parse(expireDateStr);
+            LocalDate expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
             return ChronoUnit.DAYS.between(today, expireDate);
         }
         public static final HashMap<String, Integer> typeIconMap = new HashMap<String, Integer>() {
