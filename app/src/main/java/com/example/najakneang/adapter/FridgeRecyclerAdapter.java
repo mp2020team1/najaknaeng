@@ -69,12 +69,15 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
             holder.sectionName.setText(name);
             holder.sectionState.setText(state);
             holder.itemView.setOnClickListener(view -> {
-                Intent intent = new Intent(context.getApplicationContext(), GoodsActivity.class);
-                intent.putExtra("FIRDGE", fridge);
-                intent.putExtra("STORAGESTATE", state);
+                Intent intent = new Intent(context.getApplicationContext(), SectionActivity.class);
                 intent.putExtra("SECTION", name);
+                intent.putExtra("FRIDGE", fridge);
                 context.startActivity(intent);
             });
+            /**
+             * TODO:SectionActivity 버그가 있음!!
+             */
+
 
             Cursor goodsCursor = getGoodsCursor(fridge, name);
             FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(goodsCursor);
