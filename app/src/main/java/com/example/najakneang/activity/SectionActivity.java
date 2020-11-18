@@ -38,26 +38,27 @@ public class SectionActivity extends AppCompatActivity {
 
     public void setupFreshnessRecycler(String fridge, String section) {
 
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.GoodsEntry.COLUMN_NAME,
-                DBContract.GoodsEntry.COLUMN_QUANTITY,
-                DBContract.GoodsEntry.COLUMN_REGISTDATE,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE,
-                DBContract.GoodsEntry.COLUMN_TYPE,
-                DBContract.GoodsEntry.COLUMN_FRIDGE,
-                DBContract.GoodsEntry.COLUMN_SECTION,
-        };
+        String sql =
+                "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_QUANTITY + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_REGISTDATE + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_TYPE + ", " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE + ", " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + ", " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_STORE_STATE +
+                        " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                        " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                        " ON " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + " = " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = " +
+                        DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
+                        " WHERE " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = '" + fridge + "' AND " +
+                        DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + " = '" + section +
+                        "' ORDER BY " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_EXPIREDATE;
 
-        Cursor cursor = db.query(
-                DBContract.GoodsEntry.TABLE_NAME,
-                projection,
-                "FRIDGE=? and SECTION=?",
-                new String[]{fridge,section},
-                null,
-                null,
-                DBContract.GoodsEntry.COLUMN_EXPIREDATE
-        );
+        Cursor cursor = db.rawQuery(sql, null);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_section);
         SectionRecyclerAdapter adapter = new SectionRecyclerAdapter(cursor);
