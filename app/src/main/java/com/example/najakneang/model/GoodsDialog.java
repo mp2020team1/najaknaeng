@@ -209,6 +209,8 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                         db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
 
                         if(context.getClass() == FreshnessActivity.class){((FreshnessActivity)context).setupFreshnessRecycler(); }
+
+                        dismiss();
                     }
                     catch(Exception e){
                         Toast.makeText(context.getApplicationContext(),
