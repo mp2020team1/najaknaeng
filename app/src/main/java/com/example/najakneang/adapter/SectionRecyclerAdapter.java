@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 class SectionRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView name;
     protected final TextView remain;
-    protected final CircleImageView image;
+    protected final ImageView image;
     protected final View view;
     protected final CheckBox checkbox;
     protected final FrameLayout layout;
