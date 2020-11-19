@@ -183,7 +183,7 @@ public class FreshnessActivity extends AppCompatActivity {
             tmpItem = menu.findItem(R.id.ingredient_confirm);
             tmpItem.setVisible(!remove_item);
 
-            remove_item = remove_item?false:true;
+            remove_item = !remove_item;
             setupFreshnessRecycler();
         }
         else if(item.getItemId() == R.id.ingredient_confirm){

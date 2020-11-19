@@ -130,14 +130,14 @@ public class SectionActivity extends AppCompatActivity {
             goodsDialog.show();
         }
         else if(item.getItemId() == R.id.ingredient_remove){
-            remove_item = remove_item?false:true;
+            remove_item = !remove_item;
 
             item.setIcon(remove_item?R.drawable.ic_cancel:R.drawable.ic_eat);
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(false);
+            tmpItem.setVisible(!remove_item);
             tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(true);
+            tmpItem.setVisible(remove_item);
 
             setupFreshnessRecycler(fridge, section);
         }
