@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             Thread dbOpenThread = new Thread(() -> {
                 DBHelper dbHelper = new DBHelper(getApplicationContext());
                 db = dbHelper.getWritableDatabase();
-                insertFakeData();
+//                insertFakeData();
             });
             dbOpenThread.start();
             dbOpenThread.join();
