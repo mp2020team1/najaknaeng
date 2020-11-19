@@ -34,7 +34,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
 
     private String fridge;
     private String section;
-    private String fridge_category = "";
+    private String fridgeCategory = "";
     private final Context context;
 
     private EditText name;
@@ -53,12 +53,12 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         this.context = context;
     }
 
-    public GoodsDialog(@NonNull Context context, String fridge, String section, String fridge_category){
+    public GoodsDialog(@NonNull Context context, String fridge, String section, String fridgeCategory) {
         super(context);
         this.context = context;
         this.fridge = fridge;
         this.section = section;
-        this.fridge_category = fridge_category;
+        this.fridgeCategory = fridgeCategory;
     }
 
     @Override
@@ -74,6 +74,10 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         //Dialog 레이아웃 지정
         setContentView(R.layout.dialog_goods);
 
+        setupDialog();
+    }
+
+    private void setupDialog() {
         TextView okBtn = findViewById(R.id.btn_ok_goods_dialog);
         TextView cancelBtn = findViewById(R.id.btn_cancel_goods_dialog);
         name = findViewById(R.id.edit_name_goods_dialog);
@@ -82,31 +86,16 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         typeSpinner = findViewById(R.id.spinner_type_goods_dialog);
         fridgeSpinner = findViewById(R.id.spinner_fridge_goods_dialog);
         sectionSpinner = findViewById(R.id.spinner_section_goods_dialog);
-        fridgeLayout = findViewById(R.id.fridge_layout);
+        fridgeLayout = findViewById(R.id.fridge_layout_goods_dialog);
 
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
-
-        final ArrayAdapter<CharSequence> typeAdapter;
-        switch(fridge_category){
-            case "와인 냉장고":
-                typeAdapter = ArrayAdapter.createFromResource(context,
-                        R.array.alchoholArray, android.R.layout.simple_spinner_item);
-                break;
-            default:
-                typeAdapter = ArrayAdapter.createFromResource(context,
-                        R.array.ingredientArray, android.R.layout.simple_spinner_item);
-        }
-
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        typeSpinner.setAdapter(typeAdapter);
-        typeSpinner.setSelection(0);
 
         if (context.getClass() == FreshnessActivity.class) {
             ArrayList<String> fridgeNameList = new ArrayList<>();
             Cursor cursor = db.query(
                     DBContract.FridgeEntry.TABLE_NAME,
-                    new String[]{DBContract.FridgeEntry.COLUMN_NAME},
+                    new String[]{ DBContract.FridgeEntry.COLUMN_NAME },
                     null,
                     null,
                     null,
@@ -114,9 +103,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     null
             );
 
-            fridgeNameList.add("냉장고를 선택해주세요");
-
-            while(cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 fridgeNameList.add(cursor.getString(
                         cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
             }
@@ -126,29 +113,34 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     android.R.layout.simple_spinner_item, fridgeNameList);
             fridgeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             fridgeSpinner.setAdapter(fridgeAdapter);
-            fridgeSpinner.setSelection(0,false);
             fridgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Cursor fridgeCursor = db.query(
                             DBContract.FridgeEntry.TABLE_NAME,
-                            new String[]{DBContract.FridgeEntry.COLUMN_CATEGORY},
+                            new String[]{ DBContract.FridgeEntry.COLUMN_CATEGORY },
                             DBContract.FridgeEntry.COLUMN_NAME + " = ? ",
-                            new String[]{ fridgeSpinner.getSelectedItem().toString()},
+                            new String[]{ fridgeSpinner.getSelectedItem().toString() },
                             null,
                             null,
                             null
                     );
+
                     fridgeCursor.moveToNext();
                     String category = fridgeCursor.getString(
                             fridgeCursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_CATEGORY));
-                    if(category.equals("와인 냉장고")){
-                        final ArrayAdapter<CharSequence> newTypeAdapter = ArrayAdapter.createFromResource(context,
+
+                    final ArrayAdapter<CharSequence> newTypeAdapter;
+                    if (category.equals("와인 냉장고")) {
+                        newTypeAdapter = ArrayAdapter.createFromResource(context,
                                 R.array.alchoholArray, android.R.layout.simple_spinner_item);
-                        newTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        typeSpinner.setAdapter(newTypeAdapter);
-                        typeSpinner.setSelection(0);
+                    } else {
+                        newTypeAdapter = ArrayAdapter.createFromResource(context,
+                                R.array.ingredientArray, android.R.layout.simple_spinner_item);
                     }
+                    newTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    typeSpinner.setAdapter(newTypeAdapter);
+                    typeSpinner.setSelection(0);
 
 
                     ArrayList<String> sectionNameList = new ArrayList<>();
@@ -162,7 +154,8 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                             null
                     );
 
-                    sectionNameList.add("구역을 선택해주세요");
+                    if (cursor.getCount() == 0)
+                        Toast.makeText(context, "구역이 없는 냉장고입니다.", Toast.LENGTH_SHORT).show();
 
                     while (cursor.moveToNext()) {
                         sectionNameList.add(cursor.getString(
@@ -170,20 +163,31 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     }
                     cursor.close();
 
-                    final ArrayAdapter<String> section_adapter = new ArrayAdapter<>(context,
+                    final ArrayAdapter<String> sectionAdapter = new ArrayAdapter<>(context,
                             android.R.layout.simple_spinner_item, sectionNameList);
-                    section_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    sectionSpinner.setAdapter(section_adapter);
+                    sectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    sectionSpinner.setAdapter(sectionAdapter);
                     sectionSpinner.setSelection(0,false);
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
+                public void onNothingSelected(AdapterView<?> adapterView) {}
             });
-        }
-        else{
+
+            fridgeSpinner.setSelection(0,false);
+        } else {
+            final ArrayAdapter<CharSequence> typeAdapter;
+            if (fridgeCategory.equals("와인 냉장고")) {
+                typeAdapter = ArrayAdapter.createFromResource(context,
+                        R.array.alchoholArray, android.R.layout.simple_spinner_item);
+            } else {
+                typeAdapter = ArrayAdapter.createFromResource(context,
+                        R.array.ingredientArray, android.R.layout.simple_spinner_item);
+            }
+            typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            typeSpinner.setAdapter(typeAdapter);
+            typeSpinner.setSelection(0);
+
             fridgeLayout.setVisibility(View.GONE);
         }
     }
@@ -195,33 +199,28 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                 String nameStr = name.getText().toString();
                 String quantityStr = quantity.getText().toString();
                 String expireDateStr = expireDate.getText().toString();
-                if(nameStr.trim().getBytes().length == 0){
-                    Toast.makeText(context.getApplicationContext(),
-                            "이름을 입력해주세요",Toast.LENGTH_SHORT).show();
-                }
-                else if(quantityStr.trim().getBytes().length == 0){
-                    Toast.makeText(context.getApplicationContext(),
-                            "수량을 입력해주세요",Toast.LENGTH_SHORT).show();
-                }
-                else if(Integer.parseInt(quantityStr) <= 0){
-                    Toast.makeText(context.getApplicationContext(),
-                            "수량 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
-                }
-                else if(expireDateStr.trim().getBytes().length == 0){
-                    Toast.makeText(context.getApplicationContext(),
-                            "날짜 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
-                }
-                else if (fridgeSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.VISIBLE){
+
+                if (fridgeSpinner.getSelectedItemPosition() == -1 && fridgeLayout.getVisibility() == View.VISIBLE) {
                     Toast.makeText(context.getApplicationContext(),
                             "냉장고를 선택해주세요",Toast.LENGTH_SHORT).show();
-                }
-                else if (sectionSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.VISIBLE){
+                } else if (sectionSpinner.getSelectedItemPosition() == -1 && fridgeLayout.getVisibility() == View.VISIBLE) {
                     Toast.makeText(context.getApplicationContext(),
-                            "구역을 선택해주세요",Toast.LENGTH_SHORT).show();
+                            "구역을 선택해주세요", Toast.LENGTH_SHORT).show();
+                } else if (nameStr.trim().getBytes().length == 0) {
+                    Toast.makeText(context.getApplicationContext(),
+                            "이름을 입력해주세요",Toast.LENGTH_SHORT).show();
+                } else if (quantityStr.trim().getBytes().length == 0) {
+                    Toast.makeText(context.getApplicationContext(),
+                            "수량을 입력해주세요", Toast.LENGTH_SHORT).show();
+                } else if (typeSpinner.getSelectedItemPosition() == -1) {
+                    Toast.makeText(context.getApplicationContext(),
+                            "종류를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                } else if (Integer.parseInt(quantityStr) <= 0) {
+                    Toast.makeText(context.getApplicationContext(),
+                            "수량 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                 } else {
-                    LocalDate expireDate;
                     try {
-                        expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                        LocalDate expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
                         ContentValues values = new ContentValues();
                         values.put(DBContract.GoodsEntry.COLUMN_NAME, nameStr);
