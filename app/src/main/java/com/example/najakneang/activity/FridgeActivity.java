@@ -132,6 +132,10 @@ public class FridgeActivity extends AppCompatActivity {
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+                                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.GoodsEntry.COLUMN_FRIDGE + "=?",
+                                        new String[]{fridgeName});
+                                db.delete(DBContract.SectionEntry.TABLE_NAME, DBContract.SectionEntry.COLUMN_FRIDGE + "=?",
+                                        new String[]{fridgeName});
                                 db.delete(DBContract.FridgeEntry.TABLE_NAME, DBContract.FridgeEntry.COLUMN_NAME + "=?",
                                         new String[]{fridgeName});
                                 setResult(RESULT_OK);

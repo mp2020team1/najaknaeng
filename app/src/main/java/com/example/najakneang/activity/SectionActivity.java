@@ -26,6 +26,8 @@ import com.example.najakneang.R;
 import com.example.najakneang.model.GoodsDialog;
 import com.example.najakneang.model.RecyclerViewEmptySupport;
 
+import java.util.ArrayList;
+
 public class SectionActivity extends AppCompatActivity {
 
     private String fridge;
@@ -113,6 +115,34 @@ public class SectionActivity extends AppCompatActivity {
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
+                            String sql =
+                                    "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID +
+                                            " FROM " + DBContract.GoodsEntry.TABLE_NAME +
+                                            " INNER JOIN " + DBContract.SectionEntry.TABLE_NAME +
+                                            " INNER JOIN " + DBContract.FridgeEntry.TABLE_NAME +
+                                            " ON " + DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = " +
+                                            DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " AND " +
+                                            DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_SECTION + " = " +
+                                            DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " AND " +
+                                            DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_FRIDGE + " = " +
+                                            DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
+                                            " WHERE " + DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " = " + "\"" + fridge + "\"" + " AND " +
+                                            DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " = " + "\"" + section + "\"";
+
+                            Cursor cursor = db.rawQuery(sql, null);
+
+                            ArrayList<Long> removeList = new ArrayList<Long>();
+
+                            while(cursor.moveToNext()){
+                                removeList.add(cursor.getLong(
+                                        cursor.getColumnIndex(DBContract.GoodsEntry._ID)));
+                            }
+
+                            for(int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++){
+                                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
+                                        new String[]{removeList.get(i).toString()});
+                            }
+
                             db.delete(DBContract.SectionEntry.TABLE_NAME, DBContract.SectionEntry.COLUMN_FRIDGE + "=? AND " +
                                             DBContract.SectionEntry.COLUMN_NAME + "=?",
                                     new String[]{fridge, section});
