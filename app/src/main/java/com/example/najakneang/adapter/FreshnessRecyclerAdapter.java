@@ -4,15 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,13 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.MainActivity;
-import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
 
 import java.util.ArrayList;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView name;

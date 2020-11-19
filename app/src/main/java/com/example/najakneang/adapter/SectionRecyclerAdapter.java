@@ -15,15 +15,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.najakneang.activity.FreshnessActivity;
 import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
 
 import java.util.ArrayList;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 class SectionRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView name;
