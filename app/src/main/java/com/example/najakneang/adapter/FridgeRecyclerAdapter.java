@@ -66,6 +66,8 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                     cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
             String fridge = cursor.getString(
                     cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_FRIDGE));
+            String category = cursor.getString(
+                    cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_CATEGORY));
 
 
             holder.sectionName.setText(name);
@@ -74,6 +76,8 @@ public class FridgeRecyclerAdapter extends RecyclerView.Adapter<FridgeRecyclerHo
                 Intent intent = new Intent(context.getApplicationContext(), SectionActivity.class);
                 intent.putExtra("SECTION", name);
                 intent.putExtra("FRIDGE", fridge);
+                intent.putExtra("STORESTATE", state);
+                intent.putExtra("CATEGORY", category);
                 context.startActivity(intent);
             });
 

@@ -1,6 +1,7 @@
 package com.example.najakneang.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class SectionActivity extends AppCompatActivity {
 
     private String fridge;
     private String section;
+    private String storeState;
+    private String fridgeCategory;
 
     private Toolbar toolbar;
 
@@ -39,10 +42,10 @@ public class SectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section);
-
         fridge = getIntent().getStringExtra("FRIDGE");
         section = getIntent().getStringExtra("SECTION");
-        String storeState = getIntent().getStringExtra("STORESTATE");
+        storeState = getIntent().getStringExtra("STORESTATE");
+        fridgeCategory = getIntent().getStringExtra("CATEGORY");
         setupFreshnessRecycler(fridge, section);
         setupToolbar(section, storeState);
     }
@@ -102,7 +105,7 @@ public class SectionActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         }
-        else if(item.getItemId() == R.id.option_remove){
+        else if (item.getItemId() == R.id.option_remove) {
             AlertDialog alertDialog = new AlertDialog.Builder(SectionActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                     .setTitle("구역 제거")
                     .setIcon(R.drawable.ic_remove)
@@ -113,6 +116,7 @@ public class SectionActivity extends AppCompatActivity {
                             db.delete(DBContract.SectionEntry.TABLE_NAME, DBContract.SectionEntry.COLUMN_FRIDGE + "=? AND " +
                                             DBContract.SectionEntry.COLUMN_NAME + "=?",
                                     new String[]{fridge, section});
+                            setResult(RESULT_OK);
                             finish();
                             Toast.makeText(getApplicationContext(), "구역이 삭제되었습니다", Toast.LENGTH_SHORT).show();
                         }
@@ -122,54 +126,46 @@ public class SectionActivity extends AppCompatActivity {
 
             return true;
         }
-        else if(item.getItemId() == R.id.ingredient_add){
-            GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section);
+        else if (item.getItemId() == R.id.ingredient_add) {
+            GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section, fridgeCategory);
             goodsDialog.setCancelable(false);
             goodsDialog.show();
         }
         else if(item.getItemId() == R.id.ingredient_remove){
-            item.setIcon(remove_item?R.drawable.ic_eat:R.drawable.ic_cancel);
+            remove_item = !remove_item;
+
+            item.setIcon(remove_item?R.drawable.ic_cancel:R.drawable.ic_eat);
             Menu menu = toolbar.getMenu();
             MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(remove_item);
-            tmpItem = menu.findItem(R.id.ingredient_confirm);
             tmpItem.setVisible(!remove_item);
-
-            remove_item = remove_item?false:true;
+            tmpItem = menu.findItem(R.id.ingredient_confirm);
+            tmpItem.setVisible(remove_item);
 
             setupFreshnessRecycler(fridge, section);
         }
-        else if(item.getItemId() == R.id.ingredient_confirm){
+        else if (item.getItemId() == R.id.ingredient_confirm) {
+            remove_item = false;
 
-            for(int i = 0; i<SectionRecyclerAdapter.removeList.size(); i++){
-                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
-                        new String[]{SectionRecyclerAdapter.removeList.get(i).toString()});
+            Menu menu = toolbar.getMenu();
+            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+            tmpItem.setVisible(true);
+            tmpItem = menu.findItem(R.id.ingredient_confirm);
+            tmpItem.setVisible(false);
+
+            for (int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++) {
+                db.delete(
+                        DBContract.GoodsEntry.TABLE_NAME,
+                        DBContract.FridgeEntry._ID + "=?",
+                        new String[]{ FreshnessRecyclerAdapter.removeList.get(i).toString() }
+                );
             }
 
-            if(SectionRecyclerAdapter.removeList.size() != 0){
-                remove_item = false;
-
-                item.setVisible(false);
-                Menu menu = toolbar.getMenu();
-                MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-                tmpItem.setVisible(true);
-                tmpItem = menu.findItem(R.id.ingredient_remove);
-                tmpItem.setIcon(R.drawable.ic_eat);
+            if(FreshnessRecyclerAdapter.removeList.size() != 0){
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+            }
 
-                setupFreshnessRecycler(fridge, section);
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "재료를 골라주세요", Toast.LENGTH_SHORT).show();
-            }
+            setupFreshnessRecycler(fridge, section);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        remove_item = false;
-        finish();
     }
 }

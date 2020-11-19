@@ -31,6 +31,7 @@ public class FridgeActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private String fridgeName;
+    private String fridgeCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class FridgeActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         fridgeName = intent.getStringExtra("FRIDGE");
-        String fridgeCategory = intent.getStringExtra("CATEGORY");
+        fridgeCategory = intent.getStringExtra("CATEGORY");
 
         loadSection(fridgeName);
 
@@ -64,25 +65,38 @@ public class FridgeActivity extends AppCompatActivity {
     }
 
     public void loadSection(String name) {
-        String[] projection = {
-                BaseColumns._ID,
-                DBContract.SectionEntry.COLUMN_NAME,
-                DBContract.SectionEntry.COLUMN_FRIDGE,
-                DBContract.SectionEntry.COLUMN_STORE_STATE
-        };
+//        String[] projection = {
+//                BaseColumns._ID,
+//                DBContract.SectionEntry.COLUMN_NAME,
+//                DBContract.SectionEntry.COLUMN_FRIDGE,
+//                DBContract.SectionEntry.COLUMN_STORE_STATE
+//        };
+//
+//        String selection = DBContract.SectionEntry.COLUMN_FRIDGE + " = ?";
+//        String[] selectionArgs = { name };
+//
+//        Cursor sectionCursor = db.query(
+//                DBContract.SectionEntry.TABLE_NAME,
+//                projection,
+//                selection,
+//                selectionArgs,
+//                null,
+//                null,
+//                null
+//        );
 
-        String selection = DBContract.SectionEntry.COLUMN_FRIDGE + " = ?";
-        String[] selectionArgs = { name };
+        String sql = "SELECT " + DBContract.SectionEntry.TABLE_NAME+"."+ BaseColumns._ID+", "+
+                DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_NAME +", "+
+                DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE +", "+
+                DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_STORE_STATE+", "+
+                DBContract.FridgeEntry.TABLE_NAME+"."+ DBContract.FridgeEntry.COLUMN_CATEGORY+
+                " FROM " + DBContract.SectionEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.FridgeEntry.TABLE_NAME +
+                " ON " + DBContract.SectionEntry.TABLE_NAME +"."+DBContract.SectionEntry.COLUMN_FRIDGE +
+                " = " + DBContract.FridgeEntry.TABLE_NAME +"."+DBContract.FridgeEntry.COLUMN_NAME +
+                " WHERE " + DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE + " = '" + name+"'";
 
-        Cursor sectionCursor = db.query(
-                DBContract.SectionEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+        Cursor sectionCursor = db.rawQuery(sql, null);
 
         TextView emptyView = findViewById(R.id.empty_view_recycler_section_fridge);
         RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_section_fridge);
@@ -106,7 +120,7 @@ public class FridgeActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.option_add:
-                SectionDialog sectionDialog = new SectionDialog(this, fridgeName);
+                SectionDialog sectionDialog = new SectionDialog(this, fridgeName, fridgeCategory);
                 sectionDialog.setCancelable(false);
                 sectionDialog.show();
                 return true;

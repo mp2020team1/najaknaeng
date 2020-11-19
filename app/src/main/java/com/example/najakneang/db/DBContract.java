@@ -35,6 +35,7 @@ public final class DBContract {
                 put("육류", R.drawable.ic_meat);
                 put("유제품", R.drawable.ic_dairy);
                 put("반찬", R.drawable.ic_sidedish);
+                put("주류", R.drawable.ic_alchohol);
             }
         };
         public static String getRemainColor(String state, long remain){

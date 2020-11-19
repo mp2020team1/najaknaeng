@@ -147,10 +147,6 @@ public class FreshnessActivity extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(sql, null);
 
-        /**
-         * TODO: Recyclerview의 margin을 조정하는등을 해서 맞출 필요가 있음
-         * 참고 : https://github.com/google/flexbox-layout
-         */
 
         TextView emptyView = findViewById(R.id.empty_view_recycler_freshness);
         RecyclerViewEmptySupport recycler = findViewById(R.id.recycler_freshness_freshness);
@@ -183,7 +179,7 @@ public class FreshnessActivity extends AppCompatActivity {
             tmpItem = menu.findItem(R.id.ingredient_confirm);
             tmpItem.setVisible(!remove_item);
 
-            remove_item = remove_item?false:true;
+            remove_item = !remove_item;
             setupFreshnessRecycler();
         }
         else if(item.getItemId() == R.id.ingredient_confirm){
