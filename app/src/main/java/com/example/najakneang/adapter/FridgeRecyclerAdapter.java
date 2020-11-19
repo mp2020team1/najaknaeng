@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.R;
-import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.db.DBContract;

@@ -3,13 +3,10 @@ package com.example.najakneang.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.util.Log;
+import android.provider.BaseColumns;;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
