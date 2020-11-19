@@ -10,8 +10,8 @@
 
     <string-array name="sectionArray">
         <item> 구역 종류를 선택하세요 </item>
-        <item> 냉장고 </item>
-        <item> 냉동고 </item>
+        <item> 냉장 </item>
+        <item> 냉동 </item>
         <item> 실온 </item>
     </string-array>
 
