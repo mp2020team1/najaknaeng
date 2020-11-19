@@ -20,10 +20,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.najakneang.R;
 import com.example.najakneang.adapter.RecommendRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
+import com.example.najakneang.model.GoodsDialog;
 import com.example.najakneang.model.YoutubeContent;
 
 import java.util.ArrayList;
@@ -32,14 +34,22 @@ public class GoodsActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private Cursor cursor;
+
     private String nameStr;
+    private String quantityStr;
+    private String expireDate;
+    private String typeStr;
+    private String fridge;
+    private String section;
+    private String state;
+    private long goodsId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods);
 
-        long goodsId = getIntent().getLongExtra("GOODSID",0);
+        goodsId = getIntent().getLongExtra("GOODSID",0);
 
         getGoodsCursor(goodsId);
         setupToolbar();
@@ -56,7 +66,7 @@ public class GoodsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setupGoodsView() {
+    public void setupGoodsView() {
         TextView name = findViewById(R.id.name_goods);
         TextView location = findViewById(R.id.location_goods);
         ImageView image = findViewById(R.id.image_goods);
@@ -66,16 +76,17 @@ public class GoodsActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_recommend_goods);
 
         nameStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
-        String expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
-        String typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
-        String fridge = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_FRIDGE));
-        String section = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_SECTION));
-        String state = cursor.getString(cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
+        expireDate = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_EXPIREDATE));
+        typeStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_TYPE));
+        fridge = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_FRIDGE));
+        section = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_SECTION));
+        state = cursor.getString(cursor.getColumnIndex(DBContract.SectionEntry.COLUMN_STORE_STATE));
+        quantityStr = cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY));
         name.setText(nameStr);
         name.setTextColor(Color.parseColor(DBContract.GoodsEntry.getRemainColor(state, DBContract.GoodsEntry.getRemain(expireDate))));
         location.setText(fridge + " / " + section);
         image.setImageResource(DBContract.GoodsEntry.typeIconMap.get(typeStr));
-        quantity.setText(cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_QUANTITY)));
+        quantity.setText(quantityStr);
         remain.setText(DBContract.GoodsEntry.getRemain(expireDate) + "일");
         type.setText(typeStr);
 
@@ -97,7 +108,7 @@ public class GoodsActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void getGoodsCursor(long id) {
+    public void getGoodsCursor(long id) {
 
         String sql =
                 "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
@@ -134,8 +145,16 @@ public class GoodsActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }
-        else if(item.getItemId() == R.id.purchase){
+        } else if(item.getItemId() == R.id.ingredient_remove){
+            db.delete(DBContract.GoodsEntry.TABLE_NAME,  BaseColumns._ID + "=?",
+                    new String[]{String.valueOf(goodsId)});
+            finish();
+            Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+        } else if(item.getItemId() == R.id.ingredient_edit){
+            GoodsDialog goodsDialog = new GoodsDialog(this,goodsId, nameStr, quantityStr, expireDate);
+            goodsDialog.setCancelable(false);
+            goodsDialog.show();
+        } else if(item.getItemId() == R.id.purchase){
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "https://search.shopping.naver.com/search/all?query=" +
                     nameStr + "&cat_id=&frm=NVSHATC" ));
             startActivity(intent);

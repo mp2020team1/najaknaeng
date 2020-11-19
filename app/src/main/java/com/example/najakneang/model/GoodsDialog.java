@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 
 import com.example.najakneang.R;
 import com.example.najakneang.activity.FreshnessActivity;
+import com.example.najakneang.activity.GoodsActivity;
 import com.example.najakneang.activity.MainActivity;
 import com.example.najakneang.activity.SectionActivity;
 import com.example.najakneang.db.DBContract;
@@ -31,6 +32,10 @@ import java.util.ArrayList;
 
 public class GoodsDialog extends Dialog implements View.OnClickListener {
 
+    private Long id;
+    private String nameStr;
+    private String expireDateStr;
+    private String quantityStr;
     private String fridge;
     private String section;
     private String fridgeCategory = "";
@@ -51,6 +56,16 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         super(context);
         this.context = context;
     }
+
+    public GoodsDialog(@NonNull Context context, Long id, String nameStr, String quantityStr, String expireDateStr){
+        super(context);
+        this.context = context;
+        this.id = id;
+        this.quantityStr = quantityStr;
+        this.nameStr = nameStr;
+        this.expireDateStr = expireDateStr;
+    }
+
 
     public GoodsDialog(@NonNull Context context, String fridge, String section, String fridgeCategory) {
         super(context);
@@ -90,7 +105,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
 
-        if (context.getClass() == FreshnessActivity.class) {
+        if (context.getClass() == FreshnessActivity.class || context.getClass() == GoodsActivity.class) {
             ArrayList<String> fridgeNameList = new ArrayList<>();
             Cursor cursor = db.query(
                     DBContract.FridgeEntry.TABLE_NAME,
@@ -107,6 +122,12 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                         cursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_NAME)));
             }
             cursor.close();
+
+            if((context.getClass() == GoodsActivity.class)){
+                name.setText(nameStr);
+                quantity.setText(quantityStr);
+                expireDate.setText(expireDateStr);
+            }
 
             final ArrayAdapter<String> fridgeAdapter = new ArrayAdapter<>(context,
                     android.R.layout.simple_spinner_item, fridgeNameList);
@@ -213,17 +234,20 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                             "수량을 입력해주세요", Toast.LENGTH_SHORT).show();
                 } else if (typeSpinner.getSelectedItemPosition() == -1) {
                     Toast.makeText(context.getApplicationContext(),
-                            "종류를 선택해주세요.", Toast.LENGTH_SHORT).show();
-                } else if (Integer.parseInt(quantityStr) <= 0) {
-                    Toast.makeText(context.getApplicationContext(),
-                            "수량 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
+                            "종류를 선택해주세요", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         LocalDate expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                        int quantityInt = Integer.parseInt(quantityStr);
+
+                        if(quantityInt>10000 || quantityInt<=0){
+                            Toast.makeText(context.getApplicationContext(),
+                                    "수량 형식이 잘못되었습니다", Toast.LENGTH_SHORT).show();
+                        }
 
                         ContentValues values = new ContentValues();
                         values.put(DBContract.GoodsEntry.COLUMN_NAME, nameStr);
-                        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, Integer.parseInt(quantityStr));
+                        values.put(DBContract.GoodsEntry.COLUMN_QUANTITY, quantityInt);
                         values.put(
                                 DBContract.GoodsEntry.COLUMN_REGISTDATE,
                                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
@@ -234,17 +258,34 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                                 fridgeLayout.getVisibility() == View.GONE? fridge:fridgeSpinner.getSelectedItem().toString());
                         values.put(DBContract.GoodsEntry.COLUMN_SECTION,
                                 fridgeLayout.getVisibility() == View.GONE? section:sectionSpinner.getSelectedItem().toString());
-                        db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+
+                        if(context.getClass() != GoodsActivity.class) {
+                            db.insert(DBContract.GoodsEntry.TABLE_NAME, null, values);
+                            Toast.makeText(context.getApplicationContext(),
+                                    "재료가 추가되었습니다",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            db.update(DBContract.GoodsEntry.TABLE_NAME, values, DBContract.GoodsEntry._ID + "=?",
+                                    new String[]{String.valueOf(id)});
+                            Toast.makeText(context.getApplicationContext(),
+                                    "재료가 갱신되었습니다",Toast.LENGTH_SHORT).show();
+                        }
 
 
                         if (context.getClass() == FreshnessActivity.class) {
                             ((FreshnessActivity)context).setupFreshnessRecycler(); }
                         else if (context.getClass() == SectionActivity.class) {
                             ((SectionActivity)context).setupFreshnessRecycler(fridge, section);}
+                        else if (context.getClass() == GoodsActivity.class){
+                            ((GoodsActivity)context).getGoodsCursor(id);
+                            ((GoodsActivity)context).setupGoodsView();}
 
                         dismiss();
-                    }
-                    catch (Exception e) {
+                    }catch (NumberFormatException e) {
+                        Toast.makeText(context.getApplicationContext(),
+                                "수량 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
+                        return;
+                    }catch (Exception e) {
                         Toast.makeText(context.getApplicationContext(),
                                 "날짜 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                         return;

@@ -49,6 +49,13 @@ public class SectionActivity extends AppCompatActivity {
         setupToolbar(section, storeState);
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        setupFreshnessRecycler(fridge, section);
+    }
+
     public void setupFreshnessRecycler(String fridge, String section) {
 
         String sql =

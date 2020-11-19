@@ -97,7 +97,8 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
                                     " ON " + DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " = " +
                                     DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
                                     " WHERE " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " = "
-                                    + "\"" + name + "\"" + " LIMIT 1";
+                                    + "\"" + name + "\"" + " AND " + DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME
+                                    + " = " + "\"" + current_fridge + "\"" + " LIMIT 1";
 
                     Cursor cursor = db.rawQuery(sql, null);
 

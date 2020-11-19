@@ -52,6 +52,13 @@ public class FreshnessActivity extends AppCompatActivity {
         setupTabLayout();
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        setupFreshnessRecycler();
+    }
+
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar_freshness);
         setSupportActionBar(toolbar);

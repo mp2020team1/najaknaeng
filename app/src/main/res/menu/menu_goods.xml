@@ -4,6 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/ingredient_remove"
+        android:icon="@drawable/ic_remove"
+        android:title="AddOption"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ingredient_edit"
+        android:icon="@drawable/ic_edit"
+        android:title="AddOption"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/purchase"
         android:icon="@drawable/ic_cart"
         android:title="AddOption"

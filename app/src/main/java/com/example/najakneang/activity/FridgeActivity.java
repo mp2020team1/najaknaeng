@@ -62,26 +62,6 @@ public class FridgeActivity extends AppCompatActivity {
     }
 
     public void loadSection(String name) {
-//        String[] projection = {
-//                BaseColumns._ID,
-//                DBContract.SectionEntry.COLUMN_NAME,
-//                DBContract.SectionEntry.COLUMN_FRIDGE,
-//                DBContract.SectionEntry.COLUMN_STORE_STATE
-//        };
-//
-//        String selection = DBContract.SectionEntry.COLUMN_FRIDGE + " = ?";
-//        String[] selectionArgs = { name };
-//
-//        Cursor sectionCursor = db.query(
-//                DBContract.SectionEntry.TABLE_NAME,
-//                projection,
-//                selection,
-//                selectionArgs,
-//                null,
-//                null,
-//                null
-//        );
-
         String sql = "SELECT " + DBContract.SectionEntry.TABLE_NAME+"."+ BaseColumns._ID+", "+
                 DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_NAME +", "+
                 DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE +", "+
