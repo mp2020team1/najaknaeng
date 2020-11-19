@@ -31,6 +31,7 @@ public class SectionActivity extends AppCompatActivity {
     private String fridge;
     private String section;
     private String storeState;
+    private String fridgeCategory;
 
     private Toolbar toolbar;
 
@@ -44,6 +45,7 @@ public class SectionActivity extends AppCompatActivity {
         fridge = getIntent().getStringExtra("FRIDGE");
         section = getIntent().getStringExtra("SECTION");
         storeState = getIntent().getStringExtra("STORESTATE");
+        fridgeCategory = getIntent().getStringExtra("CATEGORY");
         setupFreshnessRecycler(fridge, section);
         setupToolbar(section, storeState);
     }
@@ -125,7 +127,7 @@ public class SectionActivity extends AppCompatActivity {
             return true;
         }
         else if (item.getItemId() == R.id.ingredient_add) {
-            GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section);
+            GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section, fridgeCategory);
             goodsDialog.setCancelable(false);
             goodsDialog.show();
         }

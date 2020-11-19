@@ -34,6 +34,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
 
     private String fridge;
     private String section;
+    private String fridge_category = "";
     private final Context context;
 
     private EditText name;
@@ -52,11 +53,12 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         this.context = context;
     }
 
-    public GoodsDialog(@NonNull Context context, String fridge, String section){
+    public GoodsDialog(@NonNull Context context, String fridge, String section, String fridge_category){
         super(context);
         this.context = context;
         this.fridge = fridge;
         this.section = section;
+        this.fridge_category = fridge_category;
     }
 
     @Override
@@ -85,8 +87,17 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
 
-        final ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(context,
-                R.array.secondTab, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> typeAdapter;
+        switch(fridge_category){
+            case "와인 냉장고":
+                typeAdapter = ArrayAdapter.createFromResource(context,
+                        R.array.alchoholArray, android.R.layout.simple_spinner_item);
+                break;
+            default:
+                typeAdapter = ArrayAdapter.createFromResource(context,
+                        R.array.ingredientArray, android.R.layout.simple_spinner_item);
+        }
+
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeAdapter);
         typeSpinner.setSelection(0);
@@ -174,10 +185,6 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                 else if(Integer.parseInt(quantityStr) <= 0){
                     Toast.makeText(context.getApplicationContext(),
                             "수량 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
-                }
-                else if(typeSpinner.getSelectedItemPosition() == 0){
-                    Toast.makeText(context.getApplicationContext(),
-                            "종류를 선택해주세요",Toast.LENGTH_SHORT).show();
                 }
                 else if(expireDateStr.trim().getBytes().length == 0){
                     Toast.makeText(context.getApplicationContext(),

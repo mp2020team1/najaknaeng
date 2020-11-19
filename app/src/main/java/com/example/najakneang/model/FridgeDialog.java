@@ -79,11 +79,7 @@ public class FridgeDialog extends Dialog implements View.OnClickListener {
                             "1"
                     );
 
-                    if (categorySpinner.getSelectedItemPosition() == 0){
-                        cursor.close();
-                        Toast.makeText(context.getApplicationContext(), "냉장고 종류를 지정해주세요",Toast.LENGTH_SHORT).show();
-                    }
-                    else if (cursor.getCount() > 0) {
+                    if (cursor.getCount() > 0) {
                         cursor.close();
                         Toast.makeText(context.getApplicationContext(), "이미 있는 냉장고입니다",Toast.LENGTH_SHORT).show();
                     } else {

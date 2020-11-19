@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -91,21 +90,16 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
             case R.id.btn_ok_section_dialog:
                 String name = fridge_name.getText().toString();
                 if (name.trim().getBytes().length > 0){
-                    if (spinner.getSelectedItemPosition() == 0) {
-                        Toast.makeText(context.getApplicationContext(), "구역 종류를 지정해주세요", Toast.LENGTH_SHORT).show();
-                    } else {
-                        ContentValues values = new ContentValues();
-                        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, current_fridge);
-                        values.put(DBContract.SectionEntry.COLUMN_NAME, name);
-                        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, spinner.getSelectedItem().toString());
-                        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
+                    ContentValues values = new ContentValues();
+                    values.put(DBContract.SectionEntry.COLUMN_FRIDGE, current_fridge);
+                    values.put(DBContract.SectionEntry.COLUMN_NAME, name);
+                    values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, spinner.getSelectedItem().toString());
+                    db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
 
                         //현재 페이지에 정보갱신
-                        ((FridgeActivity)context).loadSection(current_fridge);
-                        Log.i("Fridge", current_fridge);
-                        Toast.makeText(context.getApplicationContext(), "구역이 추가되었습니다",Toast.LENGTH_SHORT).show();
-                        dismiss();
-                    }
+                    ((FridgeActivity)context).loadSection(current_fridge);
+                    Toast.makeText(context.getApplicationContext(), "구역이 추가되었습니다",Toast.LENGTH_SHORT).show();
+                    dismiss();
 
                 }
                 else {
