@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -137,9 +138,9 @@ public class SectionActivity extends AppCompatActivity {
                                 removeList.add(cursor.getLong(
                                         cursor.getColumnIndex(DBContract.GoodsEntry._ID)));
                             }
-
-                            for(int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++){
-                                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.FridgeEntry._ID + "=?",
+                            
+                            for(int i = 0; i<removeList.size(); i++){
+                                db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.GoodsEntry._ID + "=?",
                                         new String[]{removeList.get(i).toString()});
                             }
 
