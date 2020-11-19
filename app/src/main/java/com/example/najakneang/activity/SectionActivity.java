@@ -152,20 +152,30 @@ public class SectionActivity extends AppCompatActivity {
             tmpItem = menu.findItem(R.id.ingredient_confirm);
             tmpItem.setVisible(false);
 
-            for (int i = 0; i<FreshnessRecyclerAdapter.removeList.size(); i++) {
+            for (int i = 0; i<SectionRecyclerAdapter.removeList.size(); i++) {
                 db.delete(
                         DBContract.GoodsEntry.TABLE_NAME,
                         DBContract.FridgeEntry._ID + "=?",
-                        new String[]{ FreshnessRecyclerAdapter.removeList.get(i).toString() }
+                        new String[]{ SectionRecyclerAdapter.removeList.get(i).toString() }
                 );
             }
 
-            if(FreshnessRecyclerAdapter.removeList.size() != 0){
+            if(SectionRecyclerAdapter.removeList.size() != 0){
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "재료를 골라주세요", Toast.LENGTH_SHORT).show();
             }
 
             setupFreshnessRecycler(fridge, section);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        remove_item = false;
+        finish();
     }
 }
