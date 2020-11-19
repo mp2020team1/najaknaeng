@@ -130,6 +130,27 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
             fridgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Cursor fridgeCursor = db.query(
+                            DBContract.FridgeEntry.TABLE_NAME,
+                            new String[]{DBContract.FridgeEntry.COLUMN_CATEGORY},
+                            DBContract.FridgeEntry.COLUMN_NAME + " = ? ",
+                            new String[]{ fridgeSpinner.getSelectedItem().toString()},
+                            null,
+                            null,
+                            null
+                    );
+                    fridgeCursor.moveToNext();
+                    String category = fridgeCursor.getString(
+                            fridgeCursor.getColumnIndex(DBContract.FridgeEntry.COLUMN_CATEGORY));
+                    if(category.equals("와인 냉장고")){
+                        final ArrayAdapter<CharSequence> newTypeAdapter = ArrayAdapter.createFromResource(context,
+                                R.array.alchoholArray, android.R.layout.simple_spinner_item);
+                        newTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        typeSpinner.setAdapter(newTypeAdapter);
+                        typeSpinner.setSelection(0);
+                    }
+
+
                     ArrayList<String> sectionNameList = new ArrayList<>();
                     Cursor cursor = db.query(
                             DBContract.SectionEntry.TABLE_NAME,
