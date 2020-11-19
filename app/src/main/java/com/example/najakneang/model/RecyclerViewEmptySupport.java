@@ -33,7 +33,6 @@ public class RecyclerViewEmptySupport extends RecyclerView {
                     RecyclerViewEmptySupport.this.setVisibility(View.VISIBLE);
                 }
             }
-            Log.d("Test", "onChanged: " + count);
         }
     };
 

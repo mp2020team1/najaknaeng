@@ -302,7 +302,6 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
                 recyclerView.setNestedScrollingEnabled(false);
                 recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-                Log.d("Test", "setupRecommendRecycler: " + recyclerView);
             });
         }).start();
     }
