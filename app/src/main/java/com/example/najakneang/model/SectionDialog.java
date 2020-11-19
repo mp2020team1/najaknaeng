@@ -62,10 +62,10 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
         final ArrayAdapter<CharSequence> adapter;
         switch (current_fridge_category){
             case "냉장고":
+            case "김치 냉장고":
                 adapter = ArrayAdapter.createFromResource(context,
                         R.array.sectionArrayFrezze, android.R.layout.simple_spinner_item);
                 break;
-            case "김치 냉장고":
             case "와인 냉장고":
                 adapter = ArrayAdapter.createFromResource(context,
                         R.array.sectionArrayRefrige, android.R.layout.simple_spinner_item);
