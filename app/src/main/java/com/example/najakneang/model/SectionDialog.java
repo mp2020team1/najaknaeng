@@ -25,15 +25,17 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
 
     private final Context context;
     private final String current_fridge;
+    private final String current_fridge_category;
 
     private EditText fridge_name;
     private Spinner spinner;
 
     SQLiteDatabase db = MainActivity.db;
 
-    public SectionDialog(@NonNull Context context, String current_fridge){
+    public SectionDialog(@NonNull Context context, String current_fridge, String current_fridge_category){
         super(context);
         this.current_fridge = current_fridge;
+        this.current_fridge_category = current_fridge_category;
         this.context = context;
     }
 
@@ -58,8 +60,27 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
 
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.sectionArray, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> adapter;
+        switch (current_fridge_category){
+            case "냉장고":
+                adapter = ArrayAdapter.createFromResource(context,
+                        R.array.sectionArrayFrezze, android.R.layout.simple_spinner_item);
+                break;
+            case "김치 냉장고":
+            case "와인 냉장고":
+                adapter = ArrayAdapter.createFromResource(context,
+                        R.array.sectionArrayRefrige, android.R.layout.simple_spinner_item);
+                break;
+            case "팬트리":
+                adapter = ArrayAdapter.createFromResource(context,
+                        R.array.sectionArrayPantry, android.R.layout.simple_spinner_item);
+                break;
+            default:
+                adapter = ArrayAdapter.createFromResource(context,
+                        R.array.sectionArray, android.R.layout.simple_spinner_item);
+        }
+
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }

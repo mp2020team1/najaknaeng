@@ -31,6 +31,7 @@ public class FridgeActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private String fridgeName;
+    private String fridgeCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class FridgeActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         fridgeName = intent.getStringExtra("FRIDGE");
-        String fridgeCategory = intent.getStringExtra("CATEGORY");
+        fridgeCategory = intent.getStringExtra("CATEGORY");
 
         loadSection(fridgeName);
 
@@ -106,7 +107,7 @@ public class FridgeActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.option_add:
-                SectionDialog sectionDialog = new SectionDialog(this, fridgeName);
+                SectionDialog sectionDialog = new SectionDialog(this, fridgeName, fridgeCategory);
                 sectionDialog.setCancelable(false);
                 sectionDialog.show();
                 return true;
