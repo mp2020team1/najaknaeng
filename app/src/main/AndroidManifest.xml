@@ -7,20 +7,20 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_main"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_main"
         android:supportsRtl="true"
         android:theme="@style/Theme.NaJakNeang"
         tools:ignore="AllowBackup">
-        <activity android:name=".activity.GoodsActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.GoodsActivity" />
         <activity android:name=".activity.FridgeActivity" />
         <activity android:name=".activity.SectionActivity" />
         <activity android:name=".activity.FreshnessActivity" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">NaJakNeang</string>
-    <string name="app_name_korean">나작냉</string>
+    <string name="app_name">나작냉</string>
 
     <string name="str_alert_items">신선도 위험품목</string>
     <string name="str_today_recommended">오늘의 추천 메뉴</string>
@@ -13,5 +12,5 @@
     <string name="remain_goods">남은 유통기한</string>
     <string name="quantity_goods">수량</string>
 
-    <string name="credit">[ Creator ]\nMade by 홍석주, 채원찬, 이현준, 조현진\n\n[ Thanks for ]\nIcon made by Freepik, surang, eucalyp, monkik, srip, iconxiar, wanicon\nfrom www.flaticon.com\n</string>
+    <string name="credit">[ Creator ]\nMade by 홍석주, 채원찬, 이현준, 조현진\n\n[ Thanks for ]\nIcon made by Freepik, surang, eucalyp, monkik, srip, iconxiar, wanicon\nfrom www.flaticon.com\nApp Icon made by 석주 형</string>
 </resources>

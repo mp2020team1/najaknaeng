@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setDB();
-        setupRecommendRecycler(); //할당량 문제로 임시로 onCreate()에 생성 -> onResume()으로 추후 변경
 
         Button credit = findViewById(R.id.credit);
         credit.setOnClickListener(view -> {
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupFreshnessRecycler();
         setupFridgeViewPager();
+        setupRecommendRecycler();
     }
 
     //두번 뒤로가기해야 꺼지게하기

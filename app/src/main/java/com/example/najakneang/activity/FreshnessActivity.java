@@ -123,8 +123,6 @@ public class FreshnessActivity extends AppCompatActivity {
     }
 
     public void setupFreshnessRecycler() {
-        // TODO: 실온은 따로 팬트리만 불러와야함.. 우짠다냐
-
         String sql =
                 "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
                 DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + ", " +
