@@ -3,8 +3,10 @@ package com.example.najakneang.model;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -90,17 +92,32 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
             case R.id.btn_ok_section_dialog:
                 String name = fridge_name.getText().toString();
                 if (name.trim().getBytes().length > 0){
-                    ContentValues values = new ContentValues();
-                    values.put(DBContract.SectionEntry.COLUMN_FRIDGE, current_fridge);
-                    values.put(DBContract.SectionEntry.COLUMN_NAME, name);
-                    values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, spinner.getSelectedItem().toString());
-                    db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
+                    String sql =
+                            "SELECT " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + ", " +
+                                    " FROM " + DBContract.SectionEntry.TABLE_NAME +
+                                    " INNER JOIN " + DBContract.FridgeEntry.TABLE_NAME +
+                                    " ON " + DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " = " +
+                                    DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
+                                    " WHERE " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " = "
+                                    + name + " LIMIT 1 ";
+
+                    Cursor cursor = db.rawQuery(sql, null);
+
+                    if(cursor.getCount() == 0){
+                        ContentValues values = new ContentValues();
+                        values.put(DBContract.SectionEntry.COLUMN_FRIDGE, current_fridge);
+                        values.put(DBContract.SectionEntry.COLUMN_NAME, name);
+                        values.put(DBContract.SectionEntry.COLUMN_STORE_STATE, spinner.getSelectedItem().toString());
+                        db.insert(DBContract.SectionEntry.TABLE_NAME, null, values);
 
                         //현재 페이지에 정보갱신
-                    ((FridgeActivity)context).loadSection(current_fridge);
-                    Toast.makeText(context.getApplicationContext(), "구역이 추가되었습니다",Toast.LENGTH_SHORT).show();
-                    dismiss();
-
+                        ((FridgeActivity)context).loadSection(current_fridge);
+                        Toast.makeText(context.getApplicationContext(), "구역이 추가되었습니다",Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+                    else{
+                        Toast.makeText(context.getApplicationContext(), "이미 있는 구역 이름입니다",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
                     Toast.makeText(context.getApplicationContext(), "이름을 입력해주세요",Toast.LENGTH_SHORT).show();
