@@ -171,4 +171,11 @@ public class SectionActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        remove_item = false;
+        finish();
+    }
 }
