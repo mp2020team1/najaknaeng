@@ -190,11 +190,11 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                     Toast.makeText(context.getApplicationContext(),
                             "날짜 형식이 잘못되었습니다",Toast.LENGTH_SHORT).show();
                 }
-                else if (fridgeSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.GONE){
+                else if (fridgeSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.VISIBLE){
                     Toast.makeText(context.getApplicationContext(),
                             "냉장고를 선택해주세요",Toast.LENGTH_SHORT).show();
                 }
-                else if (sectionSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.GONE){
+                else if (sectionSpinner.getSelectedItemPosition() == 0 && fridgeLayout.getVisibility() == View.VISIBLE){
                     Toast.makeText(context.getApplicationContext(),
                             "구역을 선택해주세요",Toast.LENGTH_SHORT).show();
                 } else {
