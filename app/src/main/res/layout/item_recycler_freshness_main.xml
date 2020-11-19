@@ -23,7 +23,7 @@
         android:padding="5dp">
 
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/image_item_freshness_main"
             android:layout_width="50dp"
             android:layout_height="50dp"

@@ -32,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView name;
     protected final TextView remain;
-    protected final CircleImageView image;
+    protected final ImageView image;
     protected final ImageView moreIcon;
     protected final CheckBox checkbox;
     protected final FrameLayout layout;
