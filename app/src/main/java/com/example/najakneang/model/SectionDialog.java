@@ -92,14 +92,13 @@ public class SectionDialog extends Dialog implements View.OnClickListener {
             case R.id.btn_ok_section_dialog:
                 String name = fridge_name.getText().toString();
                 if (name.trim().getBytes().length > 0){
-                    String sql =
-                            "SELECT " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + ", " +
+                    String sql = "SELECT " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME +
                                     " FROM " + DBContract.SectionEntry.TABLE_NAME +
                                     " INNER JOIN " + DBContract.FridgeEntry.TABLE_NAME +
                                     " ON " + DBContract.FridgeEntry.TABLE_NAME + "." + DBContract.FridgeEntry.COLUMN_NAME + " = " +
                                     DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_FRIDGE +
                                     " WHERE " + DBContract.SectionEntry.TABLE_NAME + "." + DBContract.SectionEntry.COLUMN_NAME + " = "
-                                    + name + " LIMIT 1 ";
+                                    + "\"" + name + "\"" + " LIMIT 1";
 
                     Cursor cursor = db.rawQuery(sql, null);
 
