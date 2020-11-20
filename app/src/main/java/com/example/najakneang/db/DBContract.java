@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 // 파일 설명 : 각 테이블의 지니는 속성과 저장된 데이터를 가공하는 메서드를 위한 파일
 // 파일 주요기능 : 테이블 속성값과 저장된 값에 따른 아이콘, 색상, 남은 기한 관리
+
+// 클래스 설명 : DB에서 사용하는 속성값 및 메서드 관리
 public final class DBContract {
 
     private DBContract() {}
