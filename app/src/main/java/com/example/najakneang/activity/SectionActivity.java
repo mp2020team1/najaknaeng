@@ -204,6 +204,8 @@ public class SectionActivity extends AppCompatActivity {
                 tmpItem.setVisible(true);
                 tmpItem = menu.findItem(R.id.ingredient_confirm);
                 tmpItem.setVisible(false);
+                tmpItem = menu.findItem(R.id.ingredient_remove);
+                tmpItem.setIcon(R.drawable.ic_eat);
 
                 for (int i = 0; i<SectionRecyclerAdapter.removeList.size(); i++) {
                     db.delete(

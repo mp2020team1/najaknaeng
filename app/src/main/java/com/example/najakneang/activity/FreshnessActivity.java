@@ -226,6 +226,8 @@ public class FreshnessActivity extends AppCompatActivity {
                 tmpItem.setVisible(true);
                 tmpItem = menu.findItem(R.id.ingredient_confirm);
                 tmpItem.setVisible(false);
+                tmpItem = menu.findItem(R.id.ingredient_remove);
+                tmpItem.setIcon(R.drawable.ic_eat);
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
 
                 // 체크박스를 선택한 재료들만 골라서 제거
