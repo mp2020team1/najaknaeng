@@ -239,7 +239,7 @@ public class FreshnessActivity extends AppCompatActivity {
                 tmpItem.setVisible(false);
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
 
-                // 정보 갱신신
+                // 정보 갱신
                 setupFreshnessRecycler();
             }
             // 재료가 한개도선택되지 않았을 경우
