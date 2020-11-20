@@ -100,6 +100,7 @@ public class FreshnessRecyclerAdapter
         holder.remain.setText(
                 remain > 0 ? remain + "일" : remain == 0 ? "오늘까지" : Math.abs(remain) + "일 지남"
         );
+        holder.remain.setSelected(true);
         Integer image = DBContract.GoodsEntry.typeIconMap.get(type);
         holder.image.setImageResource(image);
 

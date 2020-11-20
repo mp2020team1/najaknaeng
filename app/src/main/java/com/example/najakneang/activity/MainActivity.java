@@ -47,6 +47,12 @@ import java.util.Scanner;
 
 import me.relex.circleindicator.CircleIndicator3;
 
+// 파일 설명 : 메인 화면를 보여주는 엑티비티
+// 파일 주요 기능 : 맨 위에는 앱 타이틀과 제작자 및 아이콘 출처가 담긴 Crdit버튼 표시
+//                 그 밑에는 신선도가 젤 위험한 품목 최대 3개까지 표시 (아무것도 없을 경우 비어있음을 표시)
+//                 그 밑에는 추가한 냉장고들을 보여주는 FrideViewer 표시
+//                 그 밑에는 냉장고에 있는 재료 중 하나를 랜덤으로 선택해 그 재료로 만들 수 있는 레시피 영상 3개를 보여줌
+
 public class MainActivity extends AppCompatActivity {
 
     private long backPressedTime = 0;
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         setDB();
 
+        // Credit버튼 클릭서 Dialog 출력
         Button credit = findViewById(R.id.credit);
         credit.setOnClickListener(view -> {
             new AlertDialog.Builder(MainActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
@@ -72,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //RecyclerView 정보 갱신
+    // 메서드 설명 : Activity 이동시, RecyclerView 정보 갱신
     @Override
     protected void onResume(){
         super.onResume();
@@ -82,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         setupRecommendRecycler();
     }
 
-    //두번 뒤로가기해야 꺼지게하기
+    // 메서드 설명 : 두번 뒤로가기해야 꺼지게하기
     @Override
     public void onBackPressed(){
         if (System.currentTimeMillis() <= backPressedTime + 2000) {
@@ -93,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "뒤로 가기를 한 번 더 누르시면 종료됩니다", Toast.LENGTH_SHORT).show();
     }
 
+    // 메서드 설명 : DB 열기
     private void setDB(){
+        // DB여는데 부담을 줄이기 위해서 Thread로 열기
         try {
             Thread dbOpenThread = new Thread(() -> {
                 DBHelper dbHelper = new DBHelper(getApplicationContext());
@@ -107,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // 임의의 가데이터 입력 함수
+    // 메서드 설명 : 임의의 가데이터 입력 함수
     private void insertFakeData() {
         db.delete(DBContract.GoodsEntry.TABLE_NAME, null, null);
         db.delete(DBContract.FridgeEntry.TABLE_NAME,null,null);
@@ -206,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
         values.clear();
     }
 
+    // 메서드 설명 : MainActivity의 신선도 RecyclerView에 유통기한이 얼마 안남은 3개 품목 띄우기
     private void setupFreshnessRecycler() {
+        // 유통기한이 얼마 안남은 품목 최대 3개까지 검색
         String sql = "SELECT " + DBContract.GoodsEntry.TABLE_NAME+"."+BaseColumns._ID+", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_NAME +", "+
                 DBContract.GoodsEntry.TABLE_NAME +"."+DBContract.GoodsEntry.COLUMN_TYPE +", "+
@@ -223,8 +234,11 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(sql,null);
 
+        // 재료가 아무것도 없을 경우 "품목이 비었습니다"를 표시
         TextView emptyView = findViewById(R.id.empty_view_recycler_freshness_main);
         RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_freshness_main);
+
+        // Adapter와 연결해서 검색한 3개의 재료를 RecyclerView에 표시
         FreshnessRecyclerAdapter adapter = new FreshnessRecyclerAdapter(cursor);
         recyclerView.setExpend(true);
         recyclerView.setEmptyView(emptyView);
@@ -236,8 +250,9 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-
+    // 메서드 설명 : FridgeViewer에 존재하는 냉장고들 표시 (마지막엔 냉장고 추가 버튼 표시)
     public void setupFridgeViewPager() {
+        // DB에서 존재하는 냉장고들 정보를 받아옴
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.FridgeEntry.COLUMN_NAME,
@@ -254,17 +269,22 @@ public class MainActivity extends AppCompatActivity {
                 null
         );
 
+        // Adapter와 연결해서 존재하는 냉장고들 표시
         ViewPager2 viewPager = findViewById(R.id.viewpager_fridge_main);
         MainFridgeViewPagerAdapter adapter = new MainFridgeViewPagerAdapter(cursor);
         viewPager.setAdapter(adapter);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        viewPager.setCurrentItem(fridge_id);
+        // 냉장고를 들어갔다 나온경우, 그 냉장고로 viewer 고정정
+       viewPager.setCurrentItem(fridge_id);
 
+       // ViewPager의 현재 index를 보기쉽게 해주는 Indicator 설정
         CircleIndicator3 indicator = findViewById(R.id.circle_indicator_viewpager_fridge_main);
         indicator.setViewPager(viewPager);
     }
 
+    // 메서드 설명 : 추천 레시피 목록 표시
     private void setupRecommendRecycler() {
+        // 냉장고에 있는 재료중 하나를 랜덤으로 받아오기
         String[] projection = {
                 BaseColumns._ID,
                 DBContract.GoodsEntry.COLUMN_NAME
@@ -284,12 +304,15 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<YoutubeContent> contents = new ArrayList<>();
         Handler handler = new Handler();
 
+        // 웹에서 정보를 받아와야되는 네트워크 작업이므로 Thread 사용
         new Thread(() -> {
+            // 만약 냉장고에 재료가 있을 경우에만 받아오기
             if (cursor.moveToNext()){
                 String ingredient =  cursor.getString(cursor.getColumnIndex(DBContract.GoodsEntry.COLUMN_NAME));
                 getYoutubeContents(contents, ingredient);
             }
 
+            // recyclerView에 받아온 정보를 각각 표시
             handler.post(() -> {
                 TextView emptyView = findViewById(R.id.empty_view_recycler_recommend_main);
                 RecyclerViewEmptySupport recyclerView = findViewById(R.id.recycler_recommend_main);
@@ -306,11 +329,13 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    // 메서드 설명 : 신선도 레이아웃을 누르면 FreshnessActivity로 이동
     public void onClickMaskLayout(View view) {
         Intent intent = new Intent(getApplicationContext(), FreshnessActivity.class);
         startActivity(intent);
     }
 
+    // 메서드 설명 : 유튜브 정보 받아오기
     public static void getYoutubeContents(ArrayList<YoutubeContent> data, String ingredient) {
         String api_key = YoutubeContent.YOUTUBE_API_KEY;
         ingredient += " 레시피";
@@ -370,6 +395,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+            // 접속 실패 (할당량이 초과했을 경우 등등..)
             else {
                 Log.i("Youtube", conn.getResponseCode() + "인 접속오류!"); //지우지 말것
             }
