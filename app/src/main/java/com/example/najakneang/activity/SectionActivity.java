@@ -25,6 +25,10 @@ import com.example.najakneang.model.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
 
+// 파일 설명 : 선택한 구역을 보여주는 엑티비티
+// 파일 주요 기능 : 선택한 구역에 저장한 재료을 보여주며 메뉴를 통해 재료의 추가 및 삭제가능
+
+// 클래스 설명 : 선택한 구역을 보여주는 SectionActivity class
 public class SectionActivity extends AppCompatActivity {
 
     private String fridge;
@@ -38,6 +42,7 @@ public class SectionActivity extends AppCompatActivity {
 
     SQLiteDatabase db = MainActivity.db;
 
+    // 메서드 설명 : 각종 메서드 실행과 인텐트값 가져오기
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section);
@@ -49,6 +54,7 @@ public class SectionActivity extends AppCompatActivity {
         setupToolbar(section, storeState);
     }
 
+    // 메서드 설명 : 구역내 재료 정보 갱신기능
     @Override
     protected void onResume(){
         super.onResume();
@@ -56,8 +62,10 @@ public class SectionActivity extends AppCompatActivity {
         setupFreshnessRecycler(fridge, section);
     }
 
+    // 메서드 설명 : 해당 구역 안에 있는 재료들에 대한 정보를 받아와 설정
     public void setupFreshnessRecycler(String fridge, String section) {
 
+        // Innerjoin을 사용하여 Goods와 Sections 테이블을 연동하여 정보를 받는다.
         String sql =
                 "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID + ", " +
                         DBContract.GoodsEntry.TABLE_NAME + "." + DBContract.GoodsEntry.COLUMN_NAME + ", " +
@@ -88,6 +96,7 @@ public class SectionActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    // 메서드 설명 : Toolbar에 받은 이름과 저장상태를 표기하고 설정
     private void setupToolbar(String name, String storeState) {
         toolbar = findViewById(R.id.toolbar_section);
 
@@ -98,6 +107,7 @@ public class SectionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    // 메서드 설명 : 초기 옵션메뉴를 설정한다.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -105,12 +115,15 @@ public class SectionActivity extends AppCompatActivity {
         return true;
     }
 
+    // 메서드 설명 : 옵션 아이템 선택에 따라 다른 이벤트 실행
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // 뒤로가기 버튼
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }
+        // 구역 제거 버튼
         else if (item.getItemId() == R.id.option_remove) {
             AlertDialog alertDialog = new AlertDialog.Builder(SectionActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                     .setTitle("구역 제거")
@@ -119,6 +132,7 @@ public class SectionActivity extends AppCompatActivity {
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
+                            // Innerjoin을 사용하여 세가지 테이블을 연동하여 정보를 받아옴
                             String sql =
                                     "SELECT " + DBContract.GoodsEntry.TABLE_NAME + "." + BaseColumns._ID +
                                             " FROM " + DBContract.GoodsEntry.TABLE_NAME +
@@ -137,11 +151,12 @@ public class SectionActivity extends AppCompatActivity {
 
                             ArrayList<Long> removeList = new ArrayList<Long>();
 
+                            // 구역이 제거되면 그 안에 있는 재료들도 삭제되도록함
                             while(cursor.moveToNext()){
                                 removeList.add(cursor.getLong(
                                         cursor.getColumnIndex(DBContract.GoodsEntry._ID)));
                             }
-                            
+
                             for(int i = 0; i<removeList.size(); i++){
                                 db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.GoodsEntry._ID + "=?",
                                         new String[]{removeList.get(i).toString()});
@@ -160,11 +175,13 @@ public class SectionActivity extends AppCompatActivity {
 
             return true;
         }
+        // 재료 추가 버튼
         else if (item.getItemId() == R.id.ingredient_add) {
             GoodsDialog goodsDialog = new GoodsDialog(this, fridge, section, fridgeCategory);
             goodsDialog.setCancelable(false);
             goodsDialog.show();
         }
+        // 재료 제거 버튼
         else if(item.getItemId() == R.id.ingredient_remove){
             remove_item = !remove_item;
 
@@ -177,6 +194,7 @@ public class SectionActivity extends AppCompatActivity {
 
             setupFreshnessRecycler(fridge, section);
         }
+        // 옵션 확인 버튼
         else if (item.getItemId() == R.id.ingredient_confirm) {
             remove_item = false;
 
@@ -206,6 +224,7 @@ public class SectionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // 뒤로 가기 클릭시 제거 상황 초기화
     @Override
     public void onBackPressed(){
         super.onBackPressed();

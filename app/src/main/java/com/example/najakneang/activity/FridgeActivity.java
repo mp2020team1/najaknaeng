@@ -34,7 +34,7 @@ public class FridgeActivity extends AppCompatActivity {
     private String fridgeName;
     private String fridgeCategory;
 
-    // 메서드 설명 : 앱
+    // 메서드 설명 : 각종 메서드 실행과 인텐트값 가져오기
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +50,7 @@ public class FridgeActivity extends AppCompatActivity {
         setupToolbar(fridgeName, fridgeCategory);
     }
 
-    // 메서드 설명 :
+    // 메서드 설명 : 냉장고내 구역 정보 갱신기능
     @Override
     protected void onResume(){
         super.onResume();
@@ -58,6 +58,7 @@ public class FridgeActivity extends AppCompatActivity {
         loadSection(fridgeName);
     }
 
+    // 메서드 설명 : Toolbar에 받은 이름과 분류를 표기하고 설정
     private void setupToolbar(String name, String category) {
         Toolbar toolbar = findViewById(R.id.toolbar_fridge);
 
@@ -68,7 +69,9 @@ public class FridgeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    // 메서드 설명 : 해당 냉장고 안에 있는 구역들에 대한 정보를 받아와 설정
     public void loadSection(String name) {
+        // Innerjoin을 사용하여 Sections와 Fridge 테이블을 연동하여 정보를 받는다.
         String sql = "SELECT " + DBContract.SectionEntry.TABLE_NAME+"."+ BaseColumns._ID+", "+
                 DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_NAME +", "+
                 DBContract.SectionEntry.TABLE_NAME+"."+ DBContract.SectionEntry.COLUMN_FRIDGE +", "+
@@ -90,6 +93,7 @@ public class FridgeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
+    // 메서드 설명 : 초기 옵션메뉴를 설정한다.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -97,23 +101,29 @@ public class FridgeActivity extends AppCompatActivity {
         return true;
     }
 
+    // 메서드 설명 : 옵션 아이템 선택에 따라 다른 이벤트 실행
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // 선택한 옵션에 따라서 작동
         switch (item.getItemId()) {
+            // 뒤로가기 버튼
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            // 구역 추가 버튼
             case R.id.option_add:
                 SectionDialog sectionDialog = new SectionDialog(this, fridgeName, fridgeCategory);
                 sectionDialog.setCancelable(false);
                 sectionDialog.show();
                 return true;
+            // 냉장고 삭제 버튼
             case R.id.option_remove:
                 AlertDialog alertDialog = new AlertDialog.Builder(FridgeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                         .setTitle("냉장고 제거")
                         .setIcon(R.drawable.ic_remove)
                         .setMessage("정말로 삭제하시겠습니까?")
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            // 해당 버튼 클릭시 DB에서도 삭제 이때, 냉장고 내의 구역, 재료들도 모두 삭제
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 db.delete(DBContract.GoodsEntry.TABLE_NAME, DBContract.GoodsEntry.COLUMN_FRIDGE + "=?",
@@ -134,6 +144,7 @@ public class FridgeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // 뒤로 가기 클릭시 제거 상황 초기화
     @Override
     public void onBackPressed(){
         super.onBackPressed();
