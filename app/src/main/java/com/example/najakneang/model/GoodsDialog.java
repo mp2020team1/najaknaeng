@@ -41,9 +41,9 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
     private String fridgeCategory = "";
     private final Context context;
 
+    private TextView dialogText;
     private EditText name;
     private EditText quantity;
-
     private EditText expireDate;
     private Spinner typeSpinner;
     private Spinner fridgeSpinner;
@@ -101,6 +101,7 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
         fridgeSpinner = findViewById(R.id.spinner_fridge_goods_dialog);
         sectionSpinner = findViewById(R.id.spinner_section_goods_dialog);
         fridgeLayout = findViewById(R.id.fridge_layout_goods_dialog);
+        dialogText = findViewById(R.id.dialogText);
 
         okBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
@@ -127,6 +128,10 @@ public class GoodsDialog extends Dialog implements View.OnClickListener {
                 name.setText(nameStr);
                 quantity.setText(quantityStr);
                 expireDate.setText(expireDateStr);
+                dialogText.setText("재료 수정하기");
+            }
+            else{
+                dialogText.setText("재료 추가하기");
             }
 
             final ArrayAdapter<String> fridgeAdapter = new ArrayAdapter<>(context,

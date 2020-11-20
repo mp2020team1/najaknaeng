@@ -1,12 +1,14 @@
 package com.example.najakneang.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -146,10 +148,21 @@ public class GoodsActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         } else if(item.getItemId() == R.id.ingredient_remove){
-            db.delete(DBContract.GoodsEntry.TABLE_NAME,  BaseColumns._ID + "=?",
-                    new String[]{String.valueOf(goodsId)});
-            finish();
-            Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+            AlertDialog alertDialog = new AlertDialog.Builder(GoodsActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                    .setTitle("재료 제거")
+                    .setIcon(R.drawable.ic_remove)
+                    .setMessage("정말로 삭제하시겠습니까?")
+                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            db.delete(DBContract.GoodsEntry.TABLE_NAME,  BaseColumns._ID + "=?",
+                                    new String[]{String.valueOf(goodsId)});
+                            finish();
+                            Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("아니요", null)
+                    .show();
         } else if(item.getItemId() == R.id.ingredient_edit){
             GoodsDialog goodsDialog = new GoodsDialog(this,goodsId, nameStr, quantityStr, expireDate);
             goodsDialog.setCancelable(false);
