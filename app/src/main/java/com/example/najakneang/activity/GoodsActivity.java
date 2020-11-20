@@ -32,6 +32,11 @@ import com.example.najakneang.model.YoutubeContent;
 
 import java.util.ArrayList;
 
+/**
+ * 클래스 설명
+ * 품목의 대한 정보와 품목에 대한 레시피 추천을 보여주는 Activity
+ * Toolbar에서 품목 삭제나 품목 수정, 네이버 쇼핑에 품목 검색이 가능하다.
+ */
 public class GoodsActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
@@ -46,6 +51,7 @@ public class GoodsActivity extends AppCompatActivity {
     private String state;
     private long goodsId;
 
+    // 품목의 id를 intent에서 받아온 뒤, 각종 setup함수 실행
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +64,7 @@ public class GoodsActivity extends AppCompatActivity {
         setupGoodsView();
     }
 
+    // Toolbar를 받아온 품목 Cursor에 따라 setup
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar_goods);
 
@@ -68,6 +75,11 @@ public class GoodsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * 받아온 품목 Cursor에 따라 각종 TextView와 ImageView 설정
+     * MainActivity의 Youtube Content 가져오기 함수를 사용해
+     * 해당 품목의 영상 3가지를 RecyclerView에 넣어줌.
+     */
     public void setupGoodsView() {
         TextView name = findViewById(R.id.name_goods);
         TextView location = findViewById(R.id.location_goods);
@@ -110,6 +122,7 @@ public class GoodsActivity extends AppCompatActivity {
         }).start();
     }
 
+    // intent로 받아온 id에 따라 데이터베이스에서 부르는 과정
     public void getGoodsCursor(long id) {
 
         String sql =
@@ -135,6 +148,7 @@ public class GoodsActivity extends AppCompatActivity {
         cursor.moveToFirst();
     }
 
+    // 메뉴 설정
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -142,6 +156,12 @@ public class GoodsActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * 각 메뉴가 눌렸을때 반응 설정
+     * 뒤로가기 버튼: 뒷버튼 누르기
+     * 품목 삭제 버튼: Dialog를 통해 정말 삭제할 것인지 확인 후, 삭제 혹은 취소
+     * 구매 버튼: Intent를 통해 해당 품목의 네이버 쇼핑 페이지로 넘어감.
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -163,14 +183,17 @@ public class GoodsActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("아니요", null)
                     .show();
-        } else if(item.getItemId() == R.id.ingredient_edit){
+            return true;
+        } else if (item.getItemId() == R.id.ingredient_edit) {
             GoodsDialog goodsDialog = new GoodsDialog(this,goodsId, nameStr, quantityStr, expireDate);
             goodsDialog.setCancelable(false);
             goodsDialog.show();
-        } else if(item.getItemId() == R.id.purchase){
+            return true;
+        } else if (item.getItemId() == R.id.purchase) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( "https://search.shopping.naver.com/search/all?query=" +
                     nameStr + "&cat_id=&frm=NVSHATC" ));
             startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

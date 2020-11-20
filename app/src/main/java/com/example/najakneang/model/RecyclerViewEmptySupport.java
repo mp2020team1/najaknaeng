@@ -9,10 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.najakneang.activity.FreshnessActivity;
 
-// 파일 설명 : Recycler가 비었을 때 처리하기 위한 커스텀 클래스
-
 /**
  * 클래스 설명
+ * RecyclerView가 비었을 때 사용하기위한 커스텀 클래스
  * RecyclerView를 상속받아 지역변수로 emptyView를 설정하여
  * RecyclerView에 내장된 onChange에 따라 adapter의 item 갯수를 파악하여
  * emptyView를 보여줄지 결정해줌.
