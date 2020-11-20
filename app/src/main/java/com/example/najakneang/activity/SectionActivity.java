@@ -46,6 +46,7 @@ public class SectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section);
+
         fridge = getIntent().getStringExtra("FRIDGE");
         section = getIntent().getStringExtra("SECTION");
         storeState = getIntent().getStringExtra("STORESTATE");
@@ -182,12 +183,13 @@ public class SectionActivity extends AppCompatActivity {
             goodsDialog.show();
         }
         // 재료 제거 버튼
-        else if(item.getItemId() == R.id.ingredient_remove){
+        else if (item.getItemId() == R.id.ingredient_remove){
             remove_item = !remove_item;
-
-            item.setIcon(remove_item?R.drawable.ic_cancel:R.drawable.ic_eat);
             Menu menu = toolbar.getMenu();
-            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+            MenuItem tmpItem;
+
+            item.setIcon(remove_item ? R.drawable.ic_cancel : R.drawable.ic_eat);
+            tmpItem = menu.findItem(R.id.ingredient_add);
             tmpItem.setVisible(!remove_item);
             tmpItem = menu.findItem(R.id.ingredient_confirm);
             tmpItem.setVisible(remove_item);
@@ -196,26 +198,23 @@ public class SectionActivity extends AppCompatActivity {
         }
         // 옵션 확인 버튼
         else if (item.getItemId() == R.id.ingredient_confirm) {
-            remove_item = false;
+            if (SectionRecyclerAdapter.removeList.size() != 0){
+                Menu menu = toolbar.getMenu();
+                MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
+                tmpItem.setVisible(true);
+                tmpItem = menu.findItem(R.id.ingredient_confirm);
+                tmpItem.setVisible(false);
 
-            Menu menu = toolbar.getMenu();
-            MenuItem tmpItem = menu.findItem(R.id.ingredient_add);
-            tmpItem.setVisible(true);
-            tmpItem = menu.findItem(R.id.ingredient_confirm);
-            tmpItem.setVisible(false);
-
-            for (int i = 0; i<SectionRecyclerAdapter.removeList.size(); i++) {
-                db.delete(
-                        DBContract.GoodsEntry.TABLE_NAME,
-                        DBContract.FridgeEntry._ID + "=?",
-                        new String[]{ SectionRecyclerAdapter.removeList.get(i).toString() }
-                );
-            }
-
-            if(SectionRecyclerAdapter.removeList.size() != 0){
+                for (int i = 0; i<SectionRecyclerAdapter.removeList.size(); i++) {
+                    db.delete(
+                            DBContract.GoodsEntry.TABLE_NAME,
+                            DBContract.FridgeEntry._ID + "=?",
+                            new String[]{ SectionRecyclerAdapter.removeList.get(i).toString() }
+                    );
+                }
                 Toast.makeText(getApplicationContext(), "재료가 삭제되었습니다", Toast.LENGTH_SHORT).show();
-            }
-            else{
+                remove_item = false;
+            } else {
                 Toast.makeText(getApplicationContext(), "재료를 골라주세요", Toast.LENGTH_SHORT).show();
             }
 
