@@ -22,7 +22,10 @@ import com.example.najakneang.db.DBContract;
 import com.example.najakneang.R;
 
 import java.util.ArrayList;
+// 파일 설명 : 신선도 RecyclerView 와 보여줄 데이터를 연결하는 Adapter class이다.
+// 파일 주요 기능 : RecyclerView의 각 홀더에 아이콘 및 이벤트 연결
 
+// RecyclerView 의 각 View를 저장하는 Holder 객체 class
 class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
     protected final TextView name;
     protected final TextView remain;
@@ -31,6 +34,7 @@ class FreshnessRecyclerHolder extends RecyclerView.ViewHolder {
     protected final CheckBox checkbox;
     protected final FrameLayout layout;
 
+    // Holder 객체를 생성한다
     public FreshnessRecyclerHolder(@NonNull View view) {
         super(view);
         this.name = view.findViewById(R.id.name_item_freshness_main);

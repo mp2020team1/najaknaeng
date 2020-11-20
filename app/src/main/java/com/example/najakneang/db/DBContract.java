@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
+// 파일 설명 : 각 테이블의 지니는 속성과 저장된 데이터를 가공하는 메서드를 위한 파일
+// 파일 주요기능 : 테이블 속성값과 저장된 값에 따른 아이콘, 색상, 남은 기한 관리
 public final class DBContract {
 
     private DBContract() {}
@@ -22,11 +24,13 @@ public final class DBContract {
         public static final String COLUMN_TYPE = "TYPE";
         public static final String COLUMN_FRIDGE = "FRIDGE";
         public static final String COLUMN_SECTION = "SECTION";
+        // 품목의 남은 기한을 구하는 메서드
         public static long getRemain(String expireDateStr) {
             LocalDate today = LocalDate.now();
             LocalDate expireDate = LocalDate.parse(expireDateStr, DateTimeFormatter.ofPattern("yyyyMMdd"));
             return ChronoUnit.DAYS.between(today, expireDate);
         }
+        // 품목의 분류에 따라 아이콘을 정하는 메서드
         public static final HashMap<String, Integer> typeIconMap = new HashMap<String, Integer>() {
             {
                 put("과일", R.drawable.ic_fruit);
@@ -39,6 +43,7 @@ public final class DBContract {
                 put("기타", R.drawable.ic_guitar);
             }
         };
+        // 품목의 남은 기한에 따라 색상을 정하는 메서드
         public static String getRemainColor(String state, long remain){
             if(state.equals("냉동")) return "#1E90FF";
             if(remain < 0) return "#FF0000";
@@ -58,6 +63,7 @@ public final class DBContract {
         public static final String TABLE_NAME = "Fridge";
         public static final String COLUMN_NAME = "NAME";
         public static final String COLUMN_CATEGORY = "CATEGORY";
+        // 냉장고의 분류에 따라 이미지를 정하는 메서드
         public static final HashMap<String, Integer> categoryImageMap = new HashMap<String, Integer>() {
             {
                 put("냉장고", R.drawable.img_fridge);
