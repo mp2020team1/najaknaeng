@@ -17,6 +17,7 @@ import com.example.najakneang.R;
 
 import java.util.ArrayList;
 
+// TODO: 유튜브 추천 어댑터
 class RecommendRecyclerHolder extends RecyclerView.ViewHolder {
     protected final View view;
     protected final ImageView thumbnail;

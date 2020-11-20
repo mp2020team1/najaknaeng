@@ -23,18 +23,24 @@ import com.example.najakneang.adapter.FridgeRecyclerAdapter;
 import com.example.najakneang.db.DBContract;
 import com.example.najakneang.model.RecyclerViewEmptySupport;
 import com.example.najakneang.model.SectionDialog;
+// 파일 설명 : 선택한 냉장고를 보여주는 엑티비티
+// 파일 주요 기능 : 선택한 냉장고가 가지고 있는 구역을 보여주고 각 구역마다 저장된 품목 3가지를 보여준다.
+//              메뉴를 이용하여 구역의 추가및 삭제, 냉장고 삭제가능
 
+// 클래스 설명 : 선택한 냉장고를 보여주는 FridgeActivity class
 public class FridgeActivity extends AppCompatActivity {
 
     private final SQLiteDatabase db = MainActivity.db;
     private String fridgeName;
     private String fridgeCategory;
 
+    // 메서드 설명 : 앱
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fridge);
 
+        // 인텐트에서 냉장고 이름과 분류를 가져온다.
         Intent intent = getIntent();
         fridgeName = intent.getStringExtra("FRIDGE");
         fridgeCategory = intent.getStringExtra("CATEGORY");
@@ -44,6 +50,7 @@ public class FridgeActivity extends AppCompatActivity {
         setupToolbar(fridgeName, fridgeCategory);
     }
 
+    // 메서드 설명 :
     @Override
     protected void onResume(){
         super.onResume();
