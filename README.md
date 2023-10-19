@@ -16,15 +16,19 @@
 
 </br>
 
-### 메인 메뉴 전체 화면
+#### 메인 메뉴 전체 화면
 
 ![img](https://user-images.githubusercontent.com/55117706/276479884-72f5c292-5682-4870-aaa7-f1f4454ba71b.png)
 
+</br>
 
 #### 냉장고 선택
 
+![img](https://user-images.githubusercontent.com/55117706/276483124-e92146d2-1d68-41f3-9f4c-7b7f664c62ee.gif)
 
 
+
+</br>
 
 #### 레시피 추천
 
