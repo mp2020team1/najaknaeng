@@ -12,6 +12,9 @@
 
 ## 🎥 시연
 
+### 레시피 추천
+![img](https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif)
+
 </br>
 
 ## 🛠 개발 환경
