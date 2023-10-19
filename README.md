@@ -16,6 +16,8 @@
 
 ![img](https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif)
 
+</br>
+
 유통기한이 얼마 남지 않는 재료 중 무작위 하나로 만들 수 있는 레시피 유튜브 영상을 추천해준다.
 
 </br>
