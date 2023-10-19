@@ -16,6 +16,11 @@
 
 </br>
 
+### 메인 메뉴 전체 화면
+
+![img](https://user-images.githubusercontent.com/55117706/276479884-72f5c292-5682-4870-aaa7-f1f4454ba71b.png)
+
+
 #### 냉장고 선택
 
 
