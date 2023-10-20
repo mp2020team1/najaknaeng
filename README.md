@@ -32,7 +32,7 @@
 
 #### 레시피 추천
 
-<img src = "https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif" width = "200" height = "400> 
+<img src = "https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif" width = "200" height = "400/> 
 
 </br>
 
