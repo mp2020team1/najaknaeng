@@ -32,9 +32,7 @@
 
 #### 레시피 추천
 
-<img src = "https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif" width = "200" height = "400/> 
-
-<img src= "https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif" width="200" height="400"/>
+<img src= "https://user-images.githubusercontent.com/55117706/276480687-4aa2727d-e08b-45c5-8395-2bce7533d33a.gif" width="300" height="500"/>
 </br>
 
 유통기한이 얼마 남지 않는 재료 중 무작위 하나로 만들 수 있는 레시피 유튜브 영상을 추천해준다.
