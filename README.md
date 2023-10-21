@@ -34,4 +34,4 @@
 
 #### 📦 기술스택
 
-<img width="125" src="https://img.shields.io/badge/android%-brightgreen">
+<img src="https://img.shields.io/badge/spring-3776AB?style=for-the-badge&logo=Android&logoColor=brightgreen">
