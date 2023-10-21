@@ -24,7 +24,7 @@
 
 | 냉장고 구역 전체 화                                                                                                           |                                                            구역 추가                                                            | 구역 삭                                                                                                               |
 | -------------------------------------------------------------------------------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------- |
-| <img src= "https://user-images.githubusercontent.com/55117706/277109505-77082cb4-4779-481d-98c8-9f53554dd9b5.gif" width="300" height="500"/> | <img src ="https://user-images.githubusercontent.com/55117706/277109507-0e2d842d-0aed-4f23-a6f9-7da17d7e4482.gif" width ="150"> | <img src= "https://user-images.githubusercontent.com/55117706/277109510-53d8cb8e-1cc2-4f65-96de-0e0b09fe7ce8.gif" width="300" height="500"/> |
+| <img src= "https://user-images.githubusercontent.com/55117706/277109505-77082cb4-4779-481d-98c8-9f53554dd9b5.gif" width="300" height="500"/> | <img src ="https://user-images.githubusercontent.com/55117706/277109507-0e2d842d-0aed-4f23-a6f9-7da17d7e4482.gif" width ="300"> | <img src= "https://user-images.githubusercontent.com/55117706/277109510-53d8cb8e-1cc2-4f65-96de-0e0b09fe7ce8.gif" width="300" height="500"/> |
 
 중앙에는 사용자가 집에 냉장고가 여러개 있을 경우, 추가하여 선택할 수 있다.
 
