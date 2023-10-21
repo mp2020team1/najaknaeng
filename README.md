@@ -19,13 +19,15 @@
 #### 메인 메뉴 전체 화면
 
 <img src= "https://user-images.githubusercontent.com/55117706/276479884-72f5c292-5682-4870-aaa7-f1f4454ba71b.png" width="300" height="500"/>
-
+</br>
+상단에 유통기한이 얼마 남지 않은 식재료를 알려준다.
 </br>
 
 #### 냉장고 선택
 
 ![img](https://user-images.githubusercontent.com/55117706/276483124-e92146d2-1d68-41f3-9f4c-7b7f664c62ee.gif)
-
+</br>
+사용자가 집에 냉장고가 여러개 있을 경우, 추가하여 선택할 수 있다.
 </br>
 
 #### 레시피 추천
